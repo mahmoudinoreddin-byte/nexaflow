@@ -1,0 +1,155 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Dashboard — NexaFlow{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">Nexa<span>Flow</span></div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Main</div>
+      <a href="{% url 'dashboard:home' %}" class="active">
+        <span class="nav-icon">🏠</span> Dashboard
+      </a>
+      <a href="{% url 'services:list' %}">
+        <span class="nav-icon">⚡</span> Services
+      </a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:profile' %}">
+        <span class="nav-icon">👤</span> Profile
+      </a>
+      <a href="{% url 'accounts:logout' %}">
+        <span class="nav-icon">🚪</span> Logout
+      </a>
+    </nav>
+    <div class="s-user">
+      <div class="s-user-inner">
+        <div class="s-avatar">{{ request.user.username|first|upper }}</div>
+        <div>
+          <div class="s-user-name">{{ request.user.username }}</div>
+          <div class="s-user-plan">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">My Dashboard</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        {% if request.user.subscription_end %}
+        <span style="font-size:.8rem;color:#94A3B8">
+          Renews in <strong style="color:#4F46E5">{{ days_remaining }}d</strong>
+        </span>
+        {% endif %}
+        <span class="badge {% if request.user.status == 'active' %}badge-active{% else %}badge-inactive{% endif %}">
+          {{ request.user.get_status_display }}
+        </span>
+      </div>
+    </div>
+
+    <div class="page-content">
+      <!-- Welcome -->
+      <div style="margin-bottom:28px">
+        <h2 style="font-family:var(--font-head);font-size:1.5rem;font-weight:800;color:#1A2332">
+          Welcome back, {{ request.user.first_name|default:request.user.username }} 👋
+        </h2>
+        <p style="color:#64748B;margin-top:4px;font-size:.9rem">
+          Your {{ request.user.get_plan_display }} subscription is
+          {% if request.user.status == 'active' %}active{% else %}inactive{% endif %}.
+          {% if request.user.subscription_end %}
+          Subscription renews on {{ request.user.subscription_end|date:"N j, Y" }}.
+          {% endif %}
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Services Available</div>
+          <div class="stat-value">{{ services_count }}</div>
+          <div class="stat-sub">Active services</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Subscription Status</div>
+          <div class="stat-value" style="font-size:1.2rem;padding-top:6px">
+            <span class="badge {% if request.user.status == 'active' %}badge-active{% else %}badge-inactive{% endif %}">
+              {{ request.user.get_status_display }}
+            </span>
+          </div>
+          <div class="stat-sub">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Until Renewal</div>
+          <div class="stat-value">{{ days_remaining }}</div>
+          <div class="stat-sub">days remaining</div>
+        </div>
+      </div>
+
+      <!-- Services + Activity -->
+      <div class="two-col">
+        <!-- Services -->
+        <div>
+          <div class="section-title">My Services</div>
+          <div class="section-sub">All services included in your {{ request.user.get_plan_display }} plan</div>
+          {% if user_services %}
+          <div class="svc-grid">
+            {% for us in user_services %}
+            <div class="svc-card" onclick="{% if us.service.url %}window.open('{{ us.service.url }}','_blank'){% endif %}">
+              <div class="svc-icon">{{ us.service.icon }}</div>
+              <div class="svc-name">{{ us.service.name }}</div>
+              <div class="svc-desc">{{ us.service.description }}</div>
+              {% if us.service.category %}
+              <span class="svc-cat">{{ us.service.category.name }}</span>
+              {% endif %}
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:12px;padding:32px;text-align:center;color:#94A3B8">
+            <div style="font-size:2rem;margin-bottom:8px">⚡</div>
+            <p>No services assigned yet. Contact support.</p>
+          </div>
+          {% endif %}
+        </div>
+
+        <!-- Activity + Account Info -->
+        <div style="display:flex;flex-direction:column;gap:20px">
+          <!-- Account Info -->
+          <div class="stat-card">
+            <div class="section-title" style="margin-bottom:16px">Account Information</div>
+            <div style="display:flex;flex-direction:column;gap:10px;font-size:.84rem">
+              <div style="display:flex;justify-content:space-between"><span style="color:#94A3B8">Email</span><span style="font-weight:600">{{ request.user.email }}</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94A3B8">Username</span><span style="font-weight:600">{{ request.user.username }}</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94A3B8">Plan</span><span style="font-weight:600">{{ request.user.get_plan_display }}</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#94A3B8">Member since</span><span style="font-weight:600">{{ request.user.created_at|date:"N Y" }}</span></div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="stat-card">
+            <div class="section-title" style="margin-bottom:4px">Recent Activity</div>
+            <div class="section-sub">Last actions on your account</div>
+            {% if activities %}
+            {% for act in activities %}
+            <div class="activity-item">
+              <div class="activity-icon">{{ act.icon }}</div>
+              <div>
+                <div class="activity-text">{{ act.action }}</div>
+                <div class="activity-time">{{ act.created_at|timesince }} ago{% if act.description %} — {{ act.description }}{% endif %}</div>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p style="color:#94A3B8;font-size:.84rem">No activity yet.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

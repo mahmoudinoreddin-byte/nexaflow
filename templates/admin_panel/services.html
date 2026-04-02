@@ -1,0 +1,118 @@
+{% extends "admin_panel/base_admin.html" %}
+{% block title %}Services — NexaFlow Admin{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">Nexa<span>Flow</span></div>
+      <div class="s-badge">Admin Panel</div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Overview</div>
+      <a href="{% url 'admin_panel:dashboard' %}"><span class="nav-icon">📊</span> Dashboard</a>
+      <a href="{% url 'admin_panel:users' %}"><span class="nav-icon">👥</span> Users</a>
+      <a href="{% url 'admin_panel:services' %}" class="active"><span class="nav-icon">⚡</span> Services</a>
+      <div class="s-nav-label">Logs</div>
+      <a href="{% url 'admin_panel:webhooks' %}"><span class="nav-icon">🔔</span> Webhook Logs</a>
+      <a href="/django-admin/"><span class="nav-icon">⚙️</span> Django Admin</a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:logout' %}"><span class="nav-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">Services</span>
+      <button onclick="document.getElementById('add-modal').style.display='flex'" class="btn btn-primary" style="padding:8px 16px;font-size:.85rem">
+        + Add Service
+      </button>
+    </div>
+
+    <div class="page-content">
+      <div class="stat-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Icon</th><th>Name</th><th>Category</th><th>Status</th><th>Users</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+              {% for svc in services %}
+              <tr>
+                <td style="font-size:1.3rem">{{ svc.icon }}</td>
+                <td>
+                  <div style="font-weight:600">{{ svc.name }}</div>
+                  <div style="font-size:.76rem;color:var(--muted)">{{ svc.description|truncatechars:50 }}</div>
+                </td>
+                <td style="color:var(--muted)">{{ svc.category.name|default:"—" }}</td>
+                <td><span class="badge {% if svc.status == 'active' %}badge-active{% else %}badge-paused{% endif %}">{{ svc.get_status_display }}</span></td>
+                <td style="color:var(--accent);font-weight:700">{{ svc.active_users }}</td>
+                <td style="display:flex;gap:8px">
+                  <form method="post" style="display:inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle">
+                    <input type="hidden" name="service_id" value="{{ svc.id }}">
+                    <button type="submit" class="btn btn-outline" style="padding:5px 10px;font-size:.78rem">
+                      {% if svc.status == 'active' %}Pause{% else %}Activate{% endif %}
+                    </button>
+                  </form>
+                  <form method="post" style="display:inline" onsubmit="return confirm('Delete {{ svc.name }}?')">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="service_id" value="{{ svc.id }}">
+                    <button type="submit" class="btn btn-danger" style="padding:5px 10px;font-size:.78rem">Del</button>
+                  </form>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:40px">No services yet. Add one above.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Service Modal -->
+<div id="add-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:24px">
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:32px;width:100%;max-width:480px;box-shadow:0 40px 100px rgba(0,0,0,.6)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+      <h3 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700">Add New Service</h3>
+      <button onclick="document.getElementById('add-modal').style.display='none'" style="background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer">✕</button>
+    </div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <div class="form-group">
+        <label style="color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Icon (emoji)</label>
+        <input type="text" name="icon" value="⚡" class="input-field" style="width:100%" maxlength="4">
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label style="color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Name *</label>
+        <input type="text" name="name" class="input-field" style="width:100%" placeholder="Service name" required>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label style="color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Description</label>
+        <input type="text" name="description" class="input-field" style="width:100%" placeholder="Short description">
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label style="color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Category</label>
+        <select name="category" class="input-field" style="width:100%">
+          <option value="">— No category —</option>
+          {% for cat in categories %}<option value="{{ cat.id }}">{{ cat.name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group" style="margin-top:12px">
+        <label style="color:var(--muted);font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px">Status</label>
+        <select name="status" class="input-field" style="width:100%">
+          <option value="active">Active</option>
+          <option value="paused">Paused</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:12px;margin-top:20px">Create Service</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
