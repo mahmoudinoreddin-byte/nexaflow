@@ -22,3 +22,23 @@ class ActivityLogAdmin(admin.ModelAdmin):
     list_filter = ['action']
     search_fields = ['user__email', 'action']
     readonly_fields = ['created_at']
+
+
+
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    ordering = ('-created_at',)
+    list_display = ('email', 'username', 'plan', 'status', 'is_staff')
+    search_fields = ('email', 'username')
+    # CRITICAL: override fieldsets to include your custom fields
+    fieldsets = UserAdmin.fieldsets + (
+        ('Subscription', {'fields': ('plan', 'status', 'gumroad_sale_id', 'subscription_start', 'subscription_end')}),
+        ('Setup', {'fields': ('password_set', 'setup_token', 'setup_token_expires')}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'username', 'password1', 'password2'),
+        }),
+    )
