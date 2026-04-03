@@ -1,0 +1,154 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}My Services — NexaFlow{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-logo"><div class="s-logo-text">Nexa<span>Flow</span></div></div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Main</div>
+      <a href="{% url 'dashboard:home' %}"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="{% url 'services:list' %}"><span class="nav-icon">⚡</span> Browse Services</a>
+      <a href="{% url 'services:my' %}" class="active"><span class="nav-icon">🔑</span> My Services</a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:profile' %}"><span class="nav-icon">👤</span> Profile</a>
+      <a href="{% url 'accounts:logout' %}"><span class="nav-icon">🚪</span> Logout</a>
+    </nav>
+    <div class="s-user">
+      <div class="s-user-inner">
+        <div class="s-avatar">{{ request.user.username|first|upper }}</div>
+        <div>
+          <div class="s-user-name">{{ request.user.username }}</div>
+          <div class="s-user-plan">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">My Services</span>
+      <a href="{% url 'services:list' %}" style="font-size:.82rem;background:#4F46E5;color:#fff;padding:7px 16px;border-radius:8px;font-weight:600;display:flex;align-items:center;gap:6px">⚡ Browse More</a>
+    </div>
+
+    <div class="page-content">
+
+      {% for msg in messages %}
+      <div style="padding:12px 18px;border-radius:10px;margin-bottom:16px;font-size:.87rem;font-weight:500;
+        {% if 'success' in msg.tags %}background:#ECFDF5;border:1px solid #6EE7B7;color:#065F46;
+        {% else %}background:#EEF2FF;border:1px solid #C7D2FE;color:#3730A3;{% endif %}">
+        {{ msg }}
+      </div>
+      {% endfor %}
+
+      <!-- Info banner -->
+      <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;gap:14px;align-items:flex-start">
+        <div style="font-size:1.4rem;flex-shrink:0">🔐</div>
+        <div>
+          <div style="font-weight:700;color:#3730A3;font-size:.9rem">Secure Access Links</div>
+          <div style="color:#4338CA;font-size:.82rem;margin-top:3px;line-height:1.5">
+            Each service has a unique personal link. Share it with no one — it identifies you automatically.
+            If a link is compromised, use <strong>Regenerate</strong> to invalidate it and get a new one.
+          </div>
+        </div>
+      </div>
+
+      {% if user_services %}
+      <div style="display:flex;flex-direction:column;gap:14px">
+        {% for us in user_services %}
+        <div style="background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:20px 24px;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+
+            <!-- Left: service info -->
+            <div style="display:flex;align-items:center;gap:14px;flex:1;min-width:200px">
+              <div style="font-size:2rem;width:48px;height:48px;background:#F1F5F9;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0">{{ us.service.icon }}</div>
+              <div>
+                <div style="font-weight:700;font-size:.97rem;color:#1A2332">{{ us.service.name }}</div>
+                <div style="font-size:.8rem;color:#64748B;margin-top:2px">{{ us.service.description }}</div>
+                {% if us.service.category %}
+                <span style="font-size:.68rem;background:#F1F5F9;color:#64748B;padding:2px 8px;border-radius:100px;font-weight:700;text-transform:uppercase;display:inline-block;margin-top:5px">{{ us.service.category.name }}</span>
+                {% endif %}
+                <div style="font-size:.75rem;color:#94A3B8;margin-top:5px">Added {{ us.activated_at|date:"N j, Y" }}</div>
+              </div>
+            </div>
+
+            <!-- Right: token + actions -->
+            <div style="display:flex;flex-direction:column;gap:10px;min-width:300px;flex:1">
+
+              <!-- Token URL box -->
+              <div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;margin-bottom:6px">Your Secure Access Link</div>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <input type="text" readonly
+                    id="token-{{ us.service.id }}"
+                    value="{{ request.scheme }}://{{ request.get_host }}{% url 'services:access' us.access_token %}"
+                    style="flex:1;background:#F8FAFC;border:1px solid #E2E8F0;color:#4F46E5;padding:8px 12px;border-radius:8px;font-size:.75rem;font-family:monospace;outline:none;cursor:pointer"
+                    onclick="this.select()" title="Click to select">
+                  <button onclick="copyToken('token-{{ us.service.id }}', this)"
+                    style="background:#4F46E5;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                    Copy
+                  </button>
+                </div>
+                <div style="font-size:.72rem;color:#94A3B8;margin-top:5px;font-family:monospace;word-break:break-all">
+                  Token: {{ us.access_token }}
+                </div>
+              </div>
+
+              <!-- Action buttons -->
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <a href="{% url 'services:access' us.access_token %}" target="_blank"
+                   style="background:#ECFDF5;color:#065F46;padding:7px 14px;border-radius:7px;font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:4px">
+                  🚀 Open Service
+                </a>
+                <form method="post" action="{% url 'services:rotate_token' us.service.id %}" style="display:inline" onsubmit="return confirm('This will invalidate your current link. Continue?')">
+                  {% csrf_token %}
+                  <button type="submit"
+                    style="background:#FFF7ED;color:#C2410C;border:none;padding:7px 14px;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px">
+                    🔄 Regenerate Link
+                  </button>
+                </form>
+                <form method="post" action="{% url 'services:remove' us.service.id %}" style="display:inline" onsubmit="return confirm('Remove {{ us.service.name }} from your services?')">
+                  {% csrf_token %}
+                  <button type="submit"
+                    style="background:#FEF2F2;color:#DC2626;border:none;padding:7px 14px;border-radius:7px;font-size:.78rem;font-weight:600;cursor:pointer">
+                    Remove
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% else %}
+      <div style="background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:60px;text-align:center">
+        <div style="font-size:3rem;margin-bottom:16px">🔑</div>
+        <h3 style="font-family:var(--font-head);font-size:1.1rem;font-weight:700;color:#1A2332">No services yet</h3>
+        <p style="color:#94A3B8;font-size:.88rem;margin-top:6px;margin-bottom:20px">Browse the catalogue and add your first service.</p>
+        <a href="{% url 'services:list' %}" style="background:#4F46E5;color:#fff;padding:10px 24px;border-radius:9px;font-size:.87rem;font-weight:600;display:inline-flex;align-items:center;gap:6px">
+          ⚡ Browse Services
+        </a>
+      </div>
+      {% endif %}
+
+    </div>
+  </main>
+</div>
+
+<script>
+function copyToken(inputId, btn) {
+  var input = document.getElementById(inputId);
+  input.select();
+  document.execCommand('copy');
+  var orig = btn.textContent;
+  btn.textContent = '✅ Copied!';
+  btn.style.background = '#065F46';
+  setTimeout(function() {
+    btn.textContent = orig;
+    btn.style.background = '#4F46E5';
+  }, 2000);
+}
+</script>
+{% endblock %}

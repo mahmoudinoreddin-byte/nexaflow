@@ -1,0 +1,68 @@
+services:
+  # Web Service
+  - type: web
+    name: nexaflow
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nexaflow-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: nexaflow-redis
+          property: connectionString
+      - key: SITE_URL
+        value: "https://nexaflow.onrender.com"
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.smtp.EmailBackend"
+      # Set these manually in Render dashboard:
+      # EMAIL_HOST_PASSWORD (SendGrid API key)
+      # DEFAULT_FROM_EMAIL
+      # GUMROAD_WEBHOOK_SECRET
+
+  # Celery Worker
+  - type: worker
+    name: nexaflow-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: celery -A config worker --loglevel=info --concurrency=2
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nexaflow-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: nexaflow-redis
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          type: web
+          name: nexaflow
+          envVarKey: SECRET_KEY
+
+databases:
+  - name: nexaflow-db
+    databaseName: nexaflow
+    user: nexaflow
+    plan: free
+
+  - name: nexaflow-redis
+    plan: free
