@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AetherCAD</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>AetherCAD Pro - 3D Solid Modeler</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
 :root{
-  --bg:#111113;--panel:#18181c;--panel2:#1e1e24;--border:#2a2a32;
-  --accent:#4f9cf9;--accent2:#3b82f6;--green:#22c55e;--red:#ef4444;--orange:#f97316;
-  --text:#e4e4e7;--text2:#71717a;--text3:#52525b;
-  --sel:#4f9cf930;--sel2:#4f9cf960;
+  --bg:#0a0a0c;--panel:#121215;--panel2:#1a1a20;--border:#25252e;
+  --accent:#3b82f6;--accent2:#2563eb;--green:#10b981;--red:#ef4444;--orange:#f59e0b;
+  --text:#e2e2e6;--text2:#8a8a91;--text3:#52525b;
+  --sel:#3b82f620;--sel2:#3b82f640;
 }
 html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--bg);}
 #app{display:flex;flex-direction:column;height:100vh;}
 
 /* HEADER */
 #header{
-  height:40px;background:var(--panel);border-bottom:1px solid var(--border);
+  height:38px;background:var(--panel);border-bottom:1px solid var(--border);
   display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:100;
 }
 .logo{font-weight:600;font-size:14px;letter-spacing:-0.3px;color:var(--text);}
@@ -30,7 +30,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 /* TOOL BAR */
 #toolbar{
   height:44px;background:var(--panel);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;
+  display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;flex-wrap:wrap;
 }
 .tb-sep{width:1px;height:24px;background:var(--border);margin:0 6px;}
 .tb-btn{
@@ -77,7 +77,7 @@ html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size
 #viewport{flex:1;position:relative;overflow:hidden;background:#0c0c0f;}
 canvas{display:block;width:100%;height:100%;}
 
-/* VIEWPORT HUD OVERLAYS */
+/* VIEWPORT HUD */
 #view-hud{
   position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;z-index:20;
 }
@@ -93,7 +93,6 @@ canvas{display:block;width:100%;height:100%;}
 }
 .view-btn:hover{background:var(--sel);color:var(--accent);}
 .view-btn.center{flex:1.5;background:var(--panel2);font-size:8px;}
-
 .view-presets{display:flex;flex-direction:column;gap:3px;}
 .vp-btn{
   padding:4px 10px;border-radius:5px;background:var(--panel)cc;border:1px solid var(--border);
@@ -121,7 +120,7 @@ canvas{display:block;width:100%;height:100%;}
   position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
   background:var(--panel)ee;backdrop-filter:blur(12px);border:1px solid var(--border);
   border-radius:8px;display:flex;align-items:center;padding:6px 14px;gap:12px;z-index:20;
-  min-width:400px;
+  min-width:380px;
 }
 .dh-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
 .dh-inp{
@@ -150,7 +149,6 @@ canvas{display:block;width:100%;height:100%;}
 .sh-info{font-size:10px;color:var(--text2);line-height:1.7;font-family:'DM Mono',monospace;}
 .sh-hint{font-size:9px;color:var(--text3);margin-top:6px;line-height:1.6;}
 
-/* SVG sketch overlay */
 #sketch-svg{
   position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;
 }
@@ -158,7 +156,7 @@ canvas{display:block;width:100%;height:100%;}
 
 /* RIGHT PANEL */
 #right-panel{
-  width:240px;background:var(--panel);border-left:1px solid var(--border);
+  width:250px;background:var(--panel);border-left:1px solid var(--border);
   overflow-y:auto;flex-shrink:0;
 }
 .rp-section{border-bottom:1px solid var(--border);}
@@ -189,10 +187,7 @@ canvas{display:block;width:100%;height:100%;}
   color:var(--text2);line-height:1.6;
 }
 .rp-color{display:flex;align-items:center;gap:8px;}
-.rp-color input[type=color]{
-  width:36px;height:26px;padding:2px;border-radius:5px;border:1px solid var(--border);
-  background:var(--panel2);cursor:pointer;
-}
+.rp-color input[type=color]{width:36px;height:26px;border-radius:5px;border:1px solid var(--border);background:var(--panel2);cursor:pointer;}
 
 /* STATUS BAR */
 #statusbar{
@@ -201,1051 +196,412 @@ canvas{display:block;width:100%;height:100%;}
   font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);flex-shrink:0;
 }
 #status-msg{flex:1;color:var(--text2);}
-
-/* Draw preview overlay */
-#draw-preview{
-  position:absolute;pointer-events:none;z-index:5;
-  border:1.5px dashed var(--accent);background:var(--sel);display:none;
-}
-
-/* Face highlight overlay canvas */
-#face-canvas{position:absolute;top:0;left:0;pointer-events:none;z-index:6;}
-
-/* Snapping crosshair */
-.snap-indicator{
-  position:absolute;width:10px;height:10px;pointer-events:none;z-index:25;display:none;
-}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="header">
-    <div class="logo">Aether<b>CAD</b></div>
-    <div class="header-sep"></div>
-    <span style="font-size:10px;color:var(--text3)">3D Solid Modeler</span>
-    <div class="header-status">
-      <span class="dot"></span>
-      <span id="hdr-status">Ready</span>
-    </div>
+  <div id="header"><div class="logo">Aether<b>CAD</b></div><div class="header-sep"></div><span style="font-size:10px;color:var(--text3)">Face Extrude · Transform · Perspective</span>
+    <div class="header-status"><span class="dot"></span><span id="hdr-status">Ready</span></div>
   </div>
-
   <div id="toolbar">
     <span class="tb-label">Sketch</span>
-    <button class="tb-btn active" id="tool-line" title="Line (L)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line
-    </button>
-    <button class="tb-btn" id="tool-rect" title="Rectangle (R)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="0.5"/></svg>Rect
-    </button>
-    <button class="tb-btn" id="tool-circle" title="Circle (C)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/></svg>Circle
-    </button>
-    <button class="tb-btn" id="tool-arc" title="Arc (A)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 13 Q8 1 13 13"/></svg>Arc
-    </button>
-    <button class="tb-btn" id="tool-spline" title="Spline (S)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12 C4 2 8 14 14 4"/></svg>Spline
-    </button>
+    <button class="tb-btn" id="tool-line"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line</button>
+    <button class="tb-btn active" id="tool-rect"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="0.5"/></svg>Rect</button>
+    <button class="tb-btn" id="tool-circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/></svg>Circle</button>
+    <div class="tb-sep"></div><span class="tb-label">Select</span>
+    <button class="tb-btn" id="tool-select"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6.5-4.5 1.5L6 14z"/></svg>Select</button>
+    <div class="tb-sep"></div><span class="tb-label">3D</span>
+    <button class="tb-btn" id="tool-extrude"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="10" height="6"/><path d="M3 8l3-4h4l3 4"/><line x1="8" y1="2" x2="8" y2="8"/></svg>Extrude</button>
     <div class="tb-sep"></div>
-    <span class="tb-label">Select</span>
-    <button class="tb-btn" id="tool-select" title="Select (Esc)">
-      <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6.5-4.5 1.5L6 14z"/></svg>Select
-    </button>
-    <div class="tb-sep"></div>
-    <span class="tb-label">3D</span>
-    <button class="tb-btn" id="tool-extrude" title="Extrude (E)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="10" height="6"/><path d="M3 8l3-4h4l3 4"/><line x1="8" y1="2" x2="8" y2="8"/></svg>Extrude
-    </button>
-    <div class="tb-sep"></div>
-    <button class="tb-btn" id="tool-dup" title="Duplicate (D)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="8" height="8" rx="1"/><rect x="3" y="3" width="8" height="8" rx="1" stroke-dasharray="2 1.5"/></svg>Dup
-    </button>
-    <button class="tb-btn danger" id="tool-del" title="Delete (Del)">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 4h10M6 4V3h4v1M5 4l.5 9M11 4l-.5 9M8 4v9"/></svg>Delete
-    </button>
-    <button class="tb-btn danger" id="tool-clear">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 2l12 12M14 2 2 14"/></svg>Clear
-    </button>
+    <button class="tb-btn" id="tool-dup"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><rect x="5" y="5" width="8" height="8" rx="1"/><rect x="3" y="3" width="8" height="8" rx="1" stroke-dasharray="2 1.5"/></svg>Dup</button>
+    <button class="tb-btn danger" id="tool-del"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 4h10M6 4V3h4v1M5 4l.5 9M11 4l-.5 9M8 4v9"/></svg>Del</button>
+    <button class="tb-btn danger" id="tool-clear"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M2 2l12 12M14 2 2 14"/></svg>Clear</button>
   </div>
-
   <div id="main">
-    <!-- LEFT: Object tree -->
-    <div id="left-panel">
-      <div class="panel-title"><span>Objects</span><span id="obj-count">0</span></div>
-      <div id="object-list"><div class="empty-list">No objects yet.<br>Use sketch tools to<br>draw and extrude.</div></div>
-    </div>
-
-    <!-- VIEWPORT -->
+    <div id="left-panel"><div class="panel-title"><span>Objects</span><span id="obj-count">0</span></div><div id="object-list"><div class="empty-list">No objects yet.<br>Draw rectangle or circle</div></div></div>
     <div id="viewport">
       <canvas id="canvas"></canvas>
-      <div id="draw-preview"></div>
-      
-      <!-- SVG Sketch Overlay -->
       <svg id="sketch-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-
-      <!-- Face canvas -->
-      <canvas id="face-canvas"></canvas>
-
-      <!-- TOP: Transform HUD -->
-      <div id="transform-hud">
-        <button class="th-btn active" data-mode="select">SELECT</button>
-        <button class="th-btn" data-mode="translate">MOVE</button>
-        <button class="th-btn" data-mode="rotate">ROTATE</button>
-        <button class="th-btn" data-mode="scale">SCALE</button>
-      </div>
-
-      <!-- TOP RIGHT: View cube & presets -->
+      <div id="transform-hud"><button class="th-btn active" data-mode="select">SELECT</button><button class="th-btn" data-mode="translate">MOVE</button><button class="th-btn" data-mode="rotate">ROTATE</button><button class="th-btn" data-mode="scale">SCALE</button></div>
       <div id="view-hud">
-        <div class="view-cube">
-          <div class="view-cube-row">
-            <button class="view-btn" data-view="front-left">FL</button>
-            <button class="view-btn center" data-view="top">TOP</button>
-            <button class="view-btn" data-view="front-right">FR</button>
-          </div>
-          <div class="view-cube-row">
-            <button class="view-btn" data-view="left">L</button>
-            <button class="view-btn center" data-view="persp">3D</button>
-            <button class="view-btn" data-view="right">R</button>
-          </div>
-          <div class="view-cube-row">
-            <button class="view-btn" data-view="back-left">BL</button>
-            <button class="view-btn center" data-view="bottom">BTM</button>
-            <button class="view-btn" data-view="back-right">BR</button>
-          </div>
-        </div>
-        <div class="view-presets">
-          <button class="vp-btn" data-view="front">FRONT</button>
-          <button class="vp-btn" data-view="right">RIGHT</button>
-          <button class="vp-btn" data-view="top">TOP</button>
-          <button class="vp-btn" data-view="persp">PERSP</button>
-        </div>
+        <div class="view-cube"><div class="view-cube-row"><button class="view-btn" data-view="front-left">FL</button><button class="view-btn center" data-view="top">TOP</button><button class="view-btn" data-view="front-right">FR</button></div>
+        <div class="view-cube-row"><button class="view-btn" data-view="left">L</button><button class="view-btn center" data-view="persp">3D</button><button class="view-btn" data-view="right">R</button></div>
+        <div class="view-cube-row"><button class="view-btn" data-view="back-left">BL</button><button class="view-btn center" data-view="bottom">BTM</button><button class="view-btn" data-view="back-right">BR</button></div></div>
+        <div class="view-presets"><button class="vp-btn" data-view="front">FRONT</button><button class="vp-btn" data-view="right">RIGHT</button><button class="vp-btn" data-view="top">TOP</button><button class="vp-btn" data-view="persp">PERSP</button></div>
       </div>
-
-      <!-- BOTTOM: Draw / Extrude HUD -->
-      <div id="draw-hud">
-        <span class="dh-label" id="dh-mode">SKETCH</span>
-        <div class="dh-sep"></div>
-        <label style="font-size:10px;color:var(--text3)">W</label>
-        <input class="dh-inp" id="dh-w" type="number" value="100" step="10">
-        <label style="font-size:10px;color:var(--text3)">H</label>
-        <input class="dh-inp" id="dh-h" type="number" value="100" step="10">
-        <div class="dh-sep"></div>
-        <label style="font-size:10px;color:var(--text3)">Ext</label>
-        <input class="dh-inp" id="dh-ext" type="number" value="50" step="5">
-        <div class="dh-sep"></div>
-        <button class="dh-btn" id="btn-extrude">EXTRUDE ↑</button>
-        <button class="dh-btn sec" id="btn-finish-sketch">FINISH</button>
-      </div>
-
-      <!-- TOP LEFT: Sketch info HUD -->
-      <div id="sketch-hud">
-        <div class="sh-title" id="sh-title">Sketch Mode</div>
-        <div class="sh-info" id="sh-info">Click to place points</div>
-        <div class="sh-hint" id="sh-hint">ESC to cancel • Enter to close • Snap: grid</div>
-      </div>
-
+      <div id="draw-hud"><span class="dh-label" id="dh-mode">RECTANGLE</span><div class="dh-sep"></div><label>W</label><input class="dh-inp" id="dh-w" value="100" step="10"><label>H</label><input class="dh-inp" id="dh-h" value="100" step="10"><div class="dh-sep"></div><label>Ext</label><input class="dh-inp" id="dh-ext" value="50" step="5"><button class="dh-btn" id="btn-extrude">EXTRUDE ↑</button><button class="dh-btn sec" id="btn-finish-sketch">FINISH</button></div>
+      <div id="sketch-hud"><div class="sh-title" id="sh-title">Sketch Mode</div><div class="sh-info" id="sh-info">Click first corner</div><div class="sh-hint" id="sh-hint">Click second corner to create rectangle</div></div>
     </div>
-
-    <!-- RIGHT PANEL -->
     <div id="right-panel">
-      <div class="rp-section">
-        <div class="rp-title">Selection</div>
-        <div class="rp-body">
-          <div class="rp-info" id="rp-sel">Nothing selected</div>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Position</div>
-        <div class="rp-body">
-          <div class="rp-row"><label>X</label><input class="rp-inp" id="rp-x" type="number" step="5"></div>
-          <div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-y" type="number" step="5"></div>
-          <div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-z" type="number" step="5"></div>
-          <button class="rp-btn" id="rp-apply-pos">Apply Position</button>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Rotation (°)</div>
-        <div class="rp-body">
-          <div class="rp-row"><label>X</label><input class="rp-inp" id="rp-rx" type="number" step="15"></div>
-          <div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-ry" type="number" step="15"></div>
-          <div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-rz" type="number" step="15"></div>
-          <button class="rp-btn" id="rp-apply-rot">Apply Rotation</button>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Dimensions</div>
-        <div class="rp-body">
-          <div class="rp-row"><label>W</label><input class="rp-inp" id="rp-dw" type="number" step="5"></div>
-          <div class="rp-row"><label>D</label><input class="rp-inp" id="rp-dd" type="number" step="5"></div>
-          <div class="rp-row"><label>H</label><input class="rp-inp" id="rp-dh" type="number" step="5"></div>
-          <button class="rp-btn" id="rp-apply-dim">Rebuild</button>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Extrude Face</div>
-        <div class="rp-body">
-          <div class="rp-info" id="rp-face-info" style="font-size:10px;color:var(--text3)">Select a face then extrude</div>
-          <div class="rp-row" style="margin-top:8px"><label>Dist</label><input class="rp-inp" id="rp-ext-d" type="number" value="30" step="5"></div>
-          <button class="rp-btn" id="rp-extrude-face">Extrude Face</button>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Color</div>
-        <div class="rp-body">
-          <div class="rp-color">
-            <input type="color" id="rp-color" value="#4f7fc9">
-            <span style="font-size:11px;color:var(--text2)">Material color</span>
-          </div>
-          <button class="rp-btn" id="rp-apply-color" style="margin-top:8px">Apply</button>
-        </div>
-      </div>
-      <div class="rp-section">
-        <div class="rp-title">Operations</div>
-        <div class="rp-body" style="display:flex;flex-direction:column;gap:3px;">
-          <button class="rp-btn sec" id="rp-dup">Duplicate</button>
-          <button class="rp-btn sec" id="rp-snap-gnd">Snap to Ground</button>
-          <button class="rp-btn sec" id="rp-center">Center on Grid</button>
-        </div>
-      </div>
+      <div class="rp-section"><div class="rp-title">Selection</div><div class="rp-body"><div class="rp-info" id="rp-sel">Nothing selected</div></div></div>
+      <div class="rp-section"><div class="rp-title">Transform</div><div class="rp-body"><div class="rp-row"><label>X</label><input class="rp-inp" id="rp-x" step="5"></div><div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-y" step="5"></div><div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-z" step="5"></div><button class="rp-btn" id="rp-apply-pos">Apply Position</button></div></div>
+      <div class="rp-section"><div class="rp-title">Rotation (°)</div><div class="rp-body"><div class="rp-row"><label>X</label><input class="rp-inp" id="rp-rx" step="15"></div><div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-ry" step="15"></div><div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-rz" step="15"></div><button class="rp-btn" id="rp-apply-rot">Apply Rotation</button></div></div>
+      <div class="rp-section"><div class="rp-title">Dimensions</div><div class="rp-body"><div class="rp-row"><label>W</label><input class="rp-inp" id="rp-dw" step="5"></div><div class="rp-row"><label>D</label><input class="rp-inp" id="rp-dd" step="5"></div><div class="rp-row"><label>H</label><input class="rp-inp" id="rp-dh" step="5"></div><button class="rp-btn" id="rp-apply-dim">Rebuild Mesh</button></div></div>
+      <div class="rp-section"><div class="rp-title">Face Extrude</div><div class="rp-body"><div class="rp-info" id="rp-face-info">Shift+Click on a face to select it</div><div class="rp-row"><label>Dist</label><input class="rp-inp" id="rp-ext-d" value="30" step="5"></div><button class="rp-btn" id="rp-extrude-face">Extrude Selected Face</button></div></div>
+      <div class="rp-section"><div class="rp-title">Color</div><div class="rp-body"><div class="rp-color"><input type="color" id="rp-color" value="#3b82f6"><span>Material</span></div><button class="rp-btn" id="rp-apply-color">Apply Color</button></div></div>
+      <div class="rp-section"><div class="rp-title">Ops</div><div class="rp-body"><button class="rp-btn sec" id="rp-dup">Duplicate</button><button class="rp-btn sec" id="rp-snap-gnd">Snap to Ground</button><button class="rp-btn sec" id="rp-center">Center on Grid</button></div></div>
     </div>
   </div>
-
-  <div id="statusbar">
-    <span id="status-msg">AetherCAD ready — Select a sketch tool to begin</span>
-    <span>Objs: <b id="stat-obj">0</b></span>
-    <span>Tool: <b id="stat-tool">Line</b></span>
-    <span id="stat-coords">X:0 Y:0</span>
-  </div>
+  <div id="statusbar"><span id="status-msg">AetherCAD · Right-drag orbit | Shift+Click select face | Extrude faces</span><span>Objs: <b id="stat-obj">0</b></span><span>Tool: <b id="stat-tool">Rectangle</b></span><span id="stat-coords"></span></div>
 </div>
-
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
-// ── SCENE ──────────────────────────────────────────────────────────────────
+// --- setup
 const vp = document.getElementById('viewport');
 const canvas = document.getElementById('canvas');
 const W = () => vp.clientWidth, H = () => vp.clientHeight;
-
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0c0c0f);
-scene.fog = new THREE.FogExp2(0x0c0c0f, 0.00015);
-
-const camera = new THREE.PerspectiveCamera(45, W()/H(), 0.1, 5000);
-camera.position.set(300, 250, 400);
-camera.lookAt(0, 0, 0);
-
+scene.fog = new THREE.FogExp2(0x0c0c0f, 0.0001);
+const camera = new THREE.PerspectiveCamera(45, W()/H(), 0.1, 3000);
+camera.position.set(280, 220, 380);
+camera.lookAt(0, 30, 0);
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setSize(W(), H());
+renderer.setSize(W(), H()); renderer.setPixelRatio(window.devicePixelRatio);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
 
-// ── LIGHTS ────────────────────────────────────────────────────────────────
-scene.add(new THREE.AmbientLight(0x334466, 0.9));
-const sun = new THREE.DirectionalLight(0xfff8ee, 1.8);
-sun.position.set(200, 400, 150);
-sun.castShadow = true;
-sun.shadow.mapSize.set(2048, 2048);
-sun.shadow.camera.left = sun.shadow.camera.bottom = -400;
-sun.shadow.camera.right = sun.shadow.camera.top = 400;
-sun.shadow.camera.far = 1200;
-sun.shadow.bias = -0.0005;
-scene.add(sun);
-const fill = new THREE.DirectionalLight(0x4466aa, 0.5);
-fill.position.set(-200, 100, 200);
-scene.add(fill);
-const rim = new THREE.PointLight(0xffaa44, 0.4);
-rim.position.set(100, 150, -300);
-scene.add(rim);
+// lights
+scene.add(new THREE.AmbientLight(0x404060, 0.8));
+const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.5);
+mainLight.position.set(200, 400, 150);
+mainLight.castShadow = true; mainLight.shadow.mapSize.set(1024,1024);
+mainLight.shadow.camera.left = mainLight.shadow.camera.bottom = -300;
+mainLight.shadow.camera.right = mainLight.shadow.camera.top = 300;
+scene.add(mainLight);
+scene.add(new THREE.DirectionalLight(0x6688aa, 0.5).position.set(-150, 100, 200));
+const backFill = new THREE.PointLight(0xffaa55, 0.4);
+backFill.position.set(50, 120, -250);
+scene.add(backFill);
 
-// ── GROUND & GRID ─────────────────────────────────────────────────────────
-const grid = new THREE.GridHelper(2000, 100, 0x333344, 0x1e1e28);
-grid.position.y = -0.2;
-scene.add(grid);
+// ground + grid
+const gridHelper = new THREE.GridHelper(1600, 80, 0x4a4a5a, 0x2a2a32);
+gridHelper.position.y = -0.2;
+scene.add(gridHelper);
+const groundPlane = new THREE.Mesh(new THREE.PlaneGeometry(1600,1600), new THREE.MeshStandardMaterial({ color: 0x0a0a0e, roughness: 1, metalness: 0, transparent: true, opacity: 0.3 }));
+groundPlane.rotation.x = -Math.PI/2; groundPlane.position.y = -0.4; groundPlane.receiveShadow = true;
+scene.add(groundPlane);
 
-// Axis lines
-function makeAxis(color, dir) {
-  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), dir]);
-  const m = new THREE.LineBasicMaterial({ color, opacity: 0.4, transparent: true });
-  scene.add(new THREE.Line(g, m));
-}
-makeAxis(0xff3333, new THREE.Vector3(100,0,0));
-makeAxis(0x33ff33, new THREE.Vector3(0,100,0));
-makeAxis(0x3388ff, new THREE.Vector3(0,0,100));
-
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(2000, 2000),
-  new THREE.MeshStandardMaterial({ color: 0x0a0a0e, roughness: 1, metalness: 0 })
-);
-ground.rotation.x = -Math.PI / 2;
-ground.position.y = -0.5;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// ── CONTROLS ──────────────────────────────────────────────────────────────
+// orbit controls (right mouse rotate, middle pan)
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.enableDamping = true;
-orbit.dampingFactor = 0.06;
-orbit.rotateSpeed = 0.8;
-orbit.zoomSpeed = 1.2;
-orbit.panSpeed = 0.6;
+orbit.enableDamping = true; orbit.dampingFactor = 0.07; orbit.rotateSpeed = 0.9; orbit.zoomSpeed = 1.2; orbit.panSpeed = 0.8;
 orbit.mouseButtons = { LEFT: null, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE };
+orbit.target.set(0, 40, 0);
 
+// transform controls
 const tc = new TransformControls(camera, renderer.domElement);
 tc.addEventListener('dragging-changed', e => { orbit.enabled = !e.value; });
-tc.addEventListener('objectChange', updateProps);
+tc.addEventListener('objectChange', () => updatePropsPanel());
 scene.add(tc);
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-let objects = [], selectedObj = null, hoveredFace = null, selectedFace = null;
-let nextId = 1;
-let activeTool = 'line';       // line | rect | circle | arc | spline | select | extrude
+// --- global state
+let objects = [];
+let selectedObj = null;
+let selectedFaceInfo = null; // { normal, point, faceIndex, mesh }
+let activeTool = 'rect';
 let transformMode = 'select';
-let sketchMode = false;        // are we in 2D sketch mode?
-let sketchPoints = [];         // clicked 2D canvas points
-let sketchClosed = false;
-let sketchPreviewPt = null;    // mouse position
-let isOrbiting = false;
-let sketchPlaneY = 0;          // Y level for sketching
+let sketchMode = false;
+let sketchPoints = [];
+let sketchPreview = null;
+let sketchPlaneY = 0;
+let nextId = 1;
 
-const SVG = document.getElementById('sketch-svg');
+const svgOverlay = document.getElementById('sketch-svg');
 const sketchHud = document.getElementById('sketch-hud');
-const drawHud = document.getElementById('draw-hud');
-const faceCanvas = document.getElementById('face-canvas');
-const fctx = faceCanvas.getContext('2d');
+const statusMsg = (msg) => { document.getElementById('status-msg').textContent = msg; document.getElementById('hdr-status').textContent = msg.slice(0,35); };
 
-// ── STATUS ────────────────────────────────────────────────────────────────
-function status(msg) {
-  document.getElementById('status-msg').textContent = msg;
-  document.getElementById('hdr-status').textContent = msg.slice(0, 30);
-}
-
-// ── SNAP TO GRID ──────────────────────────────────────────────────────────
-const SNAP = 10;
-function snapVal(v) { return Math.round(v / SNAP) * SNAP; }
-
-function worldToCanvas(wx, wy, wz) {
-  // project 3D world → 2D canvas coords
-  const v = new THREE.Vector3(wx, wy, wz);
-  v.project(camera);
-  return {
-    x: (v.x * 0.5 + 0.5) * W(),
-    y: (-v.y * 0.5 + 0.5) * H()
-  };
-}
-
-function canvasToGroundPlane(cx, cy, planeY = 0) {
+// helper: get ground intersection at Y
+function getGroundIntersection(clientX, clientY, planeY = 0) {
   const rect = renderer.domElement.getBoundingClientRect();
-  const mouse = new THREE.Vector2(
-    ((cx - rect.left) / rect.width) * 2 - 1,
-    -((cy - rect.top) / rect.height) * 2 + 1
-  );
-  const ray = new THREE.Raycaster();
-  ray.setFromCamera(mouse, camera);
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -planeY);
+  const mouse = new THREE.Vector2(((clientX - rect.left)/rect.width)*2-1, -((clientY - rect.top)/rect.height)*2+1);
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const plane = new THREE.Plane(new THREE.Vector3(0,1,0), -planeY);
   const hit = new THREE.Vector3();
-  if (ray.ray.intersectPlane(plane, hit)) {
-    return { x: snapVal(hit.x), y: snapVal(hit.z) }; // x,z as 2D
-  }
+  if(raycaster.ray.intersectPlane(plane, hit)) return { x: Math.round(hit.x/10)*10, z: Math.round(hit.z/10)*10 };
   return null;
 }
 
-// ── SKETCH SVG OVERLAY ────────────────────────────────────────────────────
-function updateSketchSVG() {
-  while (SVG.firstChild) SVG.removeChild(SVG.firstChild);
-  if (!sketchMode || sketchPoints.length === 0) return;
+// --- geometry builders
+function buildExtrudedMesh(type, w, d, h, colorHex = 0x3b82f6) {
+  const shape = new THREE.Shape();
+  const hw = w/2, hd = d/2;
+  if(type === 'circle') { shape.absarc(0,0, hw, 0, Math.PI*2); }
+  else { shape.moveTo(-hw, -hd); shape.lineTo(hw, -hd); shape.lineTo(hw, hd); shape.lineTo(-hw, hd); shape.closePath(); }
+  const extrudeSettings = { steps: 1, depth: h, bevelEnabled: false };
+  const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  geo.rotateX(-Math.PI/2);
+  geo.computeVertexNormals();
+  const mat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.4, roughness: 0.45 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.castShadow = mesh.receiveShadow = true;
+  mesh.userData = { id: nextId++, type, w, d, h, baseY: 0, colorHex };
+  mesh.name = `${type}_${mesh.userData.id}`;
+  return mesh;
+}
 
-  const pts3D = sketchPoints.map(p => worldToCanvas(p.x, sketchPlaneY, p.y));
-  const preview3D = sketchPreviewPt ? worldToCanvas(sketchPreviewPt.x, sketchPlaneY, sketchPreviewPt.y) : null;
+function createNewObject(type, cx, cz, w, d, h) {
+  const mesh = buildExtrudedMesh(type, w, d, h);
+  mesh.position.set(cx, 0, cz);
+  scene.add(mesh);
+  objects.push(mesh);
+  selectObject(mesh);
+  updateObjList();
+  statusMsg(`Created ${type} ${w}x${d}x${h}`);
+  return mesh;
+}
 
-  // Draw polyline
-  if (pts3D.length >= 1) {
-    const allPts = preview3D ? [...pts3D, preview3D] : pts3D;
+function rebuildMeshDimensions(mesh, newW, newD, newH) {
+  const oldColor = mesh.material.color.getHex();
+  const pos = mesh.position.clone();
+  const rot = mesh.rotation.clone();
+  const type = mesh.userData.type || 'rect';
+  const newMesh = buildExtrudedMesh(type, newW, newD, newH, oldColor);
+  newMesh.position.copy(pos);
+  newMesh.rotation.copy(rot);
+  newMesh.userData = { ...newMesh.userData, w: newW, d: newD, h: newH, colorHex: oldColor };
+  scene.remove(mesh);
+  const idx = objects.indexOf(mesh);
+  if(idx !== -1) objects.splice(idx, 1, newMesh);
+  if(selectedObj === mesh) selectObject(newMesh);
+  mesh.geometry?.dispose(); mesh.material?.dispose();
+  scene.add(newMesh);
+  updateObjList();
+}
 
-    // Filled preview if more than 2 points
-    if (activeTool === 'line' || activeTool === 'spline') {
-      const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      poly.setAttribute('points', allPts.map(p => `${p.x},${p.y}`).join(' '));
-      poly.setAttribute('fill', 'rgba(79,156,249,0.07)');
-      poly.setAttribute('stroke', '#4f9cf9');
-      poly.setAttribute('stroke-width', '1.5');
-      poly.setAttribute('stroke-dasharray', preview3D ? '4 3' : 'none');
-      SVG.appendChild(poly);
-    }
-
-    if (activeTool === 'rect' && pts3D.length === 1 && preview3D) {
-      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      const x = Math.min(pts3D[0].x, preview3D.x);
-      const y = Math.min(pts3D[0].y, preview3D.y);
-      const rw = Math.abs(preview3D.x - pts3D[0].x);
-      const rh = Math.abs(preview3D.y - pts3D[0].y);
-      rect.setAttribute('x', x); rect.setAttribute('y', y);
-      rect.setAttribute('width', rw); rect.setAttribute('height', rh);
-      rect.setAttribute('fill', 'rgba(79,156,249,0.1)');
-      rect.setAttribute('stroke', '#4f9cf9'); rect.setAttribute('stroke-width', '1.5');
-      SVG.appendChild(rect);
-    }
-
-    if (activeTool === 'circle' && pts3D.length === 1 && preview3D) {
-      const dx = preview3D.x - pts3D[0].x, dy = preview3D.y - pts3D[0].y;
-      const r = Math.sqrt(dx*dx + dy*dy);
-      const circ = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      circ.setAttribute('cx', pts3D[0].x); circ.setAttribute('cy', pts3D[0].y);
-      circ.setAttribute('r', r);
-      circ.setAttribute('fill', 'rgba(79,156,249,0.08)');
-      circ.setAttribute('stroke', '#4f9cf9'); circ.setAttribute('stroke-width', '1.5');
-      SVG.appendChild(circ);
-    }
-  }
-
-  // Snap dots at each point
-  pts3D.forEach((p, i) => {
-    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', i === 0 ? 5 : 4);
-    c.setAttribute('fill', i === 0 ? '#4f9cf9' : '#22c55e');
-    c.setAttribute('stroke', '#fff'); c.setAttribute('stroke-width', '1');
-    SVG.appendChild(c);
-
-    // Snap label
-    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t.setAttribute('x', p.x + 8); t.setAttribute('y', p.y - 6);
-    t.setAttribute('fill', '#71717a'); t.setAttribute('font-size', '9');
-    t.setAttribute('font-family', 'DM Mono, monospace');
-    t.textContent = `${sketchPoints[i].x}, ${sketchPoints[i].y}`;
-    SVG.appendChild(t);
-  });
-
-  // Snap crosshair at preview
-  if (preview3D) {
-    const sz = 8;
-    const cross = (x, y) => {
-      [`M${x-sz},${y} L${x+sz},${y}`, `M${x},${y-sz} L${x},${y+sz}`].forEach(d => {
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', d); path.setAttribute('stroke', '#4f9cf9');
-        path.setAttribute('stroke-width', '1'); SVG.appendChild(path);
-      });
-    };
-    cross(preview3D.x, preview3D.y);
-
-    // Preview coords
-    const t2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    t2.setAttribute('x', preview3D.x + 10); t2.setAttribute('y', preview3D.y + 4);
-    t2.setAttribute('fill', '#4f9cf9'); t2.setAttribute('font-size', '9');
-    t2.setAttribute('font-family', 'DM Mono, monospace');
-    t2.textContent = `${sketchPreviewPt.x}, ${sketchPreviewPt.y}`;
-    SVG.appendChild(t2);
+// face extrude (push/pull top or bottom)
+function extrudeSelectedFace(dist) {
+  if(!selectedFaceInfo || !selectedFaceInfo.mesh) { statusMsg("No face selected. Shift+Click on a face."); return; }
+  const mesh = selectedFaceInfo.mesh;
+  const ud = mesh.userData;
+  const norm = selectedFaceInfo.normal;
+  const isTop = norm.y > 0.5;
+  const isBottom = norm.y < -0.5;
+  if(isTop || isBottom) {
+    const delta = isTop ? dist : -dist;
+    const newH = Math.max(5, ud.h + delta);
+    rebuildMeshDimensions(mesh, ud.w, ud.d, newH);
+    statusMsg(`Extruded face by ${dist} → new height ${newH.toFixed(1)}`);
+  } else {
+    statusMsg("Only top/bottom face extrusion supported in this version (select horizontal face)");
   }
 }
 
-// ── ENTER SKETCH MODE ─────────────────────────────────────────────────────
+// face selection via raycast
+function selectFaceFromClick(event) {
+  if(!selectedObj) return null;
+  const rect = renderer.domElement.getBoundingClientRect();
+  const mouse = new THREE.Vector2(((event.clientX - rect.left)/rect.width)*2-1, -((event.clientY - rect.top)/rect.height)*2+1);
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObject(selectedObj, true);
+  if(hits.length === 0) return null;
+  const hit = hits[0];
+  const normal = hit.face.normal.clone().transformDirection(selectedObj.matrixWorld).normalize();
+  return { mesh: selectedObj, point: hit.point, normal, faceIndex: hit.faceIndex };
+}
+
+// selection & transform modes
+function selectObject(obj) {
+  if(selectedObj) { selectedObj.material.emissiveIntensity = 0; }
+  selectedObj = obj;
+  selectedFaceInfo = null;
+  document.getElementById('rp-face-info').innerHTML = 'Shift+Click on a face to select it';
+  if(obj) {
+    obj.material.emissive = new THREE.Color(0x2266ff);
+    obj.material.emissiveIntensity = 0.2;
+    tc.attach(obj);
+    if(transformMode === 'select') tc.setMode('translate');
+    else tc.setMode(transformMode);
+    statusMsg(`Selected: ${obj.name}`);
+  } else { tc.detach(); }
+  updatePropsPanel();
+  updateObjList();
+}
+
+function setTransformMode(mode) {
+  transformMode = mode;
+  if(selectedObj) tc.setMode(mode === 'select' ? 'translate' : mode);
+  document.querySelectorAll('.th-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+}
+
+function updatePropsPanel() {
+  if(!selectedObj) { ['rp-x','rp-y','rp-z','rp-rx','rp-ry','rp-rz','rp-dw','rp-dd','rp-dh'].forEach(id=>document.getElementById(id).value=''); document.getElementById('rp-sel').innerHTML='Nothing selected'; return; }
+  const o = selectedObj, ud = o.userData;
+  document.getElementById('rp-sel').innerHTML = `<b>${o.name}</b><br>${ud.type}  ${ud.w}×${ud.d}×${ud.h}`;
+  document.getElementById('rp-x').value = o.position.x.toFixed(1);
+  document.getElementById('rp-y').value = o.position.y.toFixed(1);
+  document.getElementById('rp-z').value = o.position.z.toFixed(1);
+  document.getElementById('rp-rx').value = (o.rotation.x*180/Math.PI).toFixed(1);
+  document.getElementById('rp-ry').value = (o.rotation.y*180/Math.PI).toFixed(1);
+  document.getElementById('rp-rz').value = (o.rotation.z*180/Math.PI).toFixed(1);
+  document.getElementById('rp-dw').value = ud.w;
+  document.getElementById('rp-dd').value = ud.d;
+  document.getElementById('rp-dh').value = ud.h;
+  document.getElementById('rp-color').value = '#' + o.material.color.getHexString();
+}
+
+function deleteSelected() { if(selectedObj) { const idx = objects.indexOf(selectedObj); if(idx!==-1) objects.splice(idx,1); scene.remove(selectedObj); selectedObj.geometry?.dispose(); selectedObj.material?.dispose(); if(selectedObj===selectedObj) selectObject(null); updateObjList(); statusMsg('Deleted object'); } }
+function duplicateSelected() { if(!selectedObj) return; const o=selectedObj, ud=o.userData; const newMesh = buildExtrudedMesh(ud.type, ud.w, ud.d, ud.h, o.material.color.getHex()); newMesh.position.copy(o.position); newMesh.position.x += 70; newMesh.rotation.copy(o.rotation); scene.add(newMesh); objects.push(newMesh); selectObject(newMesh); updateObjList(); statusMsg('Duplicated'); }
+function updateObjList() { const cont=document.getElementById('object-list'); document.getElementById('obj-count').textContent=objects.length; document.getElementById('stat-obj').textContent=objects.length; if(objects.length===0){ cont.innerHTML='<div class="empty-list">No objects.<br>Draw rect or circle</div>'; return; } cont.innerHTML=''; objects.forEach(obj=>{ const div=document.createElement('div'); div.className=`obj-item${selectedObj===obj?' selected':''}`; div.innerHTML=`<span class="obj-icon">${obj.userData.type==='circle'?'●':'▭'}</span><div class="obj-meta"><div class="obj-name">${obj.name}</div><div class="obj-dim">${obj.userData.w}×${obj.userData.d} H:${obj.userData.h}</div></div><button class="obj-del">✕</button>`; div.querySelector('.obj-del').onclick=(e)=>{ e.stopPropagation(); deleteObject(obj); }; div.onclick=()=>{ exitSketchMode(); setActiveTool('select'); selectObject(obj); }; cont.appendChild(div); }); }
+function deleteObject(obj){ const idx=objects.indexOf(obj); if(idx!==-1) objects.splice(idx,1); if(selectedObj===obj) selectObject(null); scene.remove(obj); obj.geometry?.dispose(); obj.material?.dispose(); updateObjList(); statusMsg('Deleted'); }
+
+// --- sketch mode (rectangle & circle)
 function enterSketchMode(tool) {
   activeTool = tool;
   sketchMode = true;
   sketchPoints = [];
-  sketchClosed = false;
-  sketchPreviewPt = null;
-  SVG.classList.add('interactive');
+  sketchPreview = null;
+  svgOverlay.classList.add('interactive');
   sketchHud.style.display = 'block';
   orbit.enabled = true;
-  orbit.mouseButtons.LEFT = null; // allow sketch click on left, orbit on right
-
-  const names = { line:'Freeform Polygon', rect:'Rectangle', circle:'Circle', arc:'Arc', spline:'Spline Curve' };
-  document.getElementById('sh-title').textContent = names[tool] || tool;
-
-  const hints = {
-    line: 'Click to place vertices • Enter/double-click to close shape',
-    rect: 'Click first corner • click second corner to finish',
-    circle: 'Click center • click edge for radius',
-    arc: 'Click 3 points to define arc',
-    spline: 'Click control points • Enter to close',
-  };
-  document.getElementById('sh-info').textContent = 'Click on canvas to place points';
-  document.getElementById('sh-hint').textContent = hints[tool] || '';
-  document.getElementById('dh-mode').textContent = names[tool]?.toUpperCase() || 'SKETCH';
-  status(`${names[tool]} — click to place points, Enter or double-click to close`);
+  const names = { rect:'Rectangle', circle:'Circle' };
+  document.getElementById('sh-title').textContent = names[tool];
+  document.getElementById('dh-mode').textContent = names[tool].toUpperCase();
+  if(tool === 'rect') document.getElementById('sh-info').textContent = 'Click first corner, then second corner';
+  else document.getElementById('sh-info').textContent = 'Click center, then edge for radius';
+  document.getElementById('sh-hint').textContent = 'ESC to cancel';
+  statusMsg(`${names[tool]} mode: click points on ground plane`);
 }
-
-function exitSketchMode() {
-  sketchMode = false;
-  sketchPoints = [];
-  SVG.classList.remove('interactive');
-  sketchHud.style.display = 'none';
-  while (SVG.firstChild) SVG.removeChild(SVG.firstChild);
-  orbit.enabled = true;
-}
-
-// ── CLOSE SKETCH & CREATE SHAPE ──────────────────────────────────────────
-function closeSketchAndCreate() {
-  if (sketchPoints.length < 2) { status('Need at least 2 points'); return; }
-
-  const h = parseFloat(document.getElementById('dh-ext').value) || 50;
-
-  if (activeTool === 'rect' && sketchPoints.length >= 2) {
+function exitSketchMode() { sketchMode=false; sketchPoints=[]; svgOverlay.classList.remove('interactive'); sketchHud.style.display='none'; while(svgOverlay.firstChild) svgOverlay.removeChild(svgOverlay.firstChild); }
+function finishSketch() {
+  if(sketchPoints.length<2) { statusMsg('Need 2 points'); return; }
+  const extH = parseFloat(document.getElementById('dh-ext').value) || 50;
+  const wInp = parseFloat(document.getElementById('dh-w').value) || 100;
+  const hInp = parseFloat(document.getElementById('dh-h').value) || 100;
+  if(activeTool === 'rect') {
     const p0 = sketchPoints[0], p1 = sketchPoints[1];
-    const w = Math.abs(p1.x - p0.x), d = Math.abs(p1.y - p0.y);
-    const cx = (p0.x + p1.x) / 2, cz = (p0.y + p1.y) / 2;
-    createExtruded('rect', cx, sketchPlaneY, cz, Math.max(w, 10), Math.max(d, 10), h, 0);
-  } else if (activeTool === 'circle' && sketchPoints.length >= 2) {
-    const p0 = sketchPoints[0], p1 = sketchPoints[1];
-    const r = Math.sqrt((p1.x-p0.x)**2 + (p1.y-p0.y)**2);
-    createExtruded('circle', p0.x, sketchPlaneY, p0.y, r*2, r*2, h, 0);
-  } else {
-    // polygon / spline
-    if (sketchPoints.length < 3) { status('Need at least 3 points for a polygon'); return; }
-    createExtrudedFromPoints(sketchPoints, h, sketchPlaneY);
+    const w = Math.abs(p1.x - p0.x), d = Math.abs(p1.z - p0.z);
+    const cx = (p0.x + p1.x)/2, cz = (p0.z + p1.z)/2;
+    if(w<5 || d<5) { statusMsg('Dimensions too small'); return; }
+    createNewObject('rect', cx, cz, w, d, extH);
+  } else if(activeTool === 'circle') {
+    const center = sketchPoints[0], edge = sketchPoints[1];
+    const r = Math.hypot(edge.x - center.x, edge.z - center.z);
+    if(r<5) return;
+    createNewObject('circle', center.x, center.z, r*2, r*2, extH);
   }
-
   exitSketchMode();
-  setToolActive('select');
+  setActiveTool('select');
 }
-
-// ── GEOMETRY BUILDERS ─────────────────────────────────────────────────────
-function buildShape(type, w, d, r=0) {
-  const shape = new THREE.Shape();
-  const hw = w/2, hd = d/2;
-  if (type === 'circle') {
-    shape.absarc(0, 0, hw, 0, Math.PI*2, false);
-  } else if (type === 'round') {
-    const cr = Math.min(Math.abs(r), hw*0.45, hd*0.45);
-    shape.moveTo(-hw+cr, -hd); shape.lineTo(hw-cr, -hd);
-    shape.quadraticCurveTo(hw,-hd, hw,-hd+cr); shape.lineTo(hw, hd-cr);
-    shape.quadraticCurveTo(hw,hd, hw-cr,hd); shape.lineTo(-hw+cr, hd);
-    shape.quadraticCurveTo(-hw,hd, -hw,hd-cr); shape.lineTo(-hw, -hd+cr);
-    shape.quadraticCurveTo(-hw,-hd, -hw+cr,-hd);
-  } else {
-    shape.moveTo(-hw, -hd); shape.lineTo(hw, -hd);
-    shape.lineTo(hw, hd); shape.lineTo(-hw, hd); shape.closePath();
+function updateSketchPreview() {
+  while(svgOverlay.firstChild) svgOverlay.removeChild(svgOverlay.firstChild);
+  if(!sketchMode || sketchPoints.length===0) return;
+  const toCanvas = (x,z) => { const v = new THREE.Vector3(x, sketchPlaneY, z); v.project(camera); return { x: (v.x*0.5+0.5)*W(), y: (-v.y*0.5+0.5)*H() }; };
+  const ptsCanvas = sketchPoints.map(p => toCanvas(p.x, p.z));
+  if(activeTool === 'rect' && sketchPoints.length===1 && sketchPreview) {
+    const p0 = toCanvas(sketchPoints[0].x, sketchPoints[0].z);
+    const p1 = toCanvas(sketchPreview.x, sketchPreview.z);
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', Math.min(p0.x, p1.x)); rect.setAttribute('y', Math.min(p0.y, p1.y));
+    rect.setAttribute('width', Math.abs(p1.x-p0.x)); rect.setAttribute('height', Math.abs(p1.y-p0.y));
+    rect.setAttribute('fill', 'rgba(59,130,246,0.15)'); rect.setAttribute('stroke', '#3b82f6'); rect.setAttribute('stroke-width', '2'); rect.setAttribute('stroke-dasharray', '5 3');
+    svgOverlay.appendChild(rect);
+  } else if(activeTool === 'circle' && sketchPoints.length===1 && sketchPreview) {
+    const c = toCanvas(sketchPoints[0].x, sketchPoints[0].z);
+    const e = toCanvas(sketchPreview.x, sketchPreview.z);
+    const r = Math.hypot(e.x-c.x, e.y-c.y);
+    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    circle.setAttribute('cx', c.x); circle.setAttribute('cy', c.y); circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'rgba(59,130,246,0.12)'); circle.setAttribute('stroke', '#3b82f6'); circle.setAttribute('stroke-width', '2'); circle.setAttribute('stroke-dasharray', '4 3');
+    svgOverlay.appendChild(circle);
   }
-  return shape;
+  ptsCanvas.forEach((p, i) => { const dot = document.createElementNS('http://www.w3.org/2000/svg','circle'); dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y); dot.setAttribute('r', i===0?5:4); dot.setAttribute('fill', i===0?'#3b82f6':'#10b981'); dot.setAttribute('stroke','#fff'); dot.setAttribute('stroke-width','1.2'); svgOverlay.appendChild(dot); });
 }
 
-function buildGeoFromShape(shape, h) {
-  const g = new THREE.ExtrudeGeometry(shape, {
-    depth: h, bevelEnabled: false, steps: 1
-  });
-  g.rotateX(-Math.PI / 2);
-  g.computeVertexNormals();
-  return g;
-}
-
-function makeMaterial(hex = 0x4f7fc9) {
-  return new THREE.MeshStandardMaterial({
-    color: hex, metalness: 0.35, roughness: 0.45,
-    emissive: 0x000000, emissiveIntensity: 0
-  });
-}
-
-function createExtruded(type, cx, baseY, cz, w, d, h, r=0) {
-  const shape = buildShape(type, w, d, r);
-  const geo = buildGeoFromShape(shape, h);
-  const mat = makeMaterial();
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(cx, baseY, cz);
-  mesh.castShadow = mesh.receiveShadow = true;
-  mesh.userData = { id: nextId++, type, w, d, h, r, baseY };
-  mesh.name = `${type}_${mesh.userData.id}`;
-  scene.add(mesh);
-  objects.push(mesh);
-  selectObject(mesh);
-  updateObjList();
-  status(`Created: ${mesh.name} (${w}×${d}×${h})`);
-  return mesh;
-}
-
-function createExtrudedFromPoints(pts2D, h, baseY = 0) {
-  const shape = new THREE.Shape();
-  shape.moveTo(pts2D[0].x, pts2D[0].y);
-  if (activeTool === 'spline' && pts2D.length >= 4) {
-    // Catmull-Rom spline
-    const vectors = pts2D.map(p => new THREE.Vector2(p.x, p.y));
-    const curve = new THREE.SplineCurve(vectors);
-    const points = curve.getPoints(50);
-    points.forEach((p, i) => {
-      if (i === 0) shape.moveTo(p.x, p.y);
-      else shape.lineTo(p.x, p.y);
-    });
-  } else {
-    for (let i = 1; i < pts2D.length; i++) shape.lineTo(pts2D[i].x, pts2D[i].y);
-  }
-  shape.closePath();
-
-  const geo = buildGeoFromShape(shape, h);
-  const mat = makeMaterial();
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.position.set(0, baseY, 0);
-  mesh.castShadow = mesh.receiveShadow = true;
-  mesh.userData = { id: nextId++, type: 'polygon', w: 0, d: 0, h, r: 0, baseY, pts2D };
-  mesh.name = `poly_${mesh.userData.id}`;
-  scene.add(mesh);
-  objects.push(mesh);
-  selectObject(mesh);
-  updateObjList();
-  status(`Created polygon: ${mesh.name}`);
-  return mesh;
-}
-
-// ── SELECTION ────────────────────────────────────────────────────────────
-function selectObject(obj) {
-  // Deselect previous
-  if (selectedObj) {
-    selectedObj.material.emissive.set(0x000000);
-    selectedObj.material.emissiveIntensity = 0;
-  }
-  selectedObj = obj;
-  selectedFace = null;
-  document.getElementById('rp-face-info').textContent = 'Select a face then extrude';
-  if (obj) {
-    obj.material.emissive.set(0x2244aa);
-    obj.material.emissiveIntensity = 0.2;
-    tc.attach(obj);
-    applyTransformMode(transformMode);
-    status(`Selected: ${obj.name}`);
-  } else {
-    tc.detach();
-  }
-  updateObjList();
-  updateProps();
-}
-
-function deleteObject(obj) {
-  if (!obj) return;
-  const i = objects.indexOf(obj);
-  if (i !== -1) objects.splice(i, 1);
-  if (selectedObj === obj) { tc.detach(); selectedObj = null; }
-  scene.remove(obj);
-  obj.geometry.dispose(); obj.material.dispose();
-  updateObjList(); updateProps();
-  status(`Deleted: ${obj.name}`);
-}
-
-function duplicateSelected() {
-  if (!selectedObj) return;
-  const o = selectedObj, ud = o.userData;
-  let newGeo;
-  if (ud.pts2D) {
-    const shape = new THREE.Shape();
-    shape.moveTo(ud.pts2D[0].x, ud.pts2D[0].y);
-    ud.pts2D.forEach((p,i) => { if(i>0) shape.lineTo(p.x, p.y); });
-    shape.closePath();
-    newGeo = buildGeoFromShape(shape, ud.h);
-  } else {
-    newGeo = buildGeoFromShape(buildShape(ud.type, ud.w, ud.d, ud.r), ud.h);
-  }
-  const newMat = o.material.clone();
-  const mesh = new THREE.Mesh(newGeo, newMat);
-  mesh.position.copy(o.position); mesh.position.x += 60;
-  mesh.rotation.copy(o.rotation);
-  mesh.castShadow = mesh.receiveShadow = true;
-  mesh.userData = { ...ud, id: nextId++ };
-  mesh.name = `${ud.type}_${mesh.userData.id}`;
-  scene.add(mesh); objects.push(mesh);
-  selectObject(mesh); updateObjList();
-  status(`Duplicated: ${mesh.name}`);
-}
-
-// ── FACE HIGHLIGHTING ────────────────────────────────────────────────────
-function getFaceFromClick(event) {
-  if (!selectedObj) return null;
-  const rect = renderer.domElement.getBoundingClientRect();
-  const mouse = new THREE.Vector2(
-    ((event.clientX - rect.left) / rect.width)*2 - 1,
-    -((event.clientY - rect.top) / rect.height)*2 + 1
-  );
-  const ray = new THREE.Raycaster();
-  ray.setFromCamera(mouse, camera);
-  const hits = ray.intersectObject(selectedObj);
-  if (hits.length === 0) return null;
-  const hit = hits[0];
-  const normal = hit.face.normal.clone().transformDirection(selectedObj.matrixWorld);
-  return { point: hit.point, normal, faceIndex: hit.faceIndex };
-}
-
-function extrudeFace() {
-  if (!selectedObj || !selectedFace) { status('Select a face first'); return; }
-  const dist = parseFloat(document.getElementById('rp-ext-d').value) || 30;
-  const ud = selectedObj.userData;
-  // Only support top/bottom face extrusion for now (extend height)
-  const normal = selectedFace.normal;
-  if (Math.abs(normal.y) > 0.7) {
-    const newH = ud.h + (normal.y > 0 ? dist : -dist);
-    rebuildMesh(selectedObj, ud.w, ud.d, Math.max(2, newH), ud.r);
-    status(`Extruded face by ${dist}`);
-  } else {
-    status('Face extrusion works on top/bottom faces in this version');
-  }
-}
-
-function rebuildMesh(mesh, w, d, h, r) {
-  const ud = mesh.userData;
-  let newGeo;
-  if (ud.pts2D) {
-    const shape = new THREE.Shape();
-    shape.moveTo(ud.pts2D[0].x, ud.pts2D[0].y);
-    ud.pts2D.forEach((p,i) => { if(i>0) shape.lineTo(p.x, p.y); });
-    shape.closePath();
-    newGeo = buildGeoFromShape(shape, h);
-  } else {
-    newGeo = buildGeoFromShape(buildShape(ud.type||'rect', w, d, r), h);
-  }
-  mesh.geometry.dispose();
-  mesh.geometry = newGeo;
-  ud.w = w; ud.d = d; ud.h = h; ud.r = r;
-  updateProps();
-}
-
-// ── TRANSFORM MODES ───────────────────────────────────────────────────────
-function applyTransformMode(mode) {
-  transformMode = mode;
-  if (!selectedObj) return;
-  if (mode === 'select') tc.setMode('translate');
-  else tc.setMode(mode === 'translate' ? 'translate' : mode === 'rotate' ? 'rotate' : 'scale');
-  document.querySelectorAll('.th-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
-}
-
-// ── PROPERTY PANEL ────────────────────────────────────────────────────────
-function updateProps() {
-  if (!selectedObj) {
-    document.getElementById('rp-sel').textContent = 'Nothing selected';
-    ['rp-x','rp-y','rp-z','rp-rx','rp-ry','rp-rz','rp-dw','rp-dd','rp-dh'].forEach(id => document.getElementById(id).value = '');
-    return;
-  }
-  const o = selectedObj, ud = o.userData;
-  document.getElementById('rp-sel').innerHTML = `<b>${o.name}</b><br>Type: ${ud.type} | ${ud.w}×${ud.d}×${ud.h}`;
-  const p = o.position, r = o.rotation;
-  document.getElementById('rp-x').value = p.x.toFixed(1);
-  document.getElementById('rp-y').value = p.y.toFixed(1);
-  document.getElementById('rp-z').value = p.z.toFixed(1);
-  document.getElementById('rp-rx').value = (r.x*180/Math.PI).toFixed(1);
-  document.getElementById('rp-ry').value = (r.y*180/Math.PI).toFixed(1);
-  document.getElementById('rp-rz').value = (r.z*180/Math.PI).toFixed(1);
-  document.getElementById('rp-dw').value = ud.w;
-  document.getElementById('rp-dd').value = ud.d;
-  document.getElementById('rp-dh').value = ud.h;
-  document.getElementById('rp-color').value = '#' + selectedObj.material.color.getHexString();
-}
-
-// ── OBJECT LIST ──────────────────────────────────────────────────────────
-function updateObjList() {
-  document.getElementById('obj-count').textContent = objects.length;
-  document.getElementById('stat-obj').textContent = objects.length;
-  const container = document.getElementById('object-list');
-  if (objects.length === 0) {
-    container.innerHTML = '<div class="empty-list">No objects yet.<br>Use sketch tools to<br>draw and extrude.</div>';
-    return;
-  }
-  container.innerHTML = '';
-  objects.forEach(obj => {
-    const ud = obj.userData;
-    const icons = { rect: '▭', circle: '●', polygon: '⬠', round: '▬' };
-    const div = document.createElement('div');
-    div.className = `obj-item${selectedObj === obj ? ' selected' : ''}`;
-    div.innerHTML = `
-      <span class="obj-icon">${icons[ud.type]||'◈'}</span>
-      <div class="obj-meta">
-        <div class="obj-name">${obj.name}</div>
-        <div class="obj-dim">${ud.w}×${ud.d}  H:${ud.h}</div>
-      </div>
-      <button class="obj-del">✕</button>`;
-    div.querySelector('.obj-del').addEventListener('click', e => { e.stopPropagation(); deleteObject(obj); });
-    div.addEventListener('click', () => {
-      exitSketchMode();
-      setToolActive('select');
-      selectObject(obj);
-    });
-    container.appendChild(div);
-  });
-}
-
-// ── VIEW PRESETS ─────────────────────────────────────────────────────────
-function setView(name) {
-  const d = 500;
-  const targets = {
-    front:      [0, 80, d, 0, 80, 0],
-    right:      [d, 80, 0, 0, 80, 0],
-    top:        [0, d, 0, 0, 0, 0],
-    bottom:     [0, -d, 0, 0, 0, 0],
-    left:       [-d, 80, 0, 0, 80, 0],
-    persp:      [300, 250, 400, 0, 0, 0],
-    'front-left':  [-d*0.6, 200, d*0.6, 0, 50, 0],
-    'front-right': [d*0.6, 200, d*0.6, 0, 50, 0],
-    'back-left':   [-d*0.6, 200, -d*0.6, 0, 50, 0],
-    'back-right':  [d*0.6, 200, -d*0.6, 0, 50, 0],
-  };
-  const t = targets[name]; if (!t) return;
-  camera.position.set(t[0], t[1], t[2]);
-  orbit.target.set(t[3], t[4], t[5]);
-  orbit.update();
-  status(`View: ${name}`);
-}
-
-// ── TOOL MANAGEMENT ───────────────────────────────────────────────────────
-function setToolActive(tool) {
-  activeTool = tool;
-  const toolNames = { line:'Line', rect:'Rectangle', circle:'Circle', arc:'Arc', spline:'Spline', select:'Select', extrude:'Extrude' };
-  document.getElementById('stat-tool').textContent = toolNames[tool] || tool;
-  document.querySelectorAll('.tb-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('tool-' + tool);
-  if (btn) btn.classList.add('active');
-}
-
-// ── MOUSE & SKETCH INTERACTION ────────────────────────────────────────────
-let lastClickTime = 0;
-
-renderer.domElement.addEventListener('mousedown', e => {
-  if (e.button === 2) return; // right = orbit
-  if (tc.dragging) return;
-  if (!sketchMode) {
-    if (e.button === 0) {
-      // Try to select object
-      const rect = renderer.domElement.getBoundingClientRect();
-      const mouse = new THREE.Vector2(
-        ((e.clientX - rect.left) / rect.width)*2 - 1,
-        -((e.clientY - rect.top) / rect.height)*2 + 1
-      );
-      const ray = new THREE.Raycaster();
-      ray.setFromCamera(mouse, camera);
-      const hits = ray.intersectObjects(objects);
-      if (hits.length > 0) {
-        selectObject(hits[0].object);
-        // Check face selection (shift + click)
-        if (e.shiftKey) {
-          const face = getFaceFromClick(e);
-          if (face) {
-            selectedFace = face;
-            document.getElementById('rp-face-info').textContent =
-              `Face N: (${face.normal.x.toFixed(2)}, ${face.normal.y.toFixed(2)}, ${face.normal.z.toFixed(2)})`;
-            status(`Face selected — press Extrude Face in panel`);
-          }
-        }
-      } else {
-        selectObject(null);
-      }
-    }
-    return;
-  }
-
-  // In sketch mode
-  if (e.button !== 0) return;
-  orbit.enabled = false;
-
-  const pt = canvasToGroundPlane(e.clientX, e.clientY, sketchPlaneY);
-  if (!pt) return;
-
-  // Double-click to close
-  const now = Date.now();
-  const dbl = now - lastClickTime < 300;
-  lastClickTime = now;
-
-  if (activeTool === 'rect') {
-    sketchPoints.push({ x: pt.x, y: pt.y });
-    if (sketchPoints.length >= 2) {
-      closeSketchAndCreate();
+// --- mouse interaction
+renderer.domElement.addEventListener('mousedown', (e) => {
+  if(e.button !== 0) return;
+  if(tc.dragging) return;
+  if(!sketchMode) {
+    if(e.shiftKey && selectedObj) {
+      const face = selectFaceFromClick(e);
+      if(face) { selectedFaceInfo = face; document.getElementById('rp-face-info').innerHTML = `Face selected N:(${face.normal.x.toFixed(2)}, ${face.normal.y.toFixed(2)}, ${face.normal.z.toFixed(2)})<br>Use Extrude Face button`; statusMsg('Face selected'); }
+      else selectedFaceInfo = null;
       return;
     }
-    status('Rectangle: click second corner');
-  } else if (activeTool === 'circle') {
-    sketchPoints.push({ x: pt.x, y: pt.y });
-    if (sketchPoints.length >= 2) {
-      closeSketchAndCreate();
-      return;
-    }
-    status('Circle: click edge point for radius');
-  } else if (activeTool === 'line' || activeTool === 'spline') {
-    if (dbl && sketchPoints.length >= 2) {
-      closeSketchAndCreate();
-      return;
-    }
-    // Snap to first point if close
-    if (sketchPoints.length > 1) {
-      const first = sketchPoints[0];
-      const dx = pt.x - first.x, dy = pt.y - first.y;
-      if (Math.sqrt(dx*dx + dy*dy) < SNAP*2) {
-        closeSketchAndCreate();
-        return;
-      }
-    }
-    sketchPoints.push({ x: pt.x, y: pt.y });
-    document.getElementById('sh-info').textContent = `${sketchPoints.length} pts — dbl-click or click near start to close`;
-  }
-  updateSketchSVG();
-});
-
-renderer.domElement.addEventListener('mousemove', e => {
-  if (!sketchMode) {
-    // Update hover
     const rect = renderer.domElement.getBoundingClientRect();
-    const mouse = new THREE.Vector2(
-      ((e.clientX - rect.left) / rect.width)*2 - 1,
-      -((e.clientY - rect.top) / rect.height)*2 + 1
-    );
-    const ray = new THREE.Raycaster();
-    ray.setFromCamera(mouse, camera);
-    document.getElementById('stat-coords').textContent =
-      `X:${Math.round(e.clientX - rect.left)} Y:${Math.round(e.clientY - rect.top)}`;
+    const mouse = new THREE.Vector2(((e.clientX - rect.left)/rect.width)*2-1, -((e.clientY - rect.top)/rect.height)*2+1);
+    const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObjects(objects);
+    if(hits.length) selectObject(hits[0].object);
+    else selectObject(null);
     return;
   }
-
-  const pt = canvasToGroundPlane(e.clientX, e.clientY, sketchPlaneY);
-  if (pt) {
-    sketchPreviewPt = pt;
-    document.getElementById('stat-coords').textContent = `X:${pt.x} Z:${pt.y}`;
-    updateSketchSVG();
+  // sketch mode
+  e.preventDefault();
+  const pt = getGroundIntersection(e.clientX, e.clientY, sketchPlaneY);
+  if(!pt) return;
+  if(activeTool === 'rect') {
+    sketchPoints.push({ x: pt.x, z: pt.z });
+    if(sketchPoints.length === 2) finishSketch();
+  } else if(activeTool === 'circle') {
+    sketchPoints.push({ x: pt.x, z: pt.z });
+    if(sketchPoints.length === 2) finishSketch();
+  }
+  updateSketchPreview();
+});
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if(sketchMode && sketchPoints.length === 1) {
+    const pt = getGroundIntersection(e.clientX, e.clientY, sketchPlaneY);
+    if(pt) { sketchPreview = pt; updateSketchPreview(); }
+  } else if(!sketchMode) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    document.getElementById('stat-coords').textContent = `X:${e.clientX-rect.left} Y:${e.clientY-rect.top}`;
   }
 });
-
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 
-// ── KEYBOARD ──────────────────────────────────────────────────────────────
+// keyboard
 window.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT') return;
-  switch(e.key) {
-    case 'Escape':
-      if (sketchMode) { exitSketchMode(); setToolActive('select'); }
-      else selectObject(null);
-      break;
-    case 'Enter':
-      if (sketchMode && sketchPoints.length >= 2) closeSketchAndCreate();
-      break;
-    case 'Delete': case 'Backspace':
-      if (selectedObj) deleteObject(selectedObj);
-      break;
-    case 'd': duplicateSelected(); break;
-    case 'f':
-      if (selectedObj) { orbit.target.copy(selectedObj.position); orbit.update(); }
-      break;
-    case 'r': enterSketchMode('rect'); setToolActive('rect'); break;
-    case 'l': enterSketchMode('line'); setToolActive('line'); break;
-    case 'c': enterSketchMode('circle'); setToolActive('circle'); break;
-    case 's': enterSketchMode('spline'); setToolActive('spline'); break;
-    case '1': applyTransformMode('translate'); break;
-    case '2': applyTransformMode('rotate'); break;
-    case '3': applyTransformMode('scale'); break;
-  }
+  if(e.target.tagName === 'INPUT') return;
+  if(e.key === 'Escape') { if(sketchMode) exitSketchMode(); else selectObject(null); }
+  if(e.key === 'Enter' && sketchMode) finishSketch();
+  if(e.key === 'Delete') deleteSelected();
+  if(e.key === 'd') duplicateSelected();
+  if(e.key === 'r') { exitSketchMode(); enterSketchMode('rect'); setActiveTool('rect'); }
+  if(e.key === 'c') { exitSketchMode(); enterSketchMode('circle'); setActiveTool('circle'); }
+  if(e.key === 's') { exitSketchMode(); setActiveTool('select'); }
+  if(e.key === '1') setTransformMode('translate');
+  if(e.key === '2') setTransformMode('rotate');
+  if(e.key === '3') setTransformMode('scale');
 });
+function setActiveTool(tool) { activeTool = tool; document.getElementById('stat-tool').textContent = tool==='rect'?'Rectangle':tool==='circle'?'Circle':'Select'; document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`tool-${tool}`)?.classList.add('active'); if(tool==='select') exitSketchMode(); }
 
-// ── TOOLBAR EVENTS ────────────────────────────────────────────────────────
-document.getElementById('tool-line').onclick = () => { enterSketchMode('line'); setToolActive('line'); };
-document.getElementById('tool-rect').onclick = () => { enterSketchMode('rect'); setToolActive('rect'); };
-document.getElementById('tool-circle').onclick = () => { enterSketchMode('circle'); setToolActive('circle'); };
-document.getElementById('tool-arc').onclick = () => { enterSketchMode('arc'); setToolActive('arc'); };
-document.getElementById('tool-spline').onclick = () => { enterSketchMode('spline'); setToolActive('spline'); };
-document.getElementById('tool-select').onclick = () => { exitSketchMode(); setToolActive('select'); };
-document.getElementById('tool-extrude').onclick = () => {
-  if (selectedObj) {
-    const dist = parseFloat(document.getElementById('dh-ext').value) || 50;
-    extrudeFace();
-  }
-};
+// toolbar binds
+document.getElementById('tool-rect').onclick = () => { exitSketchMode(); enterSketchMode('rect'); setActiveTool('rect'); };
+document.getElementById('tool-circle').onclick = () => { exitSketchMode(); enterSketchMode('circle'); setActiveTool('circle'); };
+document.getElementById('tool-select').onclick = () => { exitSketchMode(); setActiveTool('select'); };
+document.getElementById('tool-extrude').onclick = () => { if(selectedFaceInfo) extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30); else if(selectedObj) statusMsg('Shift+Click a face first'); };
 document.getElementById('tool-dup').onclick = duplicateSelected;
-document.getElementById('tool-del').onclick = () => deleteObject(selectedObj);
-document.getElementById('tool-clear').onclick = () => {
-  [...objects].forEach(deleteObject);
-  status('Cleared all objects');
-};
-
-// Transform HUD
-document.querySelectorAll('.th-btn').forEach(b => {
-  b.onclick = () => applyTransformMode(b.dataset.mode);
-});
-
-// View cube & presets
-document.querySelectorAll('[data-view]').forEach(b => {
-  b.onclick = () => setView(b.dataset.view);
-});
-
-// Draw HUD
-document.getElementById('btn-extrude').onclick = () => {
-  if (sketchMode && sketchPoints.length >= 2) closeSketchAndCreate();
-  else if (selectedObj) extrudeFace();
-};
-document.getElementById('btn-finish-sketch').onclick = () => {
-  if (sketchMode) closeSketchAndCreate();
-  else { exitSketchMode(); setToolActive('select'); }
-};
-
-// Right panel
-document.getElementById('rp-apply-pos').onclick = () => {
-  if (!selectedObj) return;
-  selectedObj.position.set(
-    parseFloat(document.getElementById('rp-x').value)||0,
-    parseFloat(document.getElementById('rp-y').value)||0,
-    parseFloat(document.getElementById('rp-z').value)||0
-  ); updateProps(); status('Position applied');
-};
-document.getElementById('rp-apply-rot').onclick = () => {
-  if (!selectedObj) return;
-  selectedObj.rotation.set(
-    parseFloat(document.getElementById('rp-rx').value||0)*Math.PI/180,
-    parseFloat(document.getElementById('rp-ry').value||0)*Math.PI/180,
-    parseFloat(document.getElementById('rp-rz').value||0)*Math.PI/180
-  ); updateProps(); status('Rotation applied');
-};
-document.getElementById('rp-apply-dim').onclick = () => {
-  if (!selectedObj) return;
-  rebuildMesh(selectedObj,
-    parseFloat(document.getElementById('rp-dw').value)||80,
-    parseFloat(document.getElementById('rp-dd').value)||80,
-    parseFloat(document.getElementById('rp-dh').value)||40,
-    selectedObj.userData.r||0
-  ); status('Dimensions rebuilt');
-};
-document.getElementById('rp-apply-color').onclick = () => {
-  if (!selectedObj) return;
-  selectedObj.material.color.set(document.getElementById('rp-color').value);
-  status('Color applied');
-};
-document.getElementById('rp-extrude-face').onclick = extrudeFace;
+document.getElementById('tool-del').onclick = deleteSelected;
+document.getElementById('tool-clear').onclick = () => { objects.forEach(o=>{ scene.remove(o); o.geometry?.dispose(); o.material?.dispose(); }); objects=[]; selectObject(null); updateObjList(); statusMsg('All cleared'); };
+document.getElementById('btn-extrude').onclick = () => { if(sketchMode) finishSketch(); else if(selectedFaceInfo) extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30); };
+document.getElementById('btn-finish-sketch').onclick = () => { if(sketchMode) finishSketch(); else exitSketchMode(); };
+document.querySelectorAll('.th-btn').forEach(b=>b.onclick=()=>setTransformMode(b.dataset.mode));
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ const v=b.dataset.view; if(v==='front'){camera.position.set(0,80,400); orbit.target.set(0,40,0);} else if(v==='right'){camera.position.set(400,80,0); orbit.target.set(0,40,0);} else if(v==='top'){camera.position.set(0,400,0); orbit.target.set(0,40,0);} else if(v==='persp'){camera.position.set(280,220,380); orbit.target.set(0,40,0);} else if(v==='front-left'){camera.position.set(-250,160,350);} else if(v==='front-right'){camera.position.set(250,160,350);} orbit.update(); statusMsg(`View ${v}`); });
+document.getElementById('rp-apply-pos').onclick = () => { if(selectedObj){ selectedObj.position.set(parseFloat(document.getElementById('rp-x').value), parseFloat(document.getElementById('rp-y').value), parseFloat(document.getElementById('rp-z').value)); updatePropsPanel(); } };
+document.getElementById('rp-apply-rot').onclick = () => { if(selectedObj){ selectedObj.rotation.set(parseFloat(document.getElementById('rp-rx').value)*Math.PI/180, parseFloat(document.getElementById('rp-ry').value)*Math.PI/180, parseFloat(document.getElementById('rp-rz').value)*Math.PI/180); updatePropsPanel(); } };
+document.getElementById('rp-apply-dim').onclick = () => { if(selectedObj){ const ud=selectedObj.userData; rebuildMeshDimensions(selectedObj, parseFloat(document.getElementById('rp-dw').value)||ud.w, parseFloat(document.getElementById('rp-dd').value)||ud.d, parseFloat(document.getElementById('rp-dh').value)||ud.h); } };
+document.getElementById('rp-apply-color').onclick = () => { if(selectedObj) selectedObj.material.color.set(document.getElementById('rp-color').value); };
+document.getElementById('rp-extrude-face').onclick = () => extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30);
 document.getElementById('rp-dup').onclick = duplicateSelected;
-document.getElementById('rp-snap-gnd').onclick = () => { if(selectedObj){selectedObj.position.y=0;updateProps();} };
-document.getElementById('rp-center').onclick = () => { if(selectedObj){selectedObj.position.x=0;selectedObj.position.z=0;updateProps();} };
+document.getElementById('rp-snap-gnd').onclick = () => { if(selectedObj){ selectedObj.position.y=0; updatePropsPanel(); } };
+document.getElementById('rp-center').onclick = () => { if(selectedObj){ selectedObj.position.x=0; selectedObj.position.z=0; updatePropsPanel(); } };
 
-// ── RESIZE ───────────────────────────────────────────────────────────────
-function onResize() {
-  const w = W(), h = H();
-  renderer.setSize(w, h);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-  faceCanvas.width = w; faceCanvas.height = h;
-  SVG.setAttribute('viewBox', `0 0 ${w} ${h}`);
-  updateSketchSVG();
-}
-window.addEventListener('resize', onResize);
+// resize
+window.addEventListener('resize', () => { renderer.setSize(W(), H()); camera.aspect = W()/H(); camera.updateProjectionMatrix(); updateSketchPreview(); });
 
-// ── ORBIT: Right Mouse Button ─────────────────────────────────────────────
-// Allow orbit with right mouse; left clicks for selection/sketch
-orbit.mouseButtons = {
-  LEFT: null,
-  MIDDLE: THREE.MOUSE.DOLLY,
-  RIGHT: THREE.MOUSE.ROTATE
-};
-// Pan with middle button + Ctrl or just middle
-orbit.enablePan = true;
-
-// ── ANIMATION LOOP ────────────────────────────────────────────────────────
-function animate() {
-  requestAnimationFrame(animate);
-  orbit.update();
-  renderer.render(scene, camera);
-  if (sketchMode) updateSketchSVG();
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────────
-onResize();
+// start
+function animate(){ requestAnimationFrame(animate); orbit.update(); renderer.render(scene, camera); if(sketchMode) updateSketchPreview(); }
 animate();
-setToolActive('line');
-sketchHud.style.display = 'none';
-
-status('AetherCAD — Right-drag: orbit  |  Scroll: zoom  |  Middle-drag: pan  |  L/R/C/S: sketch tools');
-
-// Enable sketch mode for first tool
-enterSketchMode('line');
-setToolActive('line');
-
+enterSketchMode('rect');
+setActiveTool('rect');
+statusMsg('Ready — Draw rectangle (click two points) | Shift+click face then extrude | Right mouse orbit');
 </script>
 </body>
 </html>
