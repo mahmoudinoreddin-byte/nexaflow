@@ -1,0 +1,103 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Profile — NexaFlow{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">Nexa<span>Flow</span></div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Main</div>
+      <a href="{% url 'dashboard:home' %}"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="{% url 'services:list' %}"><span class="nav-icon">⚡</span> Services</a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:profile' %}" class="active"><span class="nav-icon">👤</span> Profile</a>
+      <a href="{% url 'accounts:logout' %}"><span class="nav-icon">🚪</span> Logout</a>
+    </nav>
+    <div class="s-user">
+      <div class="s-user-inner">
+        <div class="s-avatar">{{ request.user.username|first|upper }}</div>
+        <div>
+          <div class="s-user-name">{{ request.user.username }}</div>
+          <div class="s-user-plan">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">My Profile</span>
+    </div>
+
+    <div class="page-content">
+      {% for message in messages %}
+      <div style="background:rgba(0,200,150,.1);border:1px solid rgba(0,200,150,.3);color:#00C896;padding:12px 16px;border-radius:8px;margin-bottom:20px;font-size:.88rem">
+        {{ message }}
+      </div>
+      {% endfor %}
+
+      <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:20px;max-width:800px">
+        <!-- Avatar card -->
+        <div class="stat-card" style="text-align:center">
+          <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#4F46E5,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;color:#fff;margin:0 auto 16px">
+            {% if request.user.avatar %}
+            <img src="{{ request.user.avatar.url }}" style="width:80px;height:80px;border-radius:50%;object-fit:cover">
+            {% else %}
+            {{ request.user.username|first|upper }}
+            {% endif %}
+          </div>
+          <div style="font-weight:700;font-size:1rem;color:#1A2332">{{ request.user.get_full_name|default:request.user.username }}</div>
+          <div style="font-size:.82rem;color:#94A3B8;margin-top:4px">{{ request.user.email }}</div>
+          <div style="margin-top:12px">
+            <span class="badge badge-{{ request.user.status }}">{{ request.user.get_status_display }}</span>
+          </div>
+          <div style="margin-top:8px;font-size:.78rem;color:#94A3B8">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+
+        <!-- Edit form -->
+        <div class="stat-card">
+          <div class="section-title" style="margin-bottom:20px">Edit Profile</div>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom:14px">
+              <label style="display:block;font-size:.75rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Username</label>
+              <input type="text" name="username" value="{{ form.username.value }}" 
+                     style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;color:#1A2332;padding:10px 14px;border-radius:8px;font-size:.9rem">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+              <div>
+                <label style="display:block;font-size:.75rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">First Name</label>
+                <input type="text" name="first_name" value="{{ form.first_name.value|default:'' }}"
+                       style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;color:#1A2332;padding:10px 14px;border-radius:8px;font-size:.9rem">
+              </div>
+              <div>
+                <label style="display:block;font-size:.75rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Last Name</label>
+                <input type="text" name="last_name" value="{{ form.last_name.value|default:'' }}"
+                       style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;color:#1A2332;padding:10px 14px;border-radius:8px;font-size:.9rem">
+              </div>
+            </div>
+            <div style="margin-bottom:14px">
+              <label style="display:block;font-size:.75rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Language</label>
+              <select name="language" style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;color:#1A2332;padding:10px 14px;border-radius:8px;font-size:.9rem">
+                <option value="en" {% if request.user.language == 'en' %}selected{% endif %}>🇬🇧 English</option>
+                <option value="fr" {% if request.user.language == 'fr' %}selected{% endif %}>🇫🇷 Français</option>
+                <option value="es" {% if request.user.language == 'es' %}selected{% endif %}>🇪🇸 Español</option>
+              </select>
+            </div>
+            <div style="margin-bottom:20px">
+              <label style="display:block;font-size:.75rem;font-weight:700;color:#94A3B8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Avatar</label>
+              <input type="file" name="avatar" accept="image/*"
+                     style="width:100%;background:#F8FAFC;border:1px solid #E2E8F0;color:#1A2332;padding:10px 14px;border-radius:8px;font-size:.85rem">
+            </div>
+            <button type="submit" style="background:#4F46E5;color:#fff;border:none;padding:12px 28px;border-radius:8px;font-size:.9rem;font-weight:700;cursor:pointer;width:100%">
+              Save Changes
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
