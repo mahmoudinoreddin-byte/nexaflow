@@ -2,604 +2,1246 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD Pro - Fixed Sketch & Camera</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AetherCAD</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+*{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#0a0a0c;--panel:#121215;--panel2:#1a1a20;--border:#25252e;
-  --accent:#3b82f6;--accent2:#2563eb;--green:#10b981;--red:#ef4444;--orange:#f59e0b;
-  --text:#e2e2e6;--text2:#8a8a91;--text3:#52525b;
-  --sel:#3b82f620;--sel2:#3b82f640;
+  --bg:#0e0e11;
+  --p1:#14141a;
+  --p2:#1c1c24;
+  --p3:#23232d;
+  --bd:#2e2e3a;
+  --bd2:#3a3a4a;
+  --acc:#4d8ef0;
+  --acc2:#2563eb;
+  --grn:#22c55e;
+  --red:#ef4444;
+  --ylw:#f59e0b;
+  --txt:#dddde3;
+  --t2:#8888a0;
+  --t3:#55556a;
+  --sel:#4d8ef018;
+  --selb:#4d8ef040;
 }
-html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);background:var(--bg);}
-#app{display:flex;flex-direction:column;height:100vh;}
+html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;font-size:12px;color:var(--txt);background:var(--bg);-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit;outline:none;}
+input{font-family:'IBM Plex Mono',monospace;outline:none;}
+#app{display:grid;grid-template-rows:36px 40px 1fr 22px;height:100vh;}
 
-/* HEADER */
+/* ─── HEADER ─────────────────────────────────────────────── */
 #header{
-  height:38px;background:var(--panel);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:100;
+  background:var(--p1);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;padding:0 14px;gap:10px;z-index:200;
 }
-.logo{font-weight:600;font-size:14px;letter-spacing:-0.3px;color:var(--text);}
-.logo b{color:var(--accent);}
-.header-sep{width:1px;height:18px;background:var(--border);margin:0 4px;}
-.header-status{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:10px;font-family:'DM Mono',monospace;color:var(--text2);}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;}
+.logo{font-weight:600;font-size:13px;letter-spacing:-.3px;}
+.logo span{color:var(--acc);}
+.hdr-div{width:1px;height:16px;background:var(--bd);}
+.hdr-chip{
+  padding:2px 8px;border-radius:3px;font-size:9px;font-family:'IBM Plex Mono',monospace;
+  background:var(--p3);border:1px solid var(--bd);color:var(--t2);
+}
+.hdr-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
+.hdr-dot{width:6px;height:6px;border-radius:50%;background:var(--grn);}
+#hdr-msg{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--t2);}
 
-/* TOOL BAR */
+/* ─── TOOLBAR ─────────────────────────────────────────────── */
 #toolbar{
-  height:44px;background:var(--panel);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 12px;gap:2px;flex-shrink:0;flex-wrap:wrap;
+  background:var(--p1);border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;padding:0 10px;gap:1px;z-index:150;
 }
-.tb-sep{width:1px;height:24px;background:var(--border);margin:0 6px;}
-.tb-btn{
-  display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:6px;
-  background:none;border:none;color:var(--text2);font-size:11px;font-family:'DM Sans',sans-serif;
-  cursor:pointer;transition:all .12s;white-space:nowrap;
+.tb-grp{display:flex;align-items:center;gap:1px;padding:0 6px;border-right:1px solid var(--bd);}
+.tb-grp:last-child{border-right:none;}
+.tb-lbl{font-size:9px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;padding:0 6px;}
+.tb{
+  display:flex;align-items:center;gap:4px;padding:4px 9px;border-radius:5px;
+  color:var(--t2);font-size:11px;transition:all .1s;border:1px solid transparent;
+  white-space:nowrap;
 }
-.tb-btn svg{width:15px;height:15px;flex-shrink:0;}
-.tb-btn:hover{background:var(--panel2);color:var(--text);}
-.tb-btn.active{background:var(--sel);color:var(--accent);border:1px solid var(--accent2)40;}
-.tb-btn.danger:hover{background:#ef444420;color:var(--red);}
-.tb-label{font-size:10px;font-weight:500;color:var(--text3);padding:0 6px;text-transform:uppercase;letter-spacing:.5px;}
+.tb svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.5;}
+.tb:hover{background:var(--p3);color:var(--txt);}
+.tb.on{background:var(--sel);color:var(--acc);border-color:var(--acc2)50;}
+.tb.red:hover{background:#ef444418;color:var(--red);}
 
-/* MAIN */
-#main{display:flex;flex:1;overflow:hidden;}
+/* ─── LAYOUT ──────────────────────────────────────────────── */
+#workspace{display:flex;overflow:hidden;}
 
-/* LEFT PANEL */
-#left-panel{
-  width:220px;background:var(--panel);border-right:1px solid var(--border);
+/* ─── LEFT TREE ───────────────────────────────────────────── */
+#ltree{
+  width:210px;background:var(--p1);border-right:1px solid var(--bd);
   display:flex;flex-direction:column;flex-shrink:0;
 }
-.panel-title{
-  padding:8px 14px;font-size:10px;font-weight:600;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);
-  display:flex;justify-content:space-between;align-items:center;
+.pt{
+  padding:7px 14px;font-size:9px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.7px;border-bottom:1px solid var(--bd);
+  display:flex;justify-content:space-between;align-items:center;background:var(--p2);
 }
-#object-list{flex:1;overflow-y:auto;padding:4px;}
-.obj-item{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:5px;
-  cursor:pointer;border:1px solid transparent;margin-bottom:2px;transition:all .1s;
+#tree-body{flex:1;overflow-y:auto;padding:4px;}
+.tree-item{
+  display:flex;align-items:center;gap:7px;padding:6px 9px;border-radius:4px;
+  cursor:pointer;border:1px solid transparent;margin-bottom:2px;
 }
-.obj-item:hover{background:var(--panel2);}
-.obj-item.selected{background:var(--sel);border-color:var(--accent2)40;}
-.obj-icon{font-size:12px;opacity:.7;}
-.obj-meta{flex:1;min-width:0;}
-.obj-name{font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.obj-dim{font-size:9px;color:var(--text3);font-family:'DM Mono',monospace;}
-.obj-del{opacity:0;color:var(--text3);padding:2px 5px;border-radius:3px;font-size:11px;transition:all .1s;}
-.obj-item:hover .obj-del{opacity:1;}
-.obj-del:hover{color:var(--red)!important;background:#ef444415;}
-.empty-list{padding:20px 14px;color:var(--text3);font-size:11px;text-align:center;line-height:1.6;}
+.tree-item:hover{background:var(--p3);}
+.tree-item.sel{background:var(--sel);border-color:var(--acc2)35;}
+.ti-ic{font-size:11px;color:var(--t3);}
+.ti-meta{flex:1;min-width:0;}
+.ti-name{font-size:11px;font-weight:500;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.ti-sub{font-size:9px;color:var(--t3);font-family:'IBM Plex Mono',monospace;}
+.ti-del{opacity:0;font-size:11px;padding:1px 5px;border-radius:3px;color:var(--t3);}
+.tree-item:hover .ti-del{opacity:1;}
+.ti-del:hover{color:var(--red);background:#ef444418;}
+.empty{padding:24px 14px;color:var(--t3);font-size:11px;text-align:center;line-height:1.7;}
 
-/* VIEWPORT */
-#viewport{flex:1;position:relative;overflow:hidden;background:#0c0c0f;}
-canvas{display:block;width:100%;height:100%;}
+/* ─── VIEWPORT ────────────────────────────────────────────── */
+#vp{flex:1;position:relative;overflow:hidden;cursor:default;}
+#c3d{display:block;width:100%;height:100%;}
 
-/* VIEWPORT HUD */
-#view-hud{
-  position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:6px;z-index:20;
+/* SVG sketch overlay */
+#svg-sk{position:absolute;inset:0;pointer-events:none;z-index:12;}
+#svg-sk.draw{pointer-events:all;cursor:crosshair;}
+
+/* HUD: top center - mode buttons */
+#hud-mode{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:var(--p1)ee;backdrop-filter:blur(8px);border:1px solid var(--bd);
+  border-radius:6px;display:flex;z-index:30;overflow:hidden;
 }
-.view-cube{
-  width:70px;height:70px;background:var(--panel)cc;border:1px solid var(--border);
-  border-radius:8px;display:flex;flex-direction:column;overflow:hidden;
+.mdbtn{
+  padding:5px 14px;font-size:10px;font-weight:600;font-family:'IBM Plex Mono',monospace;
+  color:var(--t2);border-right:1px solid var(--bd);transition:all .1s;
 }
-.view-cube-row{display:flex;flex:1;}
-.view-btn{
+.mdbtn:last-child{border-right:none;}
+.mdbtn:hover{color:var(--txt);}
+.mdbtn.on{background:var(--acc);color:#fff;}
+
+/* HUD: top left - sketch info */
+#hud-sk{
+  position:absolute;top:10px;left:10px;
+  background:var(--p1)ee;backdrop-filter:blur(8px);border:1px solid var(--bd);
+  border-radius:6px;padding:8px 12px;z-index:30;display:none;min-width:180px;
+}
+.sk-title{font-size:9px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.sk-line{font-size:10px;color:var(--t2);font-family:'IBM Plex Mono',monospace;line-height:1.7;}
+.sk-hint{font-size:9px;color:var(--t3);margin-top:5px;}
+
+/* HUD: top right - view cube */
+#hud-view{
+  position:absolute;top:10px;right:10px;
+  display:flex;flex-direction:column;gap:5px;z-index:30;
+}
+.vcube{
+  width:66px;height:66px;background:var(--p1)cc;border:1px solid var(--bd);
+  border-radius:6px;display:flex;flex-direction:column;overflow:hidden;
+}
+.vrow{display:flex;flex:1;}
+.vb{
   flex:1;display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:600;color:var(--text3);cursor:pointer;
-  border:none;background:none;transition:all .1s;font-family:'DM Mono',monospace;
+  font-size:8px;font-weight:700;font-family:'IBM Plex Mono',monospace;
+  color:var(--t3);transition:all .1s;
 }
-.view-btn:hover{background:var(--sel);color:var(--accent);}
-.view-btn.center{flex:1.5;background:var(--panel2);font-size:8px;}
-.view-presets{display:flex;flex-direction:column;gap:3px;}
-.vp-btn{
-  padding:4px 10px;border-radius:5px;background:var(--panel)cc;border:1px solid var(--border);
-  color:var(--text2);font-size:9px;font-weight:500;cursor:pointer;font-family:'DM Mono',monospace;
+.vb:hover{background:var(--selb);color:var(--acc);}
+.vb.mid{background:var(--p3);font-size:7px;flex:1.4;}
+.vpresets{display:flex;flex-direction:column;gap:2px;}
+.vpb{
+  padding:3px 9px;border-radius:4px;background:var(--p1)cc;border:1px solid var(--bd);
+  color:var(--t2);font-size:8px;font-weight:700;font-family:'IBM Plex Mono',monospace;
   text-align:center;transition:all .1s;
 }
-.vp-btn:hover{background:var(--sel);color:var(--accent);border-color:var(--accent2)40;}
+.vpb:hover{background:var(--sel);color:var(--acc);}
 
-#transform-hud{
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  background:var(--panel)ee;backdrop-filter:blur(12px);border:1px solid var(--border);
-  border-radius:8px;display:flex;overflow:hidden;z-index:20;
+/* HUD: bottom - draw controls */
+#hud-draw{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  background:var(--p1)ee;backdrop-filter:blur(8px);border:1px solid var(--bd);
+  border-radius:6px;display:flex;align-items:center;padding:5px 12px;gap:10px;z-index:30;
 }
-.th-btn{
-  padding:6px 16px;font-size:10px;font-weight:600;color:var(--text2);cursor:pointer;
-  border:none;background:none;font-family:'DM Mono',monospace;transition:all .1s;
-  border-right:1px solid var(--border);
+.dhlbl{font-size:9px;font-weight:700;color:var(--acc);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;}
+.dhinp{
+  width:52px;background:var(--p3);border:1px solid var(--bd);border-radius:4px;
+  padding:3px 6px;font-size:11px;color:var(--txt);user-select:text;
 }
-.th-btn:last-child{border-right:none;}
-.th-btn:hover{color:var(--text);}
-.th-btn.active{background:var(--accent);color:#fff;}
+.dhinp:focus{border-color:var(--acc2);}
+.dh-div{width:1px;height:18px;background:var(--bd);}
+.dhbtn{
+  padding:4px 12px;border-radius:5px;background:var(--acc);color:#fff;
+  font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;transition:all .1s;
+}
+.dhbtn:hover{background:var(--acc2);}
+.dhbtn.s{background:var(--p3);border:1px solid var(--bd);color:var(--t2);}
+.dhbtn.s:hover{color:var(--txt);}
 
-/* DRAW HUD */
-#draw-hud{
-  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
-  background:var(--panel)ee;backdrop-filter:blur(12px);border:1px solid var(--border);
-  border-radius:8px;display:flex;align-items:center;padding:6px 14px;gap:12px;z-index:20;
-  min-width:380px;
+/* HUD: face select indicator */
+#hud-face{
+  position:absolute;bottom:12px;right:10px;
+  background:var(--p1)ee;backdrop-filter:blur(8px);border:1px solid var(--bd);
+  border-radius:6px;padding:6px 12px;z-index:30;display:none;max-width:200px;
 }
-.dh-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
-.dh-inp{
-  width:56px;background:var(--panel2);border:1px solid var(--border);border-radius:5px;
-  padding:4px 6px;font-size:11px;color:var(--text);font-family:'DM Mono',monospace;
-  user-select:text;
-}
-.dh-inp:focus{outline:none;border-color:var(--accent2);}
-.dh-btn{
-  background:var(--accent);border:none;padding:5px 14px;border-radius:6px;
-  color:#fff;font-weight:600;font-size:11px;cursor:pointer;white-space:nowrap;
-  font-family:'DM Sans',sans-serif;transition:all .1s;
-}
-.dh-btn:hover{background:var(--accent2);}
-.dh-btn.sec{background:var(--panel2);border:1px solid var(--border);color:var(--text2);}
-.dh-btn.sec:hover{color:var(--text);}
-.dh-sep{width:1px;height:20px;background:var(--border);}
+.hf-title{font-size:9px;font-weight:700;color:var(--ylw);text-transform:uppercase;letter-spacing:.5px;}
+.hf-info{font-size:9px;color:var(--t2);font-family:'IBM Plex Mono',monospace;margin-top:3px;line-height:1.6;}
 
-/* Sketch HUD */
-#sketch-hud{
-  position:absolute;top:12px;left:12px;
-  background:var(--panel)ee;backdrop-filter:blur(12px);border:1px solid var(--border);
-  border-radius:8px;padding:8px 12px;z-index:20;display:none;min-width:200px;
-}
-.sh-title{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-.sh-info{font-size:10px;color:var(--text2);line-height:1.7;font-family:'DM Mono',monospace;}
-.sh-hint{font-size:9px;color:var(--text3);margin-top:6px;line-height:1.6;}
-
-#sketch-svg{
-  position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10;
-}
-#sketch-svg.interactive{pointer-events:all;cursor:crosshair;}
-
-/* RIGHT PANEL */
-#right-panel{
-  width:250px;background:var(--panel);border-left:1px solid var(--border);
+/* ─── RIGHT PANEL ──────────────────────────────────────────── */
+#rpanel{
+  width:238px;background:var(--p1);border-left:1px solid var(--bd);
   overflow-y:auto;flex-shrink:0;
 }
-.rp-section{border-bottom:1px solid var(--border);}
-.rp-title{
-  padding:8px 14px;font-size:10px;font-weight:600;color:var(--text3);
-  text-transform:uppercase;letter-spacing:.6px;background:var(--panel2);
-  display:flex;justify-content:space-between;
+.rps{border-bottom:1px solid var(--bd);}
+.rpt{
+  padding:7px 13px;font-size:9px;font-weight:700;color:var(--t3);
+  text-transform:uppercase;letter-spacing:.6px;background:var(--p2);
 }
-.rp-body{padding:10px 14px;}
-.rp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.rp-row label{width:30px;font-size:10px;color:var(--text2);font-weight:500;}
-.rp-inp{
-  flex:1;background:var(--panel2);border:1px solid var(--border);border-radius:5px;
-  padding:5px 7px;font-size:11px;color:var(--text);font-family:'DM Mono',monospace;
-  user-select:text;
+.rpb{padding:10px 13px;}
+.rrow{display:flex;align-items:center;gap:7px;margin-bottom:7px;}
+.rrow label{width:28px;font-size:10px;color:var(--t2);font-weight:600;}
+.rinp{
+  flex:1;background:var(--p3);border:1px solid var(--bd);border-radius:4px;
+  padding:4px 7px;font-size:10px;color:var(--txt);user-select:text;
 }
-.rp-inp:focus{outline:none;border-color:var(--accent2);}
-.rp-btn{
-  width:100%;background:var(--accent);border:none;padding:7px;border-radius:6px;
-  color:#fff;font-weight:600;font-size:11px;margin-top:4px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;
+.rinp:focus{border-color:var(--acc2);}
+.rbtn{
+  width:100%;background:var(--acc);border:none;padding:6px;border-radius:5px;
+  color:#fff;font-weight:600;font-size:10px;margin-top:3px;cursor:pointer;
 }
-.rp-btn.sec{background:var(--panel2);border:1px solid var(--border);color:var(--text);margin-top:3px;}
-.rp-btn:hover{opacity:.9;}
-.rp-info{
-  background:var(--panel2);border-radius:6px;padding:8px 10px;
-  font-family:'DM Mono',monospace;font-size:10px;border-left:2px solid var(--accent);
-  color:var(--text2);line-height:1.6;
+.rbtn.s{background:var(--p3);border:1px solid var(--bd);color:var(--txt);margin-top:3px;}
+.rbtn:hover{opacity:.88;}
+.rinfo{
+  background:var(--p3);border-radius:5px;padding:7px 9px;
+  font-family:'IBM Plex Mono',monospace;font-size:9px;
+  border-left:2px solid var(--acc);color:var(--t2);line-height:1.65;
 }
-.rp-color{display:flex;align-items:center;gap:8px;}
-.rp-color input[type=color]{width:36px;height:26px;border-radius:5px;border:1px solid var(--border);background:var(--panel2);cursor:pointer;}
+.rinfo b{color:var(--txt);font-weight:500;}
 
-/* STATUS BAR */
+/* ─── STATUS BAR ──────────────────────────────────────────── */
 #statusbar{
-  height:24px;background:var(--panel);border-top:1px solid var(--border);
+  background:var(--p1);border-top:1px solid var(--bd);
   display:flex;align-items:center;padding:0 12px;gap:16px;
-  font-size:10px;font-family:'DM Mono',monospace;color:var(--text3);flex-shrink:0;
+  font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--t3);
 }
-#status-msg{flex:1;color:var(--text2);}
+#sbmsg{flex:1;color:var(--t2);}
+
+/* Face highlight */
+#face-hl{position:absolute;inset:0;pointer-events:none;z-index:11;}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="header"><div class="logo">Aether<b>CAD</b></div><div class="header-sep"></div><span style="font-size:10px;color:var(--text3)">Face Extrude · Transform · Perspective</span>
-    <div class="header-status"><span class="dot"></span><span id="hdr-status">Ready</span></div>
+
+<!-- HEADER -->
+<div id="header">
+  <div class="logo">Aether<span>CAD</span></div>
+  <div class="hdr-div"></div>
+  <div class="hdr-chip">3D Modeler</div>
+  <div class="hdr-right">
+    <div class="hdr-dot"></div>
+    <div id="hdr-msg">Ready</div>
   </div>
-  <div id="toolbar">
-    <span class="tb-label">Sketch</span>
-    <button class="tb-btn" id="tool-line"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line</button>
-    <button class="tb-btn active" id="tool-rect"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="0.5"/></svg>Rect</button>
-    <button class="tb-btn" id="tool-circle"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/></svg>Circle</button>
-    <div class="tb-sep"></div><span class="tb-label">Select</span>
-    <button class="tb-btn" id="tool-select"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2l10 6.5-4.5 1.5L6 14z"/></svg>Select</button>
-    <div class="tb-sep"></div><span class="tb-label">3D</span>
-    <button class="tb-btn" id="tool-extrude"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="8" width="10" height="6"/><path d="M3 8l3-4h4l3 4"/><line x1="8" y1="2" x2="8" y2="8"/></svg>Extrude</button>
-    <div class="tb-sep"></div>
-    <button class="tb-btn" id="tool-dup"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><rect x="5" y="5" width="8" height="8" rx="1"/><rect x="3" y="3" width="8" height="8" rx="1" stroke-dasharray="2 1.5"/></svg>Dup</button>
-    <button class="tb-btn danger" id="tool-del"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M3 4h10M6 4V3h4v1M5 4l.5 9M11 4l-.5 9M8 4v9"/></svg>Del</button>
-    <button class="tb-btn danger" id="tool-clear"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M2 2l12 12M14 2 2 14"/></svg>Clear</button>
-  </div>
-  <div id="main">
-    <div id="left-panel"><div class="panel-title"><span>Objects</span><span id="obj-count">0</span></div><div id="object-list"><div class="empty-list">No objects yet.<br>Draw rectangle or circle</div></div></div>
-    <div id="viewport">
-      <canvas id="canvas"></canvas>
-      <svg id="sketch-svg" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div id="transform-hud"><button class="th-btn active" data-mode="select">SELECT</button><button class="th-btn" data-mode="translate">MOVE</button><button class="th-btn" data-mode="rotate">ROTATE</button><button class="th-btn" data-mode="scale">SCALE</button></div>
-      <div id="view-hud">
-        <div class="view-cube"><div class="view-cube-row"><button class="view-btn" data-view="front-left">FL</button><button class="view-btn center" data-view="top">TOP</button><button class="view-btn" data-view="front-right">FR</button></div>
-        <div class="view-cube-row"><button class="view-btn" data-view="left">L</button><button class="view-btn center" data-view="persp">3D</button><button class="view-btn" data-view="right">R</button></div>
-        <div class="view-cube-row"><button class="view-btn" data-view="back-left">BL</button><button class="view-btn center" data-view="bottom">BTM</button><button class="view-btn" data-view="back-right">BR</button></div></div>
-        <div class="view-presets"><button class="vp-btn" data-view="front">FRONT</button><button class="vp-btn" data-view="right">RIGHT</button><button class="vp-btn" data-view="top">TOP</button><button class="vp-btn" data-view="persp">PERSP</button></div>
-      </div>
-      <div id="draw-hud"><span class="dh-label" id="dh-mode">RECTANGLE</span><div class="dh-sep"></div><label>W</label><input class="dh-inp" id="dh-w" value="100" step="10"><label>H</label><input class="dh-inp" id="dh-h" value="100" step="10"><div class="dh-sep"></div><label>Ext</label><input class="dh-inp" id="dh-ext" value="50" step="5"><button class="dh-btn" id="btn-extrude">EXTRUDE ↑</button><button class="dh-btn sec" id="btn-finish-sketch">FINISH</button></div>
-      <div id="sketch-hud"><div class="sh-title" id="sh-title">Sketch Mode</div><div class="sh-info" id="sh-info">Click first corner</div><div class="sh-hint" id="sh-hint">Click second corner to create rectangle</div></div>
-    </div>
-    <div id="right-panel">
-      <div class="rp-section"><div class="rp-title">Selection</div><div class="rp-body"><div class="rp-info" id="rp-sel">Nothing selected</div></div></div>
-      <div class="rp-section"><div class="rp-title">Transform</div><div class="rp-body"><div class="rp-row"><label>X</label><input class="rp-inp" id="rp-x" step="5"></div><div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-y" step="5"></div><div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-z" step="5"></div><button class="rp-btn" id="rp-apply-pos">Apply Position</button></div></div>
-      <div class="rp-section"><div class="rp-title">Rotation (°)</div><div class="rp-body"><div class="rp-row"><label>X</label><input class="rp-inp" id="rp-rx" step="15"></div><div class="rp-row"><label>Y</label><input class="rp-inp" id="rp-ry" step="15"></div><div class="rp-row"><label>Z</label><input class="rp-inp" id="rp-rz" step="15"></div><button class="rp-btn" id="rp-apply-rot">Apply Rotation</button></div></div>
-      <div class="rp-section"><div class="rp-title">Dimensions</div><div class="rp-body"><div class="rp-row"><label>W</label><input class="rp-inp" id="rp-dw" step="5"></div><div class="rp-row"><label>D</label><input class="rp-inp" id="rp-dd" step="5"></div><div class="rp-row"><label>H</label><input class="rp-inp" id="rp-dh" step="5"></div><button class="rp-btn" id="rp-apply-dim">Rebuild Mesh</button></div></div>
-      <div class="rp-section"><div class="rp-title">Face Extrude</div><div class="rp-body"><div class="rp-info" id="rp-face-info">Shift+Click on a face to select it</div><div class="rp-row"><label>Dist</label><input class="rp-inp" id="rp-ext-d" value="30" step="5"></div><button class="rp-btn" id="rp-extrude-face">Extrude Selected Face</button></div></div>
-      <div class="rp-section"><div class="rp-title">Color</div><div class="rp-body"><div class="rp-color"><input type="color" id="rp-color" value="#3b82f6"><span>Material</span></div><button class="rp-btn" id="rp-apply-color">Apply Color</button></div></div>
-      <div class="rp-section"><div class="rp-title">Ops</div><div class="rp-body"><button class="rp-btn sec" id="rp-dup">Duplicate</button><button class="rp-btn sec" id="rp-snap-gnd">Snap to Ground</button><button class="rp-btn sec" id="rp-center">Center on Grid</button></div></div>
-    </div>
-  </div>
-  <div id="statusbar"><span id="status-msg">AetherCAD · Right-drag orbit | Shift+Click select face | Extrude faces</span><span>Objs: <b id="stat-obj">0</b></span><span>Tool: <b id="stat-tool">Rectangle</b></span><span id="stat-coords"></span></div>
 </div>
+
+<!-- TOOLBAR -->
+<div id="toolbar">
+  <div class="tb-grp">
+    <span class="tb-lbl">Sketch</span>
+    <button class="tb on" id="tb-rect">
+      <svg viewBox="0 0 14 14"><rect x="1" y="3" width="12" height="8" rx=".5"/></svg>Rectangle
+    </button>
+    <button class="tb" id="tb-circ">
+      <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="5"/></svg>Circle
+    </button>
+    <button class="tb" id="tb-poly">
+      <svg viewBox="0 0 14 14"><polyline points="2,12 7,2 12,12" stroke-linejoin="round"/><line x1="2" y1="12" x2="12" y2="12"/></svg>Polygon
+    </button>
+  </div>
+  <div class="tb-grp">
+    <span class="tb-lbl">Select</span>
+    <button class="tb" id="tb-sel">
+      <svg viewBox="0 0 14 14" fill="currentColor"><path d="M2 1l9 6-4 1.5L5 13z"/></svg>Select
+    </button>
+  </div>
+  <div class="tb-grp">
+    <span class="tb-lbl">Ops</span>
+    <button class="tb" id="tb-dup">
+      <svg viewBox="0 0 14 14"><rect x="4" y="4" width="8" height="8" rx="1"/><rect x="2" y="2" width="8" height="8" rx="1" stroke-dasharray="2 1.5"/></svg>Duplicate
+    </button>
+    <button class="tb red" id="tb-del">
+      <svg viewBox="0 0 14 14"><line x1="2" y1="4" x2="12" y2="4"/><line x1="5" y1="4" x2="5" y2="12"/><line x1="9" y1="4" x2="9" y2="12"/><line x1="5.5" y1="2" x2="8.5" y2="2"/><rect x="3" y="4" width="8" height="8" rx=".5"/></svg>Delete
+    </button>
+    <button class="tb red" id="tb-clr">
+      <svg viewBox="0 0 14 14"><line x1="2" y1="2" x2="12" y2="12"/><line x1="12" y1="2" x2="2" y2="12"/></svg>Clear All
+    </button>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div id="workspace">
+
+  <!-- LEFT TREE -->
+  <div id="ltree">
+    <div class="pt"><span>Objects</span><span id="obj-cnt">0</span></div>
+    <div id="tree-body"><div class="empty">No objects yet.<br>Use sketch tools above<br>to draw shapes.</div></div>
+  </div>
+
+  <!-- VIEWPORT -->
+  <div id="vp">
+    <canvas id="c3d"></canvas>
+    <canvas id="face-hl"></canvas>
+    <svg id="svg-sk" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <!-- Mode HUD -->
+    <div id="hud-mode">
+      <button class="mdbtn on" data-m="select">SELECT</button>
+      <button class="mdbtn" data-m="translate">MOVE</button>
+      <button class="mdbtn" data-m="rotate">ROTATE</button>
+      <button class="mdbtn" data-m="scale">SCALE</button>
+    </div>
+
+    <!-- Sketch Info HUD -->
+    <div id="hud-sk">
+      <div class="sk-title" id="sk-title">Sketch</div>
+      <div class="sk-line" id="sk-line">Click to start</div>
+      <div class="sk-hint" id="sk-hint">ESC to cancel</div>
+    </div>
+
+    <!-- View Cube -->
+    <div id="hud-view">
+      <div class="vcube">
+        <div class="vrow">
+          <button class="vb" data-v="fl">FL</button>
+          <button class="vb mid" data-v="top">TOP</button>
+          <button class="vb" data-v="fr">FR</button>
+        </div>
+        <div class="vrow">
+          <button class="vb" data-v="left">L</button>
+          <button class="vb mid" data-v="persp">3D</button>
+          <button class="vb" data-v="right">R</button>
+        </div>
+        <div class="vrow">
+          <button class="vb" data-v="bl">BL</button>
+          <button class="vb mid" data-v="btm">BTM</button>
+          <button class="vb" data-v="br">BR</button>
+        </div>
+      </div>
+      <div class="vpresets">
+        <button class="vpb" data-v="front">FRONT</button>
+        <button class="vpb" data-v="right">RIGHT</button>
+        <button class="vpb" data-v="top">TOP</button>
+        <button class="vpb" data-v="persp">PERSP</button>
+      </div>
+    </div>
+
+    <!-- Draw HUD bottom -->
+    <div id="hud-draw">
+      <span class="dhlbl" id="dh-label">RECTANGLE</span>
+      <div class="dh-div"></div>
+      <label style="font-size:9px;color:var(--t3)">W</label>
+      <input class="dhinp" id="dh-w" type="number" value="120" step="10">
+      <label style="font-size:9px;color:var(--t3)">D</label>
+      <input class="dhinp" id="dh-d" type="number" value="120" step="10">
+      <div class="dh-div"></div>
+      <label style="font-size:9px;color:var(--t3)">Height</label>
+      <input class="dhinp" id="dh-ext" type="number" value="60" step="5">
+      <div class="dh-div"></div>
+      <button class="dhbtn" id="dh-extrude">EXTRUDE ↑</button>
+      <button class="dhbtn s" id="dh-finish">FINISH</button>
+    </div>
+
+    <!-- Face selected HUD -->
+    <div id="hud-face">
+      <div class="hf-title">Face Selected</div>
+      <div class="hf-info" id="hf-info">—</div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="rpanel">
+
+    <div class="rps">
+      <div class="rpt">Selection</div>
+      <div class="rpb">
+        <div class="rinfo" id="rp-sel">Nothing selected</div>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Position</div>
+      <div class="rpb">
+        <div class="rrow"><label>X</label><input class="rinp" id="rp-x" type="number" step="10"></div>
+        <div class="rrow"><label>Y</label><input class="rinp" id="rp-y" type="number" step="10"></div>
+        <div class="rrow"><label>Z</label><input class="rinp" id="rp-z" type="number" step="10"></div>
+        <button class="rbtn" id="rp-apos">Apply Position</button>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Rotation (°)</div>
+      <div class="rpb">
+        <div class="rrow"><label>X</label><input class="rinp" id="rp-rx" type="number" step="15"></div>
+        <div class="rrow"><label>Y</label><input class="rinp" id="rp-ry" type="number" step="15"></div>
+        <div class="rrow"><label>Z</label><input class="rinp" id="rp-rz" type="number" step="15"></div>
+        <button class="rbtn" id="rp-arot">Apply Rotation</button>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Dimensions</div>
+      <div class="rpb">
+        <div class="rrow"><label>W</label><input class="rinp" id="rp-dw" type="number" step="10"></div>
+        <div class="rrow"><label>D</label><input class="rinp" id="rp-dd" type="number" step="10"></div>
+        <div class="rrow"><label>H</label><input class="rinp" id="rp-dh" type="number" step="5"></div>
+        <button class="rbtn" id="rp-adim">Rebuild Mesh</button>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Face Extrude</div>
+      <div class="rpb">
+        <div class="rinfo" style="font-size:9px;color:var(--t3);border-left-color:var(--ylw);" id="rp-faceinfo">Shift+Click on a face<br>to select it</div>
+        <div class="rrow" style="margin-top:8px;"><label>Dist</label><input class="rinp" id="rp-fext" type="number" value="40" step="5"></div>
+        <button class="rbtn" id="rp-doface">Extrude Face</button>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Color</div>
+      <div class="rpb">
+        <div class="rrow">
+          <label>Col</label>
+          <input type="color" id="rp-col" value="#4d8ef0" style="flex:1;height:26px;border-radius:4px;border:1px solid var(--bd);background:var(--p3);cursor:pointer;">
+        </div>
+        <button class="rbtn" id="rp-acol">Apply Color</button>
+      </div>
+    </div>
+
+    <div class="rps">
+      <div class="rpt">Operations</div>
+      <div class="rpb" style="display:flex;flex-direction:column;gap:3px;">
+        <button class="rbtn s" id="rp-dup">Duplicate</button>
+        <button class="rbtn s" id="rp-sgnd">Snap to Ground (Y=0)</button>
+        <button class="rbtn s" id="rp-ctr">Center on Grid</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div id="statusbar">
+  <span id="sbmsg">AetherCAD ready</span>
+  <span>Objects: <b id="sb-cnt">0</b></span>
+  <span>Tool: <b id="sb-tool">Rectangle</b></span>
+  <span id="sb-xy"></span>
+</div>
+
+</div><!-- #app -->
+
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
-// --- setup
-const vp = document.getElementById('viewport');
-const canvas = document.getElementById('canvas');
-const W = () => vp.clientWidth, H = () => vp.clientHeight;
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0c0c0f);
-scene.fog = new THREE.FogExp2(0x0c0c0f, 0.0001);
-const camera = new THREE.PerspectiveCamera(45, W()/H(), 0.1, 3000);
-camera.position.set(280, 220, 380);
-camera.lookAt(0, 30, 0);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setSize(W(), H()); renderer.setPixelRatio(window.devicePixelRatio);
+// ═══════════════════════════════════════════════════════════
+// SCENE SETUP
+// ═══════════════════════════════════════════════════════════
+const vp   = document.getElementById('vp');
+const canv = document.getElementById('c3d');
+const faceHl = document.getElementById('face-hl');
+const svgSk  = document.getElementById('svg-sk');
+
+const W = () => vp.clientWidth;
+const H = () => vp.clientHeight;
+
+const scene    = new THREE.Scene();
+scene.background = new THREE.Color(0x0c0c10);
+scene.fog        = new THREE.FogExp2(0x0c0c10, 0.00012);
+
+const camera = new THREE.PerspectiveCamera(45, W()/H(), 0.5, 5000);
+camera.position.set(320, 260, 420);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ canvas: canv, antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(W(), H());
 renderer.shadowMap.enabled = true;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+renderer.toneMapping       = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
 
-// lights
-scene.add(new THREE.AmbientLight(0x404060, 0.8));
-const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.5);
-mainLight.position.set(200, 400, 150);
-mainLight.castShadow = true; mainLight.shadow.mapSize.set(1024,1024);
-mainLight.shadow.camera.left = mainLight.shadow.camera.bottom = -300;
-mainLight.shadow.camera.right = mainLight.shadow.camera.top = 300;
-scene.add(mainLight);
-scene.add(new THREE.DirectionalLight(0x6688aa, 0.5).position.set(-150, 100, 200));
-const backFill = new THREE.PointLight(0xffaa55, 0.4);
-backFill.position.set(50, 120, -250);
-scene.add(backFill);
+// LIGHTS
+scene.add(new THREE.AmbientLight(0x3a4060, 1.2));
 
-// ground + grid
-const gridHelper = new THREE.GridHelper(1600, 80, 0x4a4a5a, 0x2a2a32);
-gridHelper.position.y = -0.2;
-scene.add(gridHelper);
-const groundPlane = new THREE.Mesh(new THREE.PlaneGeometry(1600,1600), new THREE.MeshStandardMaterial({ color: 0x0a0a0e, roughness: 1, metalness: 0, transparent: true, opacity: 0.3 }));
-groundPlane.rotation.x = -Math.PI/2; groundPlane.position.y = -0.4; groundPlane.receiveShadow = true;
-scene.add(groundPlane);
+const keyLight = new THREE.DirectionalLight(0xfff4e0, 1.8);
+keyLight.position.set(250, 500, 200);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+keyLight.shadow.camera.near = 1;
+keyLight.shadow.camera.far  = 1500;
+keyLight.shadow.camera.left = keyLight.shadow.camera.bottom = -400;
+keyLight.shadow.camera.right= keyLight.shadow.camera.top   =  400;
+keyLight.shadow.bias = -0.0003;
+scene.add(keyLight);
 
-// orbit controls (right mouse rotate, middle pan)
+const fillLight = new THREE.DirectionalLight(0x5577aa, 0.6);
+fillLight.position.set(-200, 150, 300);
+scene.add(fillLight);
+
+const rimLight = new THREE.PointLight(0xff9944, 0.5, 800);
+rimLight.position.set(80, 180, -350);
+scene.add(rimLight);
+
+// GROUND
+const gridH = new THREE.GridHelper(2000, 100, 0x3a3a4a, 0x252530);
+gridH.position.y = 0;
+scene.add(gridH);
+
+const groundMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(2000, 2000),
+  new THREE.MeshStandardMaterial({ color:0x0a0a0d, roughness:1, metalness:0 })
+);
+groundMesh.rotation.x = -Math.PI/2;
+groundMesh.position.y = -0.5;
+groundMesh.receiveShadow = true;
+scene.add(groundMesh);
+
+// AXIS
+[
+  [new THREE.Vector3(120,0,0), 0xff3333],
+  [new THREE.Vector3(0,120,0), 0x33ee55],
+  [new THREE.Vector3(0,0,120), 0x3388ff],
+].forEach(([dir, col]) => {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), dir]);
+  scene.add(new THREE.Line(g, new THREE.LineBasicMaterial({ color:col, opacity:.5, transparent:true })));
+});
+
+// ═══════════════════════════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════════════════════════
+
+// Orbit: right-drag=rotate, middle=pan, scroll=zoom
 const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.enableDamping = true; orbit.dampingFactor = 0.07; orbit.rotateSpeed = 0.9; orbit.zoomSpeed = 1.2; orbit.panSpeed = 0.8;
-orbit.mouseButtons = { LEFT: null, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE };
-orbit.target.set(0, 40, 0);
+orbit.enableDamping  = true;
+orbit.dampingFactor  = 0.07;
+orbit.rotateSpeed    = 0.85;
+orbit.zoomSpeed      = 1.2;
+orbit.panSpeed       = 0.7;
+orbit.mouseButtons   = { LEFT: null, MIDDLE: THREE.MOUSE.PAN, RIGHT: THREE.MOUSE.ROTATE };
+orbit.target.set(0, 30, 0);
 
-// transform controls
+// Transform Controls
 const tc = new TransformControls(camera, renderer.domElement);
 tc.addEventListener('dragging-changed', e => { orbit.enabled = !e.value; });
-tc.addEventListener('objectChange', () => updatePropsPanel());
+tc.addEventListener('objectChange', () => { refreshProps(); });
 scene.add(tc);
+// Show transform controls always (they remain visible when attached)
+tc.setSize(1.0);
 
-// --- global state
-let objects = [];
-let selectedObj = null;
-let selectedFaceInfo = null; // { normal, point, faceIndex, mesh }
-let activeTool = 'rect';
-let transformMode = 'select';
-let sketchMode = false;
-let sketchPoints = [];
-let sketchPreview = null;
-let sketchPlaneY = 0;
-let nextId = 1;
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let objects     = [];
+let selObj      = null;   // selected mesh
+let selFace     = null;   // { normal, point, mesh }
+let activeTool  = 'rect'; // rect | circ | poly | select
+let xfMode      = 'select'; // select | translate | rotate | scale
+let skActive    = false;
+let skPoints    = [];     // { wx, wz } world coords
+let skPreview   = null;   // current mouse world pt
+let skPlaneY    = 0;
+let nextId      = 1;
+let polyClose   = false;  // for polygon close-on-click-near-start
 
-const svgOverlay = document.getElementById('sketch-svg');
-const sketchHud = document.getElementById('sketch-hud');
-const statusMsg = (msg) => { document.getElementById('status-msg').textContent = msg; document.getElementById('hdr-status').textContent = msg.slice(0,35); };
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+function sb(msg) {
+  $('sbmsg').textContent = msg;
+  $('hdr-msg').textContent = msg.length > 38 ? msg.slice(0,38)+'…' : msg;
+}
 
-// helper: get ground intersection at Y
-function getGroundIntersection(clientX, clientY, planeY = 0) {
+function snapV(v, s=10) { return Math.round(v/s)*s; }
+
+/** Ray → ground plane at Y */
+function rayGround(clientX, clientY, planeY=0) {
   const rect = renderer.domElement.getBoundingClientRect();
-  const mouse = new THREE.Vector2(((clientX - rect.left)/rect.width)*2-1, -((clientY - rect.top)/rect.height)*2+1);
-  const raycaster = new THREE.Raycaster();
-  raycaster.setFromCamera(mouse, camera);
-  const plane = new THREE.Plane(new THREE.Vector3(0,1,0), -planeY);
+  const mx = ((clientX - rect.left) / rect.width)  * 2 - 1;
+  const my = -((clientY - rect.top)  / rect.height) * 2 + 1;
+  const ray = new THREE.Raycaster();
+  ray.setFromCamera(new THREE.Vector2(mx, my), camera);
+  const pl  = new THREE.Plane(new THREE.Vector3(0,1,0), -planeY);
   const hit = new THREE.Vector3();
-  if(raycaster.ray.intersectPlane(plane, hit)) return { x: Math.round(hit.x/10)*10, z: Math.round(hit.z/10)*10 };
+  if (ray.ray.intersectPlane(pl, hit)) {
+    return { wx: snapV(hit.x), wz: snapV(hit.z) };
+  }
   return null;
 }
 
-// --- geometry builders
-function buildExtrudedMesh(type, w, d, h, colorHex = 0x3b82f6) {
-  const shape = new THREE.Shape();
-  const hw = w/2, hd = d/2;
-  if(type === 'circle') { shape.absarc(0,0, hw, 0, Math.PI*2); }
-  else { shape.moveTo(-hw, -hd); shape.lineTo(hw, -hd); shape.lineTo(hw, hd); shape.lineTo(-hw, hd); shape.closePath(); }
-  const extrudeSettings = { steps: 1, depth: h, bevelEnabled: false };
-  const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-  geo.rotateX(-Math.PI/2);
-  geo.computeVertexNormals();
-  const mat = new THREE.MeshStandardMaterial({ color: colorHex, metalness: 0.4, roughness: 0.45 });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.castShadow = mesh.receiveShadow = true;
-  mesh.userData = { id: nextId++, type, w, d, h, baseY: 0, colorHex };
-  mesh.name = `${type}_${mesh.userData.id}`;
-  return mesh;
+/** 3D world → 2D canvas pixels */
+function w2c(wx, wy, wz) {
+  const v = new THREE.Vector3(wx, wy, wz).project(camera);
+  return { x: (v.x*.5+.5)*W(), y: (-v.y*.5+.5)*H() };
 }
 
-function createNewObject(type, cx, cz, w, d, h) {
-  const mesh = buildExtrudedMesh(type, w, d, h);
+// ═══════════════════════════════════════════════════════════
+// GEOMETRY CREATION
+// ═══════════════════════════════════════════════════════════
+function makeMat(hex=0x4d8ef0) {
+  return new THREE.MeshStandardMaterial({
+    color: hex, metalness:.3, roughness:.5,
+    emissive: new THREE.Color(0), emissiveIntensity: 0
+  });
+}
+
+function buildGeo(type, w, d, h, pts2d=null) {
+  const shape = new THREE.Shape();
+  if (type === 'rect') {
+    const hw=w/2, hd=d/2;
+    shape.moveTo(-hw,-hd); shape.lineTo(hw,-hd);
+    shape.lineTo(hw,hd);   shape.lineTo(-hw,hd);
+    shape.closePath();
+  } else if (type === 'circle') {
+    shape.absarc(0, 0, w/2, 0, Math.PI*2, false);
+  } else if (type === 'polygon' && pts2d) {
+    shape.moveTo(pts2d[0].x, pts2d[0].y);
+    for (let i=1;i<pts2d.length;i++) shape.lineTo(pts2d[i].x, pts2d[i].y);
+    shape.closePath();
+  }
+  const geo = new THREE.ExtrudeGeometry(shape, {
+    steps:1, depth:h, bevelEnabled:false
+  });
+  geo.rotateX(-Math.PI/2);
+  geo.computeVertexNormals();
+  return geo;
+}
+
+function spawnObject(type, cx, cz, w, d, h, pts2d=null) {
+  const geo  = buildGeo(type, w, d, h, pts2d);
+  const mat  = makeMat();
+  const mesh = new THREE.Mesh(geo, mat);
   mesh.position.set(cx, 0, cz);
+  mesh.castShadow = mesh.receiveShadow = true;
+  mesh.userData = { id: nextId++, type, w, d, h, pts2d };
+  mesh.name = `${type}_${mesh.userData.id}`;
   scene.add(mesh);
   objects.push(mesh);
   selectObject(mesh);
-  updateObjList();
-  statusMsg(`Created ${type} ${w}x${d}x${h}`);
+  refreshTree();
+  sb(`Created ${mesh.name}  (${w}×${d}×${h})`);
   return mesh;
 }
 
-function rebuildMeshDimensions(mesh, newW, newD, newH) {
-  const oldColor = mesh.material.color.getHex();
-  const pos = mesh.position.clone();
-  const rot = mesh.rotation.clone();
-  const type = mesh.userData.type || 'rect';
-  const newMesh = buildExtrudedMesh(type, newW, newD, newH, oldColor);
-  newMesh.position.copy(pos);
-  newMesh.rotation.copy(rot);
-  newMesh.userData = { ...newMesh.userData, w: newW, d: newD, h: newH, colorHex: oldColor };
-  scene.remove(mesh);
-  const idx = objects.indexOf(mesh);
-  if(idx !== -1) objects.splice(idx, 1, newMesh);
-  if(selectedObj === mesh) selectObject(newMesh);
-  mesh.geometry?.dispose(); mesh.material?.dispose();
-  scene.add(newMesh);
-  updateObjList();
-}
-
-// face extrude (push/pull top or bottom)
-function extrudeSelectedFace(dist) {
-  if(!selectedFaceInfo || !selectedFaceInfo.mesh) { statusMsg("No face selected. Shift+Click on a face."); return; }
-  const mesh = selectedFaceInfo.mesh;
+function rebuildGeo(mesh, w, d, h) {
   const ud = mesh.userData;
-  const norm = selectedFaceInfo.normal;
-  const isTop = norm.y > 0.5;
-  const isBottom = norm.y < -0.5;
-  if(isTop || isBottom) {
-    const delta = isTop ? dist : -dist;
-    const newH = Math.max(5, ud.h + delta);
-    rebuildMeshDimensions(mesh, ud.w, ud.d, newH);
-    statusMsg(`Extruded face by ${dist} → new height ${newH.toFixed(1)}`);
-  } else {
-    statusMsg("Only top/bottom face extrusion supported in this version (select horizontal face)");
-  }
+  mesh.geometry.dispose();
+  mesh.geometry = buildGeo(ud.type, w, d, h, ud.pts2d);
+  ud.w=w; ud.d=d; ud.h=h;
+  refreshProps();
 }
 
-// face selection via raycast
-function selectFaceFromClick(event) {
-  if(!selectedObj) return null;
-  const rect = renderer.domElement.getBoundingClientRect();
-  const mouse = new THREE.Vector2(((event.clientX - rect.left)/rect.width)*2-1, -((event.clientY - rect.top)/rect.height)*2+1);
-  const raycaster = new THREE.Raycaster();
-  raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObject(selectedObj, true);
-  if(hits.length === 0) return null;
-  const hit = hits[0];
-  const normal = hit.face.normal.clone().transformDirection(selectedObj.matrixWorld).normalize();
-  return { mesh: selectedObj, point: hit.point, normal, faceIndex: hit.faceIndex };
-}
-
-// selection & transform modes
+// ═══════════════════════════════════════════════════════════
+// SELECTION
+// ═══════════════════════════════════════════════════════════
 function selectObject(obj) {
-  if(selectedObj) { selectedObj.material.emissiveIntensity = 0; }
-  selectedObj = obj;
-  selectedFaceInfo = null;
-  document.getElementById('rp-face-info').innerHTML = 'Shift+Click on a face to select it';
-  if(obj) {
-    obj.material.emissive = new THREE.Color(0x2266ff);
-    obj.material.emissiveIntensity = 0.2;
+  // Unhighlight old
+  if (selObj) {
+    selObj.material.emissiveIntensity = 0;
+  }
+  selObj  = obj;
+  selFace = null;
+  clearFaceHUD();
+
+  if (obj) {
+    obj.material.emissive.set(0x2255cc);
+    obj.material.emissiveIntensity = 0.18;
     tc.attach(obj);
-    if(transformMode === 'select') tc.setMode('translate');
-    else tc.setMode(transformMode);
-    statusMsg(`Selected: ${obj.name}`);
-  } else { tc.detach(); }
-  updatePropsPanel();
-  updateObjList();
-}
-
-function setTransformMode(mode) {
-  transformMode = mode;
-  if(selectedObj) tc.setMode(mode === 'select' ? 'translate' : mode);
-  document.querySelectorAll('.th-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
-}
-
-function updatePropsPanel() {
-  if(!selectedObj) { ['rp-x','rp-y','rp-z','rp-rx','rp-ry','rp-rz','rp-dw','rp-dd','rp-dh'].forEach(id=>document.getElementById(id).value=''); document.getElementById('rp-sel').innerHTML='Nothing selected'; return; }
-  const o = selectedObj, ud = o.userData;
-  document.getElementById('rp-sel').innerHTML = `<b>${o.name}</b><br>${ud.type}  ${ud.w}×${ud.d}×${ud.h}`;
-  document.getElementById('rp-x').value = o.position.x.toFixed(1);
-  document.getElementById('rp-y').value = o.position.y.toFixed(1);
-  document.getElementById('rp-z').value = o.position.z.toFixed(1);
-  document.getElementById('rp-rx').value = (o.rotation.x*180/Math.PI).toFixed(1);
-  document.getElementById('rp-ry').value = (o.rotation.y*180/Math.PI).toFixed(1);
-  document.getElementById('rp-rz').value = (o.rotation.z*180/Math.PI).toFixed(1);
-  document.getElementById('rp-dw').value = ud.w;
-  document.getElementById('rp-dd').value = ud.d;
-  document.getElementById('rp-dh').value = ud.h;
-  document.getElementById('rp-color').value = '#' + o.material.color.getHexString();
-}
-
-function deleteSelected() { if(selectedObj) { const idx = objects.indexOf(selectedObj); if(idx!==-1) objects.splice(idx,1); scene.remove(selectedObj); selectedObj.geometry?.dispose(); selectedObj.material?.dispose(); if(selectedObj===selectedObj) selectObject(null); updateObjList(); statusMsg('Deleted object'); } }
-function duplicateSelected() { if(!selectedObj) return; const o=selectedObj, ud=o.userData; const newMesh = buildExtrudedMesh(ud.type, ud.w, ud.d, ud.h, o.material.color.getHex()); newMesh.position.copy(o.position); newMesh.position.x += 70; newMesh.rotation.copy(o.rotation); scene.add(newMesh); objects.push(newMesh); selectObject(newMesh); updateObjList(); statusMsg('Duplicated'); }
-function updateObjList() { const cont=document.getElementById('object-list'); document.getElementById('obj-count').textContent=objects.length; document.getElementById('stat-obj').textContent=objects.length; if(objects.length===0){ cont.innerHTML='<div class="empty-list">No objects.<br>Draw rect or circle</div>'; return; } cont.innerHTML=''; objects.forEach(obj=>{ const div=document.createElement('div'); div.className=`obj-item${selectedObj===obj?' selected':''}`; div.innerHTML=`<span class="obj-icon">${obj.userData.type==='circle'?'●':'▭'}</span><div class="obj-meta"><div class="obj-name">${obj.name}</div><div class="obj-dim">${obj.userData.w}×${obj.userData.d} H:${obj.userData.h}</div></div><button class="obj-del">✕</button>`; div.querySelector('.obj-del').onclick=(e)=>{ e.stopPropagation(); deleteObject(obj); }; div.onclick=()=>{ exitSketchMode(); setActiveTool('select'); selectObject(obj); }; cont.appendChild(div); }); }
-function deleteObject(obj){ const idx=objects.indexOf(obj); if(idx!==-1) objects.splice(idx,1); if(selectedObj===obj) selectObject(null); scene.remove(obj); obj.geometry?.dispose(); obj.material?.dispose(); updateObjList(); statusMsg('Deleted'); }
-
-// --- sketch mode (rectangle & circle)
-function enterSketchMode(tool) {
-  activeTool = tool;
-  sketchMode = true;
-  sketchPoints = [];
-  sketchPreview = null;
-  svgOverlay.classList.add('interactive');
-  sketchHud.style.display = 'block';
-  orbit.enabled = true;
-  const names = { rect:'Rectangle', circle:'Circle' };
-  document.getElementById('sh-title').textContent = names[tool];
-  document.getElementById('dh-mode').textContent = names[tool].toUpperCase();
-  if(tool === 'rect') document.getElementById('sh-info').textContent = 'Click first corner, then second corner';
-  else document.getElementById('sh-info').textContent = 'Click center, then edge for radius';
-  document.getElementById('sh-hint').textContent = 'ESC to cancel';
-  statusMsg(`${names[tool]} mode: click points on ground plane`);
-}
-function exitSketchMode() { sketchMode=false; sketchPoints=[]; svgOverlay.classList.remove('interactive'); sketchHud.style.display='none'; while(svgOverlay.firstChild) svgOverlay.removeChild(svgOverlay.firstChild); }
-function finishSketch() {
-  if(sketchPoints.length<2) { statusMsg('Need 2 points'); return; }
-  const extH = parseFloat(document.getElementById('dh-ext').value) || 50;
-  if(activeTool === 'rect') {
-    const p0 = sketchPoints[0], p1 = sketchPoints[1];
-    const w = Math.abs(p1.x - p0.x), d = Math.abs(p1.z - p0.z);
-    const cx = (p0.x + p1.x)/2, cz = (p0.z + p1.z)/2;
-    if(w<5 || d<5) { statusMsg('Dimensions too small'); return; }
-    createNewObject('rect', cx, cz, w, d, extH);
-  } else if(activeTool === 'circle') {
-    const center = sketchPoints[0], edge = sketchPoints[1];
-    const r = Math.hypot(edge.x - center.x, edge.z - center.z);
-    if(r<5) return;
-    createNewObject('circle', center.x, center.z, r*2, r*2, extH);
+    applyXFMode(xfMode); // reapply mode so gizmo shows
+    sb(`Selected: ${obj.name}`);
+  } else {
+    tc.detach();
   }
-  exitSketchMode();
-  setActiveTool('select');
-}
-function updateSketchPreview() {
-  while(svgOverlay.firstChild) svgOverlay.removeChild(svgOverlay.firstChild);
-  if(!sketchMode || sketchPoints.length===0) return;
-  const toCanvas = (x,z) => { const v = new THREE.Vector3(x, sketchPlaneY, z); v.project(camera); return { x: (v.x*0.5+0.5)*W(), y: (-v.y*0.5+0.5)*H() }; };
-  const ptsCanvas = sketchPoints.map(p => toCanvas(p.x, p.z));
-  if(activeTool === 'rect' && sketchPoints.length===1 && sketchPreview) {
-    const p0 = toCanvas(sketchPoints[0].x, sketchPoints[0].z);
-    const p1 = toCanvas(sketchPreview.x, sketchPreview.z);
-    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
-    rect.setAttribute('x', Math.min(p0.x, p1.x)); rect.setAttribute('y', Math.min(p0.y, p1.y));
-    rect.setAttribute('width', Math.abs(p1.x-p0.x)); rect.setAttribute('height', Math.abs(p1.y-p0.y));
-    rect.setAttribute('fill', 'rgba(59,130,246,0.15)'); rect.setAttribute('stroke', '#3b82f6'); rect.setAttribute('stroke-width', '2'); rect.setAttribute('stroke-dasharray', '5 3');
-    svgOverlay.appendChild(rect);
-  } else if(activeTool === 'circle' && sketchPoints.length===1 && sketchPreview) {
-    const c = toCanvas(sketchPoints[0].x, sketchPoints[0].z);
-    const e = toCanvas(sketchPreview.x, sketchPreview.z);
-    const r = Math.hypot(e.x-c.x, e.y-c.y);
-    const circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    circle.setAttribute('cx', c.x); circle.setAttribute('cy', c.y); circle.setAttribute('r', r);
-    circle.setAttribute('fill', 'rgba(59,130,246,0.12)'); circle.setAttribute('stroke', '#3b82f6'); circle.setAttribute('stroke-width', '2'); circle.setAttribute('stroke-dasharray', '4 3');
-    svgOverlay.appendChild(circle);
-  }
-  ptsCanvas.forEach((p, i) => { const dot = document.createElementNS('http://www.w3.org/2000/svg','circle'); dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y); dot.setAttribute('r', i===0?5:4); dot.setAttribute('fill', i===0?'#3b82f6':'#10b981'); dot.setAttribute('stroke','#fff'); dot.setAttribute('stroke-width','1.2'); svgOverlay.appendChild(dot); });
+  refreshProps();
+  refreshTree();
 }
 
-// --- mouse interaction
-renderer.domElement.addEventListener('mousedown', (e) => {
-  if(e.button !== 0) return;
-  if(tc.dragging) return;
-  if(!sketchMode) {
-    if(e.shiftKey && selectedObj) {
-      const face = selectFaceFromClick(e);
-      if(face) { selectedFaceInfo = face; document.getElementById('rp-face-info').innerHTML = `Face selected N:(${face.normal.x.toFixed(2)}, ${face.normal.y.toFixed(2)}, ${face.normal.z.toFixed(2)})<br>Use Extrude Face button`; statusMsg('Face selected'); }
-      else selectedFaceInfo = null;
-      return;
-    }
-    const rect = renderer.domElement.getBoundingClientRect();
-    const mouse = new THREE.Vector2(((e.clientX - rect.left)/rect.width)*2-1, -((e.clientY - rect.top)/rect.height)*2+1);
-    const raycaster = new THREE.Raycaster(); raycaster.setFromCamera(mouse, camera);
-    const hits = raycaster.intersectObjects(objects);
-    if(hits.length) selectObject(hits[0].object);
-    else selectObject(null);
+function applyXFMode(mode) {
+  xfMode = mode;
+  if (selObj) {
+    if (mode === 'select') tc.setMode('translate'); // gizmo still shows but as move
+    else tc.setMode(mode);
+    tc.showX = tc.showY = tc.showZ = true; // ensure visible
+  }
+  document.querySelectorAll('.mdbtn').forEach(b => b.classList.toggle('on', b.dataset.m === mode));
+}
+
+// ═══════════════════════════════════════════════════════════
+// FACE SELECTION & EXTRUDE
+// ═══════════════════════════════════════════════════════════
+function hitFace(e) {
+  if (!selObj) return null;
+  const rect = renderer.domElement.getBoundingClientRect();
+  const ray  = new THREE.Raycaster();
+  ray.setFromCamera(new THREE.Vector2(
+    ((e.clientX-rect.left)/rect.width)*2-1,
+    -((e.clientY-rect.top)/rect.height)*2+1
+  ), camera);
+  const hits = ray.intersectObject(selObj, true);
+  if (!hits.length) return null;
+  const h = hits[0];
+  const norm = h.face.normal.clone().transformDirection(selObj.matrixWorld).normalize();
+  return { mesh: selObj, point: h.point.clone(), normal: norm };
+}
+
+function clearFaceHUD() {
+  $('hud-face').style.display = 'none';
+  $('rp-faceinfo').innerHTML = 'Shift+Click on a face<br>to select it';
+}
+
+function doFaceExtrude() {
+  if (!selFace) { sb('No face selected — Shift+Click a face first'); return; }
+  const dist  = parseFloat($('rp-fext').value) || 40;
+  const ud    = selFace.mesh.userData;
+  const ny    = selFace.normal.y;
+  if (Math.abs(ny) > 0.5) {
+    const delta  = ny > 0 ? dist : -dist;
+    const newH   = Math.max(5, ud.h + delta);
+    // Move object down if bottom face
+    if (ny < 0) selFace.mesh.position.y -= delta;
+    rebuildGeo(selFace.mesh, ud.w, ud.d, newH);
+    sb(`Face extruded by ${dist} → height ${newH}`);
+  } else {
+    sb('Side face extrude: select top or bottom face');
+  }
+  selFace = null;
+  clearFaceHUD();
+}
+
+// ═══════════════════════════════════════════════════════════
+// OBJECT TREE & PROPS
+// ═══════════════════════════════════════════════════════════
+function refreshTree() {
+  const cnt = objects.length;
+  $('obj-cnt').textContent = cnt;
+  $('sb-cnt').textContent  = cnt;
+  const body = $('tree-body');
+  if (!cnt) {
+    body.innerHTML = '<div class="empty">No objects yet.<br>Use sketch tools above<br>to draw shapes.</div>';
     return;
   }
-  // sketch mode
-  e.preventDefault();
-  const pt = getGroundIntersection(e.clientX, e.clientY, sketchPlaneY);
-  if(!pt) return;
-  if(activeTool === 'rect') {
-    sketchPoints.push({ x: pt.x, z: pt.z });
-    if(sketchPoints.length === 2) finishSketch();
-  } else if(activeTool === 'circle') {
-    sketchPoints.push({ x: pt.x, z: pt.z });
-    if(sketchPoints.length === 2) finishSketch();
+  body.innerHTML = '';
+  objects.forEach(obj => {
+    const ud  = obj.userData;
+    const div = document.createElement('div');
+    div.className = 'tree-item' + (selObj===obj ? ' sel' : '');
+    div.innerHTML = `
+      <span class="ti-ic">${ud.type==='circle'?'◉':ud.type==='polygon'?'⬡':'▬'}</span>
+      <div class="ti-meta">
+        <div class="ti-name">${obj.name}</div>
+        <div class="ti-sub">${ud.w}×${ud.d}  H:${ud.h}</div>
+      </div>
+      <button class="ti-del" data-id="${ud.id}">✕</button>`;
+    div.querySelector('.ti-del').addEventListener('click', e => {
+      e.stopPropagation(); deleteObj(obj);
+    });
+    div.addEventListener('click', () => {
+      exitSketch(); setTool('select'); selectObject(obj);
+    });
+    body.appendChild(div);
+  });
+}
+
+function refreshProps() {
+  if (!selObj) {
+    $('rp-sel').innerHTML = 'Nothing selected';
+    ['rp-x','rp-y','rp-z','rp-rx','rp-ry','rp-rz','rp-dw','rp-dd','rp-dh']
+      .forEach(id => $(id).value = '');
+    return;
   }
-  updateSketchPreview();
+  const o  = selObj, ud = o.userData;
+  const p  = o.position, r = o.rotation;
+  $('rp-sel').innerHTML = `<b>${o.name}</b><br>${ud.type}  ${ud.w}×${ud.d}×${ud.h}`;
+  $('rp-x').value  = p.x.toFixed(1);
+  $('rp-y').value  = p.y.toFixed(1);
+  $('rp-z').value  = p.z.toFixed(1);
+  $('rp-rx').value = (r.x*180/Math.PI).toFixed(1);
+  $('rp-ry').value = (r.y*180/Math.PI).toFixed(1);
+  $('rp-rz').value = (r.z*180/Math.PI).toFixed(1);
+  $('rp-dw').value = ud.w;
+  $('rp-dd').value = ud.d;
+  $('rp-dh').value = ud.h;
+  $('rp-col').value = '#' + o.material.color.getHexString();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DELETE / DUPLICATE
+// ═══════════════════════════════════════════════════════════
+function deleteObj(obj) {
+  if (!obj) return;
+  const i = objects.indexOf(obj);
+  if (i !== -1) objects.splice(i, 1);
+  if (selObj === obj) selectObject(null);
+  scene.remove(obj);
+  obj.geometry.dispose();
+  obj.material.dispose();
+  refreshTree();
+  sb('Deleted: ' + obj.name);
+}
+
+function dupSelected() {
+  if (!selObj) return;
+  const o  = selObj, ud = o.userData;
+  const nm = makeMat(o.material.color.getHex());
+  const ng = buildGeo(ud.type, ud.w, ud.d, ud.h, ud.pts2d);
+  const m  = new THREE.Mesh(ng, nm);
+  m.position.copy(o.position); m.position.x += 80;
+  m.rotation.copy(o.rotation);
+  m.castShadow = m.receiveShadow = true;
+  m.userData = { ...ud, id: nextId++ };
+  m.name = `${ud.type}_${m.userData.id}`;
+  scene.add(m); objects.push(m);
+  selectObject(m); refreshTree();
+  sb('Duplicated: ' + m.name);
+}
+
+// ═══════════════════════════════════════════════════════════
+// SKETCH MODE
+// ═══════════════════════════════════════════════════════════
+function enterSketch(tool) {
+  skActive  = true;
+  skPoints  = [];
+  skPreview = null;
+  polyClose = false;
+  svgSk.classList.add('draw');
+  $('hud-sk').style.display = 'block';
+
+  const names = { rect:'Rectangle', circ:'Circle', poly:'Polygon' };
+  $('sk-title').textContent = names[tool] || tool;
+  $('dh-label').textContent = (names[tool]||tool).toUpperCase();
+  $('sb-tool').textContent  = names[tool] || tool;
+
+  const hints = {
+    rect: 'Click first corner → click second corner',
+    circ: 'Click center → click edge (radius)',
+    poly: 'Click vertices → click near start or Enter to close',
+  };
+  $('sk-line').textContent = 'Click on canvas to start';
+  $('sk-hint').textContent = hints[tool] || 'ESC to cancel';
+
+  sb(`${names[tool]} sketch — click on the canvas`);
+}
+
+function exitSketch() {
+  skActive  = false;
+  skPoints  = [];
+  skPreview = null;
+  svgSk.classList.remove('draw');
+  $('hud-sk').style.display = 'none';
+  clearSVG();
+}
+
+function finishSketch() {
+  const h = parseFloat($('dh-ext').value) || 60;
+  if (activeTool === 'rect' && skPoints.length >= 2) {
+    const a=skPoints[0], b=skPoints[1];
+    const w = Math.max(10, Math.abs(b.wx - a.wx));
+    const d = Math.max(10, Math.abs(b.wz - a.wz));
+    spawnObject('rect', (a.wx+b.wx)/2, (a.wz+b.wz)/2, w, d, h);
+  } else if (activeTool === 'circ' && skPoints.length >= 2) {
+    const c=skPoints[0], e=skPoints[1];
+    const r = Math.max(5, Math.hypot(e.wx-c.wx, e.wz-c.wz));
+    spawnObject('circle', c.wx, c.wz, r*2, r*2, h);
+  } else if (activeTool === 'poly' && skPoints.length >= 3) {
+    // Convert world coords to local 2D shape coords (centered at centroid)
+    const cx = skPoints.reduce((s,p)=>s+p.wx,0)/skPoints.length;
+    const cz = skPoints.reduce((s,p)=>s+p.wz,0)/skPoints.length;
+    const pts2d = skPoints.map(p => ({ x: p.wx-cx, y: p.wz-cz }));
+    const xs=pts2d.map(p=>Math.abs(p.x)); const ys=pts2d.map(p=>Math.abs(p.y));
+    const bw = Math.max(...xs)*2||100, bd = Math.max(...ys)*2||100;
+    spawnObject('polygon', cx, cz, bw, bd, h, pts2d);
+  } else {
+    sb('Not enough points to create shape');
+    return;
+  }
+  exitSketch();
+  setTool('select');
+}
+
+// ─── SVG sketch overlay drawing ───────────────────────────
+function clearSVG() {
+  while (svgSk.firstChild) svgSk.removeChild(svgSk.firstChild);
+}
+
+function drawSVG() {
+  clearSVG();
+  if (!skActive || skPoints.length === 0) return;
+
+  const all = [...skPoints, ...(skPreview ? [skPreview] : [])];
+  const pts2c = all.map(p => w2c(p.wx, skPlaneY, p.wz));
+  const base  = skPoints.map(p => w2c(p.wx, skPlaneY, p.wz));
+  const prev  = skPreview ? w2c(skPreview.wx, skPlaneY, skPreview.wz) : null;
+
+  const ns = 'http://www.w3.org/2000/svg';
+
+  // ─ Rectangle preview
+  if (activeTool === 'rect' && base.length === 1 && prev) {
+    const rc = document.createElementNS(ns, 'rect');
+    const x = Math.min(base[0].x, prev.x), y = Math.min(base[0].y, prev.y);
+    const rw = Math.abs(prev.x-base[0].x), rh = Math.abs(prev.y-base[0].y);
+    rc.setAttribute('x',x); rc.setAttribute('y',y);
+    rc.setAttribute('width',rw); rc.setAttribute('height',rh);
+    rc.setAttribute('fill','rgba(77,142,240,0.12)');
+    rc.setAttribute('stroke','#4d8ef0'); rc.setAttribute('stroke-width','1.8');
+    rc.setAttribute('stroke-dasharray','6 3');
+    svgSk.appendChild(rc);
+
+    // Dimension labels
+    const addLabel = (lx,ly,txt) => {
+      const t = document.createElementNS(ns,'text');
+      t.setAttribute('x',lx); t.setAttribute('y',ly);
+      t.setAttribute('fill','#4d8ef0'); t.setAttribute('font-size','10');
+      t.setAttribute('font-family','IBM Plex Mono,monospace');
+      t.setAttribute('text-anchor','middle');
+      t.textContent = txt;
+      svgSk.appendChild(t);
+    };
+    if (rw>20) addLabel(x+rw/2, y-4, `${Math.abs(Math.round(skPoints[0].wx - (skPreview?.wx||skPoints[0].wx)))} mm`);
+    if (rh>20) addLabel(x+rw+24, y+rh/2, `${Math.abs(Math.round(skPoints[0].wz - (skPreview?.wz||skPoints[0].wz)))} mm`);
+  }
+
+  // ─ Circle preview
+  if (activeTool === 'circ' && base.length === 1 && prev) {
+    const r = Math.hypot(prev.x-base[0].x, prev.y-base[0].y);
+    const rl = document.createElementNS(ns,'line');
+    rl.setAttribute('x1',base[0].x); rl.setAttribute('y1',base[0].y);
+    rl.setAttribute('x2',prev.x); rl.setAttribute('y2',prev.y);
+    rl.setAttribute('stroke','#4d8ef060'); rl.setAttribute('stroke-width','1');
+    svgSk.appendChild(rl);
+    const cc = document.createElementNS(ns,'circle');
+    cc.setAttribute('cx',base[0].x); cc.setAttribute('cy',base[0].y);
+    cc.setAttribute('r',r);
+    cc.setAttribute('fill','rgba(77,142,240,0.10)');
+    cc.setAttribute('stroke','#4d8ef0'); cc.setAttribute('stroke-width','1.8');
+    cc.setAttribute('stroke-dasharray','6 3');
+    svgSk.appendChild(cc);
+    // radius label
+    if (r>16) {
+      const t = document.createElementNS(ns,'text');
+      t.setAttribute('x', (base[0].x+prev.x)/2+6);
+      t.setAttribute('y', (base[0].y+prev.y)/2-6);
+      t.setAttribute('fill','#4d8ef0'); t.setAttribute('font-size','10');
+      t.setAttribute('font-family','IBM Plex Mono,monospace');
+      const wr = Math.round(Math.hypot(skPoints[0].wx-(skPreview?.wx||0), skPoints[0].wz-(skPreview?.wz||0)));
+      t.textContent = `r=${wr}`;
+      svgSk.appendChild(t);
+    }
+  }
+
+  // ─ Polygon preview
+  if (activeTool === 'poly') {
+    const pts = [...base, ...(prev?[prev]:[])];
+    if (pts.length >= 2) {
+      const pl = document.createElementNS(ns, 'polygon');
+      pl.setAttribute('points', pts.map(p=>`${p.x},${p.y}`).join(' '));
+      pl.setAttribute('fill','rgba(77,142,240,0.08)');
+      pl.setAttribute('stroke','#4d8ef0'); pl.setAttribute('stroke-width','1.8');
+      pl.setAttribute('stroke-dasharray','5 3');
+      svgSk.appendChild(pl);
+    }
+  }
+
+  // ─ Point markers
+  base.forEach((p, i) => {
+    const dot = document.createElementNS(ns,'circle');
+    dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y);
+    dot.setAttribute('r', i===0 ? 6 : 4);
+    dot.setAttribute('fill', i===0 ? '#4d8ef0' : '#22c55e');
+    dot.setAttribute('stroke','#fff'); dot.setAttribute('stroke-width','1.2');
+    svgSk.appendChild(dot);
+    // coord label
+    const lbl = document.createElementNS(ns,'text');
+    lbl.setAttribute('x',p.x+9); lbl.setAttribute('y',p.y-7);
+    lbl.setAttribute('fill','#8888a0'); lbl.setAttribute('font-size','9');
+    lbl.setAttribute('font-family','IBM Plex Mono,monospace');
+    lbl.textContent = `${skPoints[i].wx},${skPoints[i].wz}`;
+    svgSk.appendChild(lbl);
+  });
+
+  // ─ Cursor crosshair
+  if (prev) {
+    const ch = (x,y,sz=9) => {
+      ['h','v'].forEach(dir => {
+        const ln = document.createElementNS(ns,'line');
+        if (dir==='h') { ln.setAttribute('x1',x-sz); ln.setAttribute('y1',y); ln.setAttribute('x2',x+sz); ln.setAttribute('y2',y); }
+        else            { ln.setAttribute('x1',x); ln.setAttribute('y1',y-sz); ln.setAttribute('x2',x); ln.setAttribute('y2',y+sz); }
+        ln.setAttribute('stroke','#4d8ef0'); ln.setAttribute('stroke-width','1.2');
+        svgSk.appendChild(ln);
+      });
+    };
+    ch(prev.x, prev.y);
+    // coord at cursor
+    const ct = document.createElementNS(ns,'text');
+    ct.setAttribute('x',prev.x+12); ct.setAttribute('y',prev.y+4);
+    ct.setAttribute('fill','#4d8ef0'); ct.setAttribute('font-size','9');
+    ct.setAttribute('font-family','IBM Plex Mono,monospace');
+    ct.textContent = `${skPreview.wx}, ${skPreview.wz}`;
+    svgSk.appendChild(ct);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOUSE EVENTS
+// ═══════════════════════════════════════════════════════════
+renderer.domElement.addEventListener('pointerdown', e => {
+  if (e.button !== 0) return; // left only
+  if (tc.dragging) return;
+
+  if (skActive) {
+    // ─ Sketch click
+    e.preventDefault();
+    const pt = rayGround(e.clientX, e.clientY, skPlaneY);
+    if (!pt) return;
+
+    if (activeTool === 'rect') {
+      skPoints.push(pt);
+      if (skPoints.length === 1) {
+        $('sk-line').textContent = 'Click second corner';
+      } else {
+        finishSketch();
+      }
+    } else if (activeTool === 'circ') {
+      skPoints.push(pt);
+      if (skPoints.length === 1) {
+        $('sk-line').textContent = 'Click edge point for radius';
+      } else {
+        finishSketch();
+      }
+    } else if (activeTool === 'poly') {
+      // Check if close to first point → close shape
+      if (skPoints.length >= 3) {
+        const first = w2c(skPoints[0].wx, skPlaneY, skPoints[0].wz);
+        const cur   = w2c(pt.wx, skPlaneY, pt.wz);
+        const dist  = Math.hypot(cur.x-first.x, cur.y-first.y);
+        if (dist < 20) { finishSketch(); return; }
+      }
+      skPoints.push(pt);
+      $('sk-line').textContent = `${skPoints.length} pts — click near start or Enter to close`;
+    }
+    drawSVG();
+    return;
+  }
+
+  // ─ Not in sketch: selection / face pick
+  if (e.shiftKey && selObj) {
+    // Face pick
+    const face = hitFace(e);
+    if (face) {
+      selFace = face;
+      const n  = face.normal;
+      const label = Math.abs(n.y)>.7 ? (n.y>0?'Top':'Bottom') :
+                    Math.abs(n.x)>.7 ? (n.x>0?'Right':'Left') : (n.z>0?'Front':'Back');
+      $('hf-info').innerHTML = `${label} face<br>N:(${n.x.toFixed(2)}, ${n.y.toFixed(2)}, ${n.z.toFixed(2)})`;
+      $('hud-face').style.display = 'block';
+      $('rp-faceinfo').innerHTML = `<b>${label}</b> face selected<br>N:(${n.x.toFixed(2)}, ${n.y.toFixed(2)}, ${n.z.toFixed(2)})`;
+      sb(`Face selected: ${label}`);
+    }
+    return;
+  }
+
+  // Object selection
+  const rect = renderer.domElement.getBoundingClientRect();
+  const ray  = new THREE.Raycaster();
+  ray.setFromCamera(new THREE.Vector2(
+    ((e.clientX-rect.left)/rect.width)*2-1,
+    -((e.clientY-rect.top)/rect.height)*2+1
+  ), camera);
+  const hits = ray.intersectObjects(objects, false);
+  if (hits.length) {
+    selectObject(hits[0].object);
+  } else {
+    selectObject(null);
+  }
 });
-renderer.domElement.addEventListener('mousemove', (e) => {
-  if(sketchMode && sketchPoints.length === 1) {
-    const pt = getGroundIntersection(e.clientX, e.clientY, sketchPlaneY);
-    if(pt) { sketchPreview = pt; updateSketchPreview(); }
-  } else if(!sketchMode) {
+
+renderer.domElement.addEventListener('pointermove', e => {
+  if (skActive) {
+    const pt = rayGround(e.clientX, e.clientY, skPlaneY);
+    if (pt) { skPreview = pt; drawSVG(); }
+    // Update dh-w / dh-d live if rect mode
+    if (activeTool === 'rect' && skPoints.length === 1 && skPreview) {
+      $('dh-w').value = Math.max(10, Math.abs(skPreview.wx - skPoints[0].wx));
+      $('dh-d').value = Math.max(10, Math.abs(skPreview.wz - skPoints[0].wz));
+    }
+  } else {
     const rect = renderer.domElement.getBoundingClientRect();
-    document.getElementById('stat-coords').textContent = `X:${e.clientX-rect.left} Y:${e.clientY-rect.top}`;
+    $('sb-xy').textContent = `px ${Math.round(e.clientX-rect.left)}  ${Math.round(e.clientY-rect.top)}`;
   }
 });
+
+renderer.domElement.addEventListener('dblclick', e => {
+  if (skActive && activeTool === 'poly' && skPoints.length >= 3) finishSketch();
+});
+
 renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
 
-// keyboard
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════════
 window.addEventListener('keydown', e => {
-  if(e.target.tagName === 'INPUT') return;
-  if(e.key === 'Escape') { if(sketchMode) exitSketchMode(); else selectObject(null); }
-  if(e.key === 'Enter' && sketchMode) finishSketch();
-  if(e.key === 'Delete') deleteSelected();
-  if(e.key === 'd') duplicateSelected();
-  if(e.key === 'r') { exitSketchMode(); enterSketchMode('rect'); setActiveTool('rect'); }
-  if(e.key === 'c') { exitSketchMode(); enterSketchMode('circle'); setActiveTool('circle'); }
-  if(e.key === 's') { exitSketchMode(); setActiveTool('select'); }
-  if(e.key === '1') setTransformMode('translate');
-  if(e.key === '2') setTransformMode('rotate');
-  if(e.key === '3') setTransformMode('scale');
+  if (e.target.tagName === 'INPUT') return;
+  switch (e.key) {
+    case 'Escape':
+      if (skActive) exitSketch();
+      else selectObject(null);
+      break;
+    case 'Enter':
+      if (skActive && skPoints.length >= 2) finishSketch();
+      break;
+    case 'Delete':
+    case 'Backspace':
+      deleteObj(selObj);
+      break;
+    case 'd': dupSelected(); break;
+    case 'f':
+      if (selObj) { orbit.target.copy(selObj.position); orbit.update(); }
+      break;
+    case 'r': setTool('rect'); break;
+    case 'c': setTool('circ'); break;
+    case 'p': setTool('poly'); break;
+    case 's': setTool('select'); break;
+    case '1': applyXFMode('translate'); break;
+    case '2': applyXFMode('rotate'); break;
+    case '3': applyXFMode('scale'); break;
+  }
 });
-function setActiveTool(tool) { activeTool = tool; document.getElementById('stat-tool').textContent = tool==='rect'?'Rectangle':tool==='circle'?'Circle':'Select'; document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('active')); document.getElementById(`tool-${tool}`)?.classList.add('active'); if(tool==='select') exitSketchMode(); }
 
-// toolbar binds
-document.getElementById('tool-rect').onclick = () => { exitSketchMode(); enterSketchMode('rect'); setActiveTool('rect'); };
-document.getElementById('tool-circle').onclick = () => { exitSketchMode(); enterSketchMode('circle'); setActiveTool('circle'); };
-document.getElementById('tool-select').onclick = () => { exitSketchMode(); setActiveTool('select'); };
-document.getElementById('tool-extrude').onclick = () => { if(selectedFaceInfo) extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30); else if(selectedObj) statusMsg('Shift+Click a face first'); };
-document.getElementById('tool-dup').onclick = duplicateSelected;
-document.getElementById('tool-del').onclick = deleteSelected;
-document.getElementById('tool-clear').onclick = () => { objects.forEach(o=>{ scene.remove(o); o.geometry?.dispose(); o.material?.dispose(); }); objects=[]; selectObject(null); updateObjList(); statusMsg('All cleared'); };
-document.getElementById('btn-extrude').onclick = () => { if(sketchMode) finishSketch(); else if(selectedFaceInfo) extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30); };
-document.getElementById('btn-finish-sketch').onclick = () => { if(sketchMode) finishSketch(); else exitSketchMode(); };
-document.querySelectorAll('.th-btn').forEach(b=>b.onclick=()=>setTransformMode(b.dataset.mode));
-document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{ const v=b.dataset.view; if(v==='front'){camera.position.set(0,80,400); orbit.target.set(0,40,0);} else if(v==='right'){camera.position.set(400,80,0); orbit.target.set(0,40,0);} else if(v==='top'){camera.position.set(0,400,0); orbit.target.set(0,40,0);} else if(v==='persp'){camera.position.set(280,220,380); orbit.target.set(0,40,0);} else if(v==='front-left'){camera.position.set(-250,160,350);} else if(v==='front-right'){camera.position.set(250,160,350);} orbit.update(); statusMsg(`View ${v}`); });
-document.getElementById('rp-apply-pos').onclick = () => { if(selectedObj){ selectedObj.position.set(parseFloat(document.getElementById('rp-x').value), parseFloat(document.getElementById('rp-y').value), parseFloat(document.getElementById('rp-z').value)); updatePropsPanel(); } };
-document.getElementById('rp-apply-rot').onclick = () => { if(selectedObj){ selectedObj.rotation.set(parseFloat(document.getElementById('rp-rx').value)*Math.PI/180, parseFloat(document.getElementById('rp-ry').value)*Math.PI/180, parseFloat(document.getElementById('rp-rz').value)*Math.PI/180); updatePropsPanel(); } };
-document.getElementById('rp-apply-dim').onclick = () => { if(selectedObj){ const ud=selectedObj.userData; rebuildMeshDimensions(selectedObj, parseFloat(document.getElementById('rp-dw').value)||ud.w, parseFloat(document.getElementById('rp-dd').value)||ud.d, parseFloat(document.getElementById('rp-dh').value)||ud.h); } };
-document.getElementById('rp-apply-color').onclick = () => { if(selectedObj) selectedObj.material.color.set(document.getElementById('rp-color').value); };
-document.getElementById('rp-extrude-face').onclick = () => extrudeSelectedFace(parseFloat(document.getElementById('rp-ext-d').value)||30);
-document.getElementById('rp-dup').onclick = duplicateSelected;
-document.getElementById('rp-snap-gnd').onclick = () => { if(selectedObj){ selectedObj.position.y=0; updatePropsPanel(); } };
-document.getElementById('rp-center').onclick = () => { if(selectedObj){ selectedObj.position.x=0; selectedObj.position.z=0; updatePropsPanel(); } };
+// ═══════════════════════════════════════════════════════════
+// TOOL SWITCHING
+// ═══════════════════════════════════════════════════════════
+function setTool(tool) {
+  activeTool = tool;
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  const toolEl = $('tb-' + tool);
+  if (toolEl) toolEl.classList.add('on');
 
-// resize
-window.addEventListener('resize', () => { renderer.setSize(W(), H()); camera.aspect = W()/H(); camera.updateProjectionMatrix(); updateSketchPreview(); });
+  const toolNames = { rect:'Rectangle', circ:'Circle', poly:'Polygon', select:'Select' };
+  $('sb-tool').textContent = toolNames[tool] || tool;
 
-// start
-function animate(){ requestAnimationFrame(animate); orbit.update(); renderer.render(scene, camera); if(sketchMode) updateSketchPreview(); }
+  if (tool === 'select') {
+    exitSketch();
+  } else {
+    exitSketch();
+    enterSketch(tool);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// VIEW PRESETS
+// ═══════════════════════════════════════════════════════════
+function setView(v) {
+  const D = 500;
+  const views = {
+    front: [0,80,D],   right: [D,80,0],   top: [0,D+100,0],
+    btm:   [0,-D,0],   left:  [-D,80,0],  persp: [320,260,420],
+    fl: [-D*.55,180,D*.55], fr:[D*.55,180,D*.55],
+    bl: [-D*.55,180,-D*.55],br:[D*.55,180,-D*.55],
+  };
+  if (!views[v]) return;
+  camera.position.set(...views[v]);
+  orbit.target.set(0, 30, 0);
+  orbit.update();
+  sb(`View: ${v}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOOLBAR EVENTS
+// ═══════════════════════════════════════════════════════════
+$('tb-rect').onclick = () => setTool('rect');
+$('tb-circ').onclick = () => setTool('circ');
+$('tb-poly').onclick = () => setTool('poly');
+$('tb-sel').onclick  = () => setTool('select');
+$('tb-dup').onclick  = dupSelected;
+$('tb-del').onclick  = () => deleteObj(selObj);
+$('tb-clr').onclick  = () => {
+  [...objects].forEach(deleteObj);
+  sb('Cleared all');
+};
+
+// Mode HUD
+document.querySelectorAll('.mdbtn').forEach(b => {
+  b.onclick = () => applyXFMode(b.dataset.m);
+});
+
+// View buttons
+document.querySelectorAll('[data-v]').forEach(b => {
+  b.onclick = () => setView(b.dataset.v);
+});
+
+// Draw HUD
+$('dh-extrude').onclick = () => {
+  if (skActive && skPoints.length >= 2) finishSketch();
+  else if (selFace) doFaceExtrude();
+  else if (selObj) sb('Shift+Click a face to select it, then Extrude');
+};
+$('dh-finish').onclick = () => {
+  if (skActive) finishSketch();
+  else exitSketch();
+};
+
+// Right panel
+$('rp-apos').onclick = () => {
+  if (!selObj) return;
+  selObj.position.set(+$('rp-x').value||0, +$('rp-y').value||0, +$('rp-z').value||0);
+  refreshProps();
+};
+$('rp-arot').onclick = () => {
+  if (!selObj) return;
+  const D = Math.PI/180;
+  selObj.rotation.set(+$('rp-rx').value*D||0, +$('rp-ry').value*D||0, +$('rp-rz').value*D||0);
+  refreshProps();
+};
+$('rp-adim').onclick = () => {
+  if (!selObj) return;
+  rebuildGeo(selObj, +$('rp-dw').value||80, +$('rp-dd').value||80, +$('rp-dh').value||40);
+};
+$('rp-acol').onclick = () => {
+  if (!selObj) return;
+  selObj.material.color.set($('rp-col').value);
+};
+$('rp-doface').onclick = doFaceExtrude;
+$('rp-dup').onclick = dupSelected;
+$('rp-sgnd').onclick = () => { if(selObj){ selObj.position.y=0; refreshProps(); } };
+$('rp-ctr').onclick  = () => { if(selObj){ selObj.position.x=0; selObj.position.z=0; refreshProps(); } };
+
+// ═══════════════════════════════════════════════════════════
+// RESIZE
+// ═══════════════════════════════════════════════════════════
+function onResize() {
+  const w=W(), h=H();
+  renderer.setSize(w, h);
+  faceHl.width=w; faceHl.height=h;
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+  svgSk.setAttribute('viewBox',`0 0 ${w} ${h}`);
+  if (skActive) drawSVG();
+}
+window.addEventListener('resize', onResize);
+
+// ═══════════════════════════════════════════════════════════
+// ANIMATE
+// ═══════════════════════════════════════════════════════════
+function animate() {
+  requestAnimationFrame(animate);
+  orbit.update();
+  renderer.render(scene, camera);
+  if (skActive) drawSVG(); // redraw on every frame (handles camera move during sketch)
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+onResize();
 animate();
-enterSketchMode('rect');
-setActiveTool('rect');
-statusMsg('Ready — Draw rectangle (click two points) | Shift+click face then extrude | Right mouse orbit');
+setTool('rect'); // start in rectangle sketch mode
+
+sb('AetherCAD ready — Right-drag: orbit  |  Scroll: zoom  |  Middle-drag: pan  |  Shift+Click face to select  |  R/C/P: sketch tools  |  S: select');
 </script>
 </body>
 </html>
