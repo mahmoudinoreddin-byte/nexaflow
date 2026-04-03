@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ service.name }} — NexaFlow{% endblock %}
+
+{% block content %}
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#F7F8FC;padding:24px">
+  <div style="background:#fff;border:1px solid #E2E8F0;border-radius:20px;padding:48px;max-width:480px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.06)">
+    <div style="font-size:3.5rem;margin-bottom:16px">{{ service.icon }}</div>
+    <h1 style="font-family:var(--font-head);font-size:1.4rem;font-weight:800;color:#1A2332;margin-bottom:8px">{{ service.name }}</h1>
+    <p style="color:#64748B;font-size:.9rem;margin-bottom:24px">{{ service.description }}</p>
+
+    <div style="background:#F1F5F9;border-radius:12px;padding:16px;margin-bottom:24px;text-align:left">
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;margin-bottom:8px">Authenticated As</div>
+      <div style="font-weight:600;color:#1A2332;font-size:.9rem">{{ user.email }}</div>
+      <div style="font-size:.8rem;color:#64748B;margin-top:3px">{{ user.get_plan_display }} Plan · {{ user.get_status_display }}</div>
+    </div>
+
+    <div style="background:#EEF2FF;border:1px solid #C7D2FE;border-radius:10px;padding:14px 16px;margin-bottom:28px;font-size:.8rem;color:#3730A3">
+      🔐 You are accessing this service through a secure personal link.
+      This link is unique to you — do not share it.
+    </div>
+
+    {% if service.url %}
+    <a href="{{ service.url }}?nexatoken={{ us.access_token }}"
+       style="display:inline-flex;align-items:center;gap:8px;background:#4F46E5;color:#fff;padding:14px 32px;border-radius:10px;font-weight:700;font-size:.95rem;margin-bottom:12px">
+      Launch {{ service.name }} →
+    </a>
+    <br>
+    {% endif %}
+
+    <a href="{% url 'services:my' %}" style="font-size:.82rem;color:#64748B">← Back to My Services</a>
+  </div>
+</div>
+{% endblock %}
