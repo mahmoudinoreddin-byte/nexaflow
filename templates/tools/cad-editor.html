@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD — Fusion 360 Style Design Studio</title>
+<title>AetherCAD — Professional 3D Design</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg: #0C0C0C;
+  --bg: #0F0F0F;
   --bg2: #1A1A1A;
   --bg3: #252525;
   --bg4: #333333;
@@ -24,11 +24,6 @@
   --text2: #98989D;
   --text3: #636366;
   --white: #FFFFFF;
-  --header-h: 38px;
-  --toolbar-h: 88px;
-  --statusbar-h: 28px;
-  --left-w: 280px;
-  --right-w: 300px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text);
@@ -44,7 +39,7 @@ input{font-family:'JetBrains Mono',monospace;}
 
 /* Menu Bar */
 #menubar{
-  height:var(--header-h);
+  height:38px;
   background:rgba(26,26,26,0.98);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
@@ -80,13 +75,13 @@ input{font-family:'JetBrains Mono',monospace;}
 
 /* Toolbar */
 #main-toolbar{
-  height:var(--toolbar-h);
+  height:80px;
   background:rgba(26,26,26,0.96);
   border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
-  padding:0 20px;
-  gap:20px;
+  padding:0 16px;
+  gap:16px;
   flex-shrink:0;
   overflow-x:auto;
 }
@@ -102,21 +97,21 @@ input{font-family:'JetBrains Mono',monospace;}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:5px;
-  padding:6px 16px;
+  gap:4px;
+  padding:5px 14px;
   background:var(--bg3);
   border:1px solid var(--border);
   border-radius:10px;
   color:var(--text);
   font-size:11px;
   font-weight:500;
-  min-width:70px;
-  height:56px;
+  min-width:65px;
+  height:52px;
   transition:0.1s;
 }
 .tool-btn:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px);}
 .tool-btn.active{background:rgba(10,132,255,0.2);border-color:var(--accent);color:var(--accent2);}
-.tool-icon{font-size:20px;}
+.tool-icon{font-size:18px;}
 .tool-label{font-size:10px;}
 
 /* Main Area */
@@ -124,7 +119,7 @@ input{font-family:'JetBrains Mono',monospace;}
 
 /* Left Panel */
 #left-panel{
-  width:var(--left-w);
+  width:260px;
   background:var(--panel);
   border-right:1px solid var(--border);
   display:flex;
@@ -173,7 +168,7 @@ input{font-family:'JetBrains Mono',monospace;}
 .object-item:hover .object-delete{opacity:1;}
 .object-delete:hover{background:rgba(255,69,58,0.2);}
 
-/* Canvas 3D */
+/* Canvas */
 #canvas-area{
   flex:1;
   position:relative;
@@ -188,13 +183,37 @@ input{font-family:'JetBrains Mono',monospace;}
 .canvas-corner{
   position:absolute;
   font-size:9px;
-  color:rgba(255,255,255,0.25);
+  color:rgba(255,255,255,0.3);
   pointer-events:none;
   font-family:'JetBrains Mono',monospace;
 }
 #corner-tl{top:12px;left:16px;}
 #corner-tr{top:12px;right:16px;}
 #corner-bl{bottom:38px;left:16px;}
+
+/* View Cube */
+#view-cube{
+  position:absolute;
+  bottom:20px;
+  right:20px;
+  display:grid;
+  grid-template-columns:repeat(3,40px);
+  grid-template-rows:repeat(3,40px);
+  gap:3px;
+  z-index:20;
+}
+.view-btn{
+  background:rgba(30,30,35,0.9);
+  backdrop-filter:blur(8px);
+  border:1px solid var(--border2);
+  border-radius:6px;
+  color:var(--text2);
+  font-size:10px;
+  font-weight:600;
+  transition:0.1s;
+}
+.view-btn:hover{background:var(--accent);border-color:var(--accent);color:white;}
+.view-center{background:rgba(10,132,255,0.3);border-color:var(--accent);}
 
 /* Drawing HUD */
 #drawing-hud{
@@ -236,26 +255,34 @@ input{font-family:'JetBrains Mono',monospace;}
   font-size:11px;
 }
 
-/* Curve Drawing Status */
-#curve-status{
+/* Selection Mode Bar */
+#sel-mode-bar{
   position:absolute;
-  top:50px;
+  top:12px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(10,132,255,0.9);
-  backdrop-filter:blur(8px);
-  padding:6px 16px;
-  border-radius:20px;
+  background:rgba(26,26,26,0.95);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border2);
+  border-radius:10px;
+  display:flex;
+  z-index:20;
+}
+.sel-btn{
+  padding:5px 16px;
   font-size:11px;
   font-weight:500;
-  color:white;
-  z-index:20;
-  pointer-events:none;
+  color:var(--text2);
+  transition:0.1s;
+  border-right:1px solid var(--border);
 }
+.sel-btn:last-child{border-right:none;}
+.sel-btn:hover{background:var(--bg4);color:var(--white);}
+.sel-btn.active{background:rgba(10,132,255,0.2);color:var(--accent2);}
 
 /* Right Panel */
 #right-panel{
-  width:var(--right-w);
+  width:280px;
   background:var(--panel);
   border-left:1px solid var(--border);
   display:flex;
@@ -281,7 +308,7 @@ input{font-family:'JetBrains Mono',monospace;}
   margin-bottom:10px;
 }
 .prop-row label{
-  width:55px;
+  width:50px;
   color:var(--text2);
   font-size:11px;
 }
@@ -311,11 +338,10 @@ input{font-family:'JetBrains Mono',monospace;}
 .prop-btn.primary{background:var(--accent);border-color:var(--accent);color:white;}
 .prop-btn.danger{background:rgba(255,69,58,0.1);border-color:var(--red);color:var(--red);}
 .prop-btn.danger:hover{background:var(--red);color:white;}
-.color-preview{width:36px;height:28px;border-radius:6px;border:1px solid var(--border);}
 
 /* Status Bar */
 #statusbar{
-  height:var(--statusbar-h);
+  height:28px;
   background:rgba(26,26,26,0.95);
   border-top:1px solid var(--border);
   display:flex;
@@ -340,7 +366,7 @@ input{font-family:'JetBrains Mono',monospace;}
   <button class="menu-item" id="menu-edit">Edit</button>
   <button class="menu-item" id="menu-view">View</button>
   <div id="menubar-right">
-    <div class="mb-badge">FUSION 360 STYLE</div>
+    <div class="mb-badge">3D DESIGN STUDIO</div>
     <div class="mb-badge" style="color:var(--green);">● READY</div>
   </div>
 </div>
@@ -348,9 +374,8 @@ input{font-family:'JetBrains Mono',monospace;}
 <div id="main-toolbar">
   <div class="tool-group">
     <button class="tool-btn" id="tool-rectangle"><span class="tool-icon">⬛</span><span class="tool-label">Rectangle</span></button>
-    <button class="tool-btn" id="tool-curve-rect"><span class="tool-icon">⭔</span><span class="tool-label">Rounded Rect</span></button>
+    <button class="tool-btn" id="tool-rounded"><span class="tool-icon">⭔</span><span class="tool-label">Rounded</span></button>
     <button class="tool-btn" id="tool-circle"><span class="tool-icon">●</span><span class="tool-label">Circle</span></button>
-    <button class="tool-btn" id="tool-polygon"><span class="tool-icon">🔷</span><span class="tool-label">Curve/Polygon</span></button>
   </div>
   <div class="tool-group">
     <button class="tool-btn" id="tool-select"><span class="tool-icon">🖱</span><span class="tool-label">Select</span></button>
@@ -370,16 +395,28 @@ input{font-family:'JetBrains Mono',monospace;}
 
   <div id="canvas-area">
     <canvas id="draw-canvas"></canvas>
-    <div class="canvas-corner" id="corner-tl">AetherCAD · 3D Design Studio</div>
-    <div class="canvas-corner" id="corner-tr">Isometric View</div>
-    <div class="canvas-corner" id="corner-bl">Click to draw · Select to edit · Extrude to 3D</div>
-    <div id="curve-status" style="display:none;">✏️ Click points to create shape — double-click or press Enter to close</div>
+    <div class="canvas-corner" id="corner-tl">AetherCAD · 3D Studio</div>
+    <div class="canvas-corner" id="corner-tr" id="view-label">Perspective</div>
+    <div class="canvas-corner" id="corner-bl">Click drag to draw · Select object · Extrude to 3D</div>
+    
+    <div id="view-cube">
+      <div></div><button class="view-btn" data-view="top">TOP</button><div></div>
+      <button class="view-btn" data-view="left">LFT</button><button class="view-btn view-center" data-view="persp">⊙</button><button class="view-btn" data-view="right">RGT</button>
+      <div></div><button class="view-btn" data-view="front">FRT</button><button class="view-btn" data-view="bottom">BOT</button>
+    </div>
+    
+    <div id="sel-mode-bar">
+      <button class="sel-btn active" id="sel-body">Body</button>
+      <button class="sel-btn" id="sel-face">Face</button>
+      <button class="sel-btn" id="sel-edge">Edge</button>
+    </div>
+    
     <div id="drawing-hud">
-      <div class="hud-item"><label>W:</label><input type="number" id="hud-w" step="5" value="100"></div>
-      <div class="hud-item"><label>H:</label><input type="number" id="hud-h" step="5" value="100"></div>
+      <div class="hud-item"><label>W:</label><input type="number" id="hud-w" step="5" value="80"></div>
+      <div class="hud-item"><label>H:</label><input type="number" id="hud-h" step="5" value="80"></div>
       <div class="hud-item" id="radius-group"><label>R:</label><input type="number" id="hud-r" step="5" value="20"></div>
-      <div class="hud-item"><label>Extrude H:</label><input type="number" id="extrude-height" step="10" value="50"></div>
-      <button class="hud-btn" id="apply-extrude">Extrude Selected</button>
+      <div class="hud-item"><label>Extrude H:</label><input type="number" id="extrude-height" step="10" value="40"></div>
+      <button class="hud-btn" id="apply-extrude-btn">Extrude</button>
     </div>
   </div>
 
@@ -388,18 +425,19 @@ input{font-family:'JetBrains Mono',monospace;}
     <div class="prop-section"><div class="prop-section-title">📍 Transform</div>
       <div class="prop-row"><label>X:</label><input type="number" id="prop-x" step="1"></div>
       <div class="prop-row"><label>Y:</label><input type="number" id="prop-y" step="1"></div>
-      <div class="prop-row"><label>Z:</label><input type="number" id="prop-z" step="1" value="0"></div>
-      <button class="prop-btn" id="apply-position">Apply Position</button>
+      <div class="prop-row"><label>Z:</label><input type="number" id="prop-z" step="1"></div>
+      <button class="prop-btn" id="apply-pos">Apply Position</button>
     </div>
-    <div class="prop-section"><div class="prop-section-title">📏 Size</div>
-      <div class="prop-row"><label>W:</label><input type="number" id="prop-w" step="1"></div>
-      <div class="prop-row"><label>H:</label><input type="number" id="prop-h" step="1"></div>
-      <div class="prop-row" id="prop-radius-row"><label>R:</label><input type="number" id="prop-r" step="1"></div>
-      <button class="prop-btn" id="apply-size">Apply Size</button>
+    <div class="prop-section"><div class="prop-section-title">📏 Dimensions</div>
+      <div class="prop-row"><label>Width:</label><input type="number" id="prop-w" step="5"></div>
+      <div class="prop-row"><label>Height:</label><input type="number" id="prop-h" step="5"></div>
+      <div class="prop-row" id="prop-radius-row"><label>Radius:</label><input type="number" id="prop-r" step="5"></div>
+      <div class="prop-row"><label>Depth:</label><input type="number" id="prop-d" step="5"></div>
+      <button class="prop-btn" id="apply-dims">Apply Dimensions</button>
     </div>
-    <div class="prop-section"><div class="prop-section-title">🎨 Style</div>
-      <div class="prop-row"><label>Fill:</label><input type="color" id="prop-fill" value="#4a7ac8"><div class="color-preview" id="fill-preview" style="background:#4a7ac8;"></div></div>
-      <button class="prop-btn" id="apply-style">Apply Color</button>
+    <div class="prop-section"><div class="prop-section-title">🎨 Color</div>
+      <div class="prop-row"><label>Fill:</label><input type="color" id="prop-color" value="#4a7ac8"></div>
+      <button class="prop-btn" id="apply-color">Apply Color</button>
     </div>
     <div class="prop-section">
       <button class="prop-btn danger" id="delete-selected">Delete Selected</button>
@@ -409,83 +447,90 @@ input{font-family:'JetBrains Mono',monospace;}
 </div>
 
 <div id="statusbar">
-  <div class="status-item" id="status-message">Ready — Select a shape tool</div>
+  <div class="status-item" id="status-msg">Ready — Select Rectangle, Rounded, or Circle</div>
   <div class="status-item"><b>Objects:</b> <span id="status-count">0</span></div>
   <div class="status-item"><b>Tool:</b> <span id="status-tool">Rectangle</span></div>
-  <div class="status-item" id="status-coords"><b>Pos:</b> 0, 0, 0</div>
+  <div class="status-item" id="status-coords"><b>Cursor:</b> 0, 0, 0</div>
 </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
-  // --- Three.js Setup ---
+  // --- Setup ---
   const canvas = document.getElementById('draw-canvas');
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0A0A0A);
-  scene.fog = new THREE.FogExp2(0x0A0A0A, 0.003);
+  scene.fog = new THREE.FogExp2(0x0A0A0A, 0.002);
   
-  const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-  camera.position.set(15, 12, 18);
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 500);
+  camera.position.set(12, 10, 15);
   camera.lookAt(0, 0, 0);
   
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   
-  function resize() {
+  function resizeCanvas() {
     const w = canvas.parentElement.clientWidth;
     const h = canvas.parentElement.clientHeight;
     renderer.setSize(w, h);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
   }
-  window.addEventListener('resize', resize);
-  resize();
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
   
-  // Lighting
-  const ambientLight = new THREE.AmbientLight(0x404060);
-  scene.add(ambientLight);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
-  dirLight.position.set(5, 10, 7);
-  scene.add(dirLight);
-  const fillLight = new THREE.PointLight(0x4466cc, 0.5);
-  fillLight.position.set(-3, 5, 4);
+  // --- Lighting ---
+  const ambient = new THREE.AmbientLight(0x404060);
+  scene.add(ambient);
+  const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  mainLight.position.set(5, 12, 8);
+  mainLight.castShadow = true;
+  mainLight.receiveShadow = true;
+  scene.add(mainLight);
+  const fillLight = new THREE.PointLight(0x4466aa, 0.5);
+  fillLight.position.set(-4, 5, 6);
   scene.add(fillLight);
   const backLight = new THREE.PointLight(0xffaa66, 0.4);
   backLight.position.set(0, 3, -8);
   scene.add(backLight);
+  const rimLight = new THREE.PointLight(0xff8866, 0.3);
+  rimLight.position.set(3, 4, -5);
+  scene.add(rimLight);
   
-  // Grid helper
-  const gridHelper = new THREE.GridHelper(40, 40, 0x444444, 0x222222);
+  // --- Helpers ---
+  const gridHelper = new THREE.GridHelper(50, 20, 0x444444, 0x222222);
   gridHelper.position.y = -0.5;
   scene.add(gridHelper);
-  
-  // Axes helper
   const axesHelper = new THREE.AxesHelper(8);
   scene.add(axesHelper);
   
-  // Data
-  let objects = []; // 3D meshes
-  let selectedIndex = -1;
+  // Ground plane for reference
+  const groundPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 50),
+    new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8, metalness: 0.1, transparent: true, opacity: 0.3, side: THREE.DoubleSide })
+  );
+  groundPlane.rotation.x = -Math.PI / 2;
+  groundPlane.position.y = -0.5;
+  groundPlane.receiveShadow = true;
+  scene.add(groundPlane);
+  
+  // --- Data ---
+  let objects = [];
+  let selectedObject = null;
   let currentTool = 'rectangle';
   let isDrawing = false;
-  let drawStart = { x: 0, y: 0 };
-  let polygonPoints = [];
-  let isDrawingPolygon = false;
+  let drawStart = { x: 0, z: 0 };
   let objectCounter = 0;
+  let selectionMode = 'body'; // body, face, edge
   
-  // Camera controls
-  let isPanning = false;
-  let panStart = { x: 0, y: 0 };
-  let cameraTarget = new THREE.Vector3(0, 0, 0);
-  
-  // Mouse raycasting
-  const raycaster = new THREE.Raycaster();
-  const mouse = new THREE.Vector2();
-  
-  function screenToWorldPlane(screenX, screenY) {
+  // --- Helper Functions ---
+  function screenToGroundPlane(clientX, clientY) {
     const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((screenX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((screenY - rect.top) / rect.height) * 2 + 1;
+    const mouse = new THREE.Vector2();
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+    
+    const raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mouse, camera);
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
     const point = new THREE.Vector3();
@@ -493,15 +538,18 @@ input{font-family:'JetBrains Mono',monospace;}
     return { x: Math.round(point.x / 5) * 5, z: Math.round(point.z / 5) * 5 };
   }
   
-  function createShape(type, x, z, w, h, radius = 20) {
+  function createShapeMesh(type, x, z, width, height, radius) {
     let shape;
+    const w = width;
+    const h = height;
+    const r = Math.min(radius, w/2, h/2);
+    
     if (type === 'circle') {
       const curve = new THREE.EllipseCurve(0, 0, w/2, h/2, 0, 2 * Math.PI, false, 0);
       const points = curve.getPoints(50);
       shape = new THREE.Shape(points);
-    } else if (type === 'curve-rect') {
+    } else if (type === 'rounded') {
       shape = new THREE.Shape();
-      const r = Math.min(radius, w/2, h/2);
       shape.moveTo(r, 0);
       shape.lineTo(w - r, 0);
       shape.quadraticCurveTo(w, 0, w, r);
@@ -523,82 +571,111 @@ input{font-family:'JetBrains Mono',monospace;}
     const extrudeSettings = { steps: 1, depth: 10, bevelEnabled: false };
     const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     geometry.computeVertexNormals();
-    geometry.center();
+    geometry.computeBoundingBox();
     
     const material = new THREE.MeshStandardMaterial({ color: 0x4a7ac8, metalness: 0.4, roughness: 0.3 });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(x, 0, z);
-    mesh.userData = { type: type, width: w, height: h, radius: radius, extrudeDepth: 10, originalShape: shape };
+    mesh.position.set(x, 5, z);
+    mesh.userData = {
+      id: ++objectCounter,
+      type: type,
+      width: w,
+      height: h,
+      radius: radius,
+      extrudeDepth: 10,
+      originalShape: shape
+    };
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     return mesh;
   }
   
-  function extrudeSelected() {
-    if (selectedIndex >= 0 && objects[selectedIndex]) {
-      const obj = objects[selectedIndex];
-      const depth = parseInt(document.getElementById('extrude-height').value) || 50;
-      const newGeo = new THREE.ExtrudeGeometry(obj.userData.originalShape, { steps: 1, depth: depth, bevelEnabled: false });
-      newGeo.computeVertexNormals();
-      newGeo.center();
-      obj.geometry.dispose();
-      obj.geometry = newGeo;
-      obj.userData.extrudeDepth = depth;
-      obj.position.y = depth / 2;
-      updateUI();
-      render();
-      setStatus(`Extruded to ${depth}mm`);
+  function addObject(type, x, z, w, h, r) {
+    const mesh = createShapeMesh(type, x, z, w, h, r);
+    scene.add(mesh);
+    objects.push(mesh);
+    selectObject(mesh);
+    updateUI();
+    setStatus(`Created ${type === 'rounded' ? 'Rounded Rectangle' : type} (${w}×${h})`);
+  }
+  
+  function extrudeObject(obj, depth) {
+    if (!obj) return false;
+    const newGeo = new THREE.ExtrudeGeometry(obj.userData.originalShape, { steps: 1, depth: depth, bevelEnabled: false });
+    newGeo.computeVertexNormals();
+    newGeo.computeBoundingBox();
+    obj.geometry.dispose();
+    obj.geometry = newGeo;
+    obj.userData.extrudeDepth = depth;
+    obj.position.y = depth / 2;
+    return true;
+  }
+  
+  function selectObject(obj) {
+    if (selectedObject) {
+      selectedObject.material.emissiveIntensity = 0;
+      selectedObject.material.color.setHex(selectedObject.userData.originalColor || 0x4a7ac8);
+    }
+    selectedObject = obj;
+    if (obj) {
+      obj.userData.originalColor = obj.material.color.getHex();
+      obj.material.emissive = new THREE.Color(0x0A84FF);
+      obj.material.emissiveIntensity = 0.3;
+      updatePropertiesPanel(obj);
     } else {
-      setStatus('Select an object first');
+      document.getElementById('selected-info').innerHTML = 'None';
+      document.getElementById('prop-x').value = '';
+      document.getElementById('prop-y').value = '';
+      document.getElementById('prop-z').value = '';
+      document.getElementById('prop-w').value = '';
+      document.getElementById('prop-h').value = '';
+      document.getElementById('prop-d').value = '';
+    }
+    updateUI();
+  }
+  
+  function updatePropertiesPanel(obj) {
+    document.getElementById('selected-info').innerHTML = `${obj.userData.type} #${obj.userData.id}`;
+    document.getElementById('prop-x').value = Math.round(obj.position.x);
+    document.getElementById('prop-y').value = Math.round(obj.position.y);
+    document.getElementById('prop-z').value = Math.round(obj.position.z);
+    document.getElementById('prop-w').value = obj.userData.width;
+    document.getElementById('prop-h').value = obj.userData.height;
+    document.getElementById('prop-d').value = obj.userData.extrudeDepth;
+    if (obj.userData.type === 'rounded') {
+      document.getElementById('prop-radius-row').style.display = 'flex';
+      document.getElementById('prop-r').value = obj.userData.radius;
+    } else {
+      document.getElementById('prop-radius-row').style.display = 'none';
     }
   }
   
-  function addObject(type, x, z, w, h, radius = 20) {
-    const mesh = createShape(type, x, z, w, h, radius);
-    mesh.userData.id = ++objectCounter;
-    mesh.name = `${type}_${objectCounter}`;
-    scene.add(mesh);
-    objects.push(mesh);
-    selectedIndex = objects.length - 1;
-    updateUI();
-    render();
-    setStatus(`Created ${type === 'curve-rect' ? 'Rounded Rectangle' : type}`);
+  function updateObjectDimensions(obj, w, h, depth, radius) {
+    const newMesh = createShapeMesh(obj.userData.type, obj.position.x, obj.position.z, w, h, radius);
+    newMesh.userData.extrudeDepth = depth;
+    newMesh.position.y = depth / 2;
+    extrudeObject(newMesh, depth);
+    newMesh.material.color.setHex(obj.material.color.getHex());
+    
+    const idx = objects.indexOf(obj);
+    scene.remove(obj);
+    obj.geometry.dispose();
+    obj.material.dispose();
+    objects[idx] = newMesh;
+    scene.add(newMesh);
+    selectObject(newMesh);
+    setStatus(`Updated dimensions to ${w}×${h}×${depth}`);
   }
   
-  function addPolygon(points) {
-    if (points.length < 3) return;
-    const shape = new THREE.Shape();
-    shape.moveTo(points[0].x, points[0].z);
-    for (let i = 1; i < points.length; i++) {
-      shape.lineTo(points[i].x, points[i].z);
-    }
-    shape.closePath();
-    const extrudeSettings = { steps: 1, depth: 10, bevelEnabled: false };
-    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    geometry.computeVertexNormals();
-    geometry.center();
-    const material = new THREE.MeshStandardMaterial({ color: 0x4a7ac8, metalness: 0.4, roughness: 0.3 });
-    const mesh = new THREE.Mesh(geometry, material);
-    mesh.userData = { type: 'polygon', points: points, originalShape: shape, extrudeDepth: 10 };
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    scene.add(mesh);
-    objects.push(mesh);
-    selectedIndex = objects.length - 1;
-    updateUI();
-    render();
-    setStatus(`Created polygon with ${points.length} points`);
-  }
-  
-  function deleteObject(idx) {
-    if (idx >= 0 && objects[idx]) {
-      scene.remove(objects[idx]);
-      objects[idx].geometry.dispose();
-      objects[idx].material.dispose();
+  function deleteObject(obj) {
+    const idx = objects.indexOf(obj);
+    if (idx >= 0) {
+      scene.remove(obj);
+      obj.geometry.dispose();
+      obj.material.dispose();
       objects.splice(idx, 1);
-      if (selectedIndex >= objects.length) selectedIndex = objects.length - 1;
+      if (selectedObject === obj) selectObject(null);
       updateUI();
-      render();
       setStatus('Object deleted');
     }
   }
@@ -610,38 +687,23 @@ input{font-family:'JetBrains Mono',monospace;}
       obj.material.dispose();
     });
     objects = [];
-    selectedIndex = -1;
+    selectObject(null);
     updateUI();
-    render();
     setStatus('All objects cleared');
   }
   
-  function selectObject(idx) {
-    if (selectedIndex >= 0 && objects[selectedIndex]) {
-      objects[selectedIndex].material.emissiveIntensity = 0;
-    }
-    selectedIndex = idx;
-    if (idx >= 0 && objects[idx]) {
-      objects[idx].material.emissive = new THREE.Color(0x0A84FF);
-      objects[idx].material.emissiveIntensity = 0.3;
-      const obj = objects[idx];
-      document.getElementById('selected-info').innerHTML = `${obj.userData.type} #${obj.userData.id}<br>Size: ${obj.userData.width || 'custom'} × ${obj.userData.height || 'custom'}`;
-      document.getElementById('prop-x').value = obj.position.x;
-      document.getElementById('prop-y').value = obj.position.y;
-      document.getElementById('prop-z').value = obj.position.z;
-      document.getElementById('prop-w').value = obj.userData.width || 100;
-      document.getElementById('prop-h').value = obj.userData.height || 100;
-      if (obj.userData.radius) {
-        document.getElementById('prop-radius-row').style.display = 'flex';
-        document.getElementById('prop-r').value = obj.userData.radius;
-      } else {
-        document.getElementById('prop-radius-row').style.display = 'none';
-      }
-    } else {
-      document.getElementById('selected-info').innerHTML = 'None';
-    }
-    updateUI();
-    render();
+  function duplicateObject() {
+    if (!selectedObject) { setStatus('No object selected'); return; }
+    const orig = selectedObject;
+    const newMesh = createShapeMesh(orig.userData.type, orig.position.x + 30, orig.position.z + 30, orig.userData.width, orig.userData.height, orig.userData.radius);
+    newMesh.userData.extrudeDepth = orig.userData.extrudeDepth;
+    newMesh.position.y = orig.userData.extrudeDepth / 2;
+    extrudeObject(newMesh, orig.userData.extrudeDepth);
+    newMesh.material.color.setHex(orig.material.color.getHex());
+    scene.add(newMesh);
+    objects.push(newMesh);
+    selectObject(newMesh);
+    setStatus('Duplicated');
   }
   
   function updateUI() {
@@ -649,18 +711,19 @@ input{font-family:'JetBrains Mono',monospace;}
     listEl.innerHTML = '';
     objects.forEach((obj, idx) => {
       const div = document.createElement('div');
-      div.className = 'object-item' + (idx === selectedIndex ? ' selected' : '');
+      div.className = 'object-item' + (selectedObject === obj ? ' selected' : '');
+      const icon = obj.userData.type === 'circle' ? '●' : (obj.userData.type === 'rounded' ? '⭔' : '⬛');
       div.innerHTML = `
-        <div class="object-icon">${obj.userData.type === 'circle' ? '●' : (obj.userData.type === 'curve-rect' ? '⭔' : (obj.userData.type === 'polygon' ? '🔷' : '⬛'))}</div>
-        <div class="object-info"><div class="object-name">${obj.userData.type} ${obj.userData.id}</div><div class="object-type">3D Extruded</div></div>
+        <div class="object-icon">${icon}</div>
+        <div class="object-info"><div class="object-name">${obj.userData.type} #${obj.userData.id}</div><div class="object-type">${obj.userData.width}×${obj.userData.height}×${obj.userData.extrudeDepth}</div></div>
         <button class="object-delete" data-idx="${idx}">✕</button>
       `;
       div.addEventListener('click', (e) => {
         if (e.target.classList.contains('object-delete')) {
           e.stopPropagation();
-          deleteObject(idx);
+          deleteObject(objects[idx]);
         } else {
-          selectObject(idx);
+          selectObject(objects[idx]);
         }
       });
       listEl.appendChild(div);
@@ -668,30 +731,52 @@ input{font-family:'JetBrains Mono',monospace;}
     document.getElementById('object-count').innerText = objects.length;
     document.getElementById('status-count').innerText = objects.length;
     document.getElementById('status-tool').innerText = 
-      currentTool === 'rectangle' ? 'Rectangle' : (currentTool === 'curve-rect' ? 'Rounded Rect' : (currentTool === 'circle' ? 'Circle' : (currentTool === 'polygon' ? 'Polygon' : 'Select')));
+      currentTool === 'rectangle' ? 'Rectangle' : (currentTool === 'rounded' ? 'Rounded' : (currentTool === 'circle' ? 'Circle' : 'Select'));
   }
   
   function setStatus(msg) {
-    document.getElementById('status-message').innerHTML = msg;
+    const el = document.getElementById('status-msg');
+    el.innerHTML = msg;
     setTimeout(() => {
-      if (document.getElementById('status-message').innerHTML === msg) {
-        document.getElementById('status-message').innerHTML = 'Ready';
+      if (document.getElementById('status-msg').innerHTML === msg) {
+        document.getElementById('status-msg').innerHTML = 'Ready';
       }
     }, 2000);
   }
   
-  function render() {
-    renderer.render(scene, camera);
-  }
+  // --- View Controls ---
+  const views = {
+    top: { pos: [0, 25, 0.01], target: [0, 0, 0], up: [0, 0, -1] },
+    bottom: { pos: [0, -25, 0.01], target: [0, 0, 0], up: [0, 0, 1] },
+    front: { pos: [0, 0, 25], target: [0, 0, 0], up: [0, 1, 0] },
+    back: { pos: [0, 0, -25], target: [0, 0, 0], up: [0, 1, 0] },
+    left: { pos: [-25, 0, 0], target: [0, 0, 0], up: [0, 1, 0] },
+    right: { pos: [25, 0, 0], target: [0, 0, 0], up: [0, 1, 0] },
+    persp: { pos: [12, 10, 15], target: [0, 0, 0], up: [0, 1, 0] }
+  };
   
-  // Mouse events for drawing and selection
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = views[btn.dataset.view];
+      if (v) {
+        camera.position.set(v.pos[0], v.pos[1], v.pos[2]);
+        camera.up.set(v.up[0], v.up[1], v.up[2]);
+        camera.lookAt(v.target[0], v.target[1], v.target[2]);
+        document.getElementById('view-label').innerHTML = btn.dataset.view.toUpperCase();
+        setStatus(`View: ${btn.dataset.view}`);
+      }
+    });
+  });
+  
+  // --- Mouse Events for Drawing and Selection ---
   let lastMousePos = { x: 0, y: 0 };
+  let isPanning = false;
+  let panStart = { x: 0, y: 0 };
   
   renderer.domElement.addEventListener('mousedown', (e) => {
     const rect = renderer.domElement.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
-    lastMousePos = { x: mouseX, y: mouseY };
     
     if (e.button === 1 || e.shiftKey) {
       isPanning = true;
@@ -699,44 +784,35 @@ input{font-family:'JetBrains Mono',monospace;}
       return;
     }
     
-    if (currentTool === 'polygon' && isDrawingPolygon) {
-      const world = screenToWorldPlane(e.clientX, e.clientY);
-      polygonPoints.push({ x: world.x, z: world.z });
-      setStatus(`Point ${polygonPoints.length} added — double-click to finish`);
-      render();
-      return;
-    }
-    
     if (currentTool === 'select') {
-      const world = screenToWorldPlane(e.clientX, e.clientY);
+      const mouse = new THREE.Vector2();
       mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      const raycaster = new THREE.Raycaster();
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(objects);
       if (intersects.length > 0) {
-        const idx = objects.indexOf(intersects[0].object);
-        selectObject(idx);
+        selectObject(intersects[0].object);
       } else {
-        selectObject(-1);
+        selectObject(null);
       }
-    } else if (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle') {
+    } else if (currentTool === 'rectangle' || currentTool === 'rounded' || currentTool === 'circle') {
       isDrawing = true;
-      drawStart = screenToWorldPlane(e.clientX, e.clientY);
+      drawStart = screenToGroundPlane(e.clientX, e.clientY);
     }
   });
   
   renderer.domElement.addEventListener('mousemove', (e) => {
-    const world = screenToWorldPlane(e.clientX, e.clientY);
-    document.getElementById('status-coords').innerHTML = `<b>Pos:</b> ${world.x}, 0, ${world.z}`;
+    const world = screenToGroundPlane(e.clientX, e.clientY);
+    document.getElementById('status-coords').innerHTML = `<b>Cursor:</b> ${world.x}, 0, ${world.z}`;
     
     if (isPanning) {
-      const dx = (e.clientX - renderer.domElement.getBoundingClientRect().left) - panStart.x;
-      const dy = (e.clientY - renderer.domElement.getBoundingClientRect().top) - panStart.y;
+      const dx = e.clientX - (panStart.x + renderer.domElement.getBoundingClientRect().left);
+      const dy = e.clientY - (panStart.y + renderer.domElement.getBoundingClientRect().top);
       camera.position.x -= dx * 0.03;
       camera.position.y += dy * 0.03;
-      camera.lookAt(cameraTarget);
+      camera.lookAt(0, 0, 0);
       panStart = { x: e.clientX - renderer.domElement.getBoundingClientRect().left, y: e.clientY - renderer.domElement.getBoundingClientRect().top };
-      render();
     }
   });
   
@@ -746,122 +822,155 @@ input{font-family:'JetBrains Mono',monospace;}
       return;
     }
     
-    if (isDrawing && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
-      const end = screenToWorldPlane(e.clientX, e.clientY);
+    if (isDrawing && (currentTool === 'rectangle' || currentTool === 'rounded' || currentTool === 'circle')) {
+      const end = screenToGroundPlane(e.clientX, e.clientY);
       const w = Math.abs(end.x - drawStart.x);
       const h = Math.abs(end.z - drawStart.z);
-      const x = Math.min(drawStart.x, end.x);
-      const z = Math.min(drawStart.z, end.z);
+      const x = Math.min(drawStart.x, end.x) + w/2;
+      const z = Math.min(drawStart.z, end.z) + h/2;
       if (w > 10 && h > 10) {
         const radius = parseInt(document.getElementById('hud-r').value) || 20;
-        addObject(currentTool, x + w/2, z + h/2, w, h, radius);
+        addObject(currentTool, x, z, w, h, radius);
       }
       isDrawing = false;
     }
   });
   
-  renderer.domElement.addEventListener('dblclick', (e) => {
-    if (currentTool === 'polygon' && polygonPoints.length >= 3) {
-      addPolygon(polygonPoints);
-      polygonPoints = [];
-      isDrawingPolygon = false;
-      document.getElementById('curve-status').style.display = 'none';
-      setStatus('Polygon created!');
-    }
+  renderer.domElement.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 1.05 : 0.95;
+    const distance = camera.position.length();
+    const newDistance = Math.max(5, Math.min(40, distance * delta));
+    camera.position.multiplyScalar(newDistance / distance);
+    camera.lookAt(0, 0, 0);
   });
   
+  // --- Keyboard Shortcuts ---
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && currentTool === 'polygon' && polygonPoints.length >= 3) {
-      addPolygon(polygonPoints);
-      polygonPoints = [];
-      isDrawingPolygon = false;
-      document.getElementById('curve-status').style.display = 'none';
-      setStatus('Polygon closed');
+    if (e.key === 'Delete' && selectedObject) deleteObject(selectedObject);
+    if (e.key === 'Escape') selectObject(null);
+    if (e.key === 'r' || e.key === 'R') { currentTool = 'rectangle'; updateToolUI(); setStatus('Tool: Rectangle'); }
+    if (e.key === 'c' || e.key === 'C') { currentTool = 'circle'; updateToolUI(); setStatus('Tool: Circle'); }
+    if (e.key === 'u' || e.key === 'U') { currentTool = 'rounded'; updateToolUI(); setStatus('Tool: Rounded Rectangle'); }
+    if (e.key === 's' || e.key === 'S') { currentTool = 'select'; updateToolUI(); setStatus('Tool: Select'); }
+    if (e.key === 'e' || e.key === 'E') { 
+      if (selectedObject) {
+        const depth = parseInt(document.getElementById('extrude-height').value) || 40;
+        extrudeObject(selectedObject, depth);
+        selectedObject.position.y = depth / 2;
+        updatePropertiesPanel(selectedObject);
+        setStatus(`Extruded to ${depth}mm`);
+      } else setStatus('Select an object first');
     }
-    if (e.key === 'Escape' && isDrawingPolygon) {
-      polygonPoints = [];
-      isDrawingPolygon = false;
-      document.getElementById('curve-status').style.display = 'none';
-      setStatus('Polygon drawing cancelled');
-    }
-    if (e.key === 'Delete' && selectedIndex >= 0) deleteObject(selectedIndex);
   });
   
-  // Tool buttons
-  document.getElementById('tool-rectangle').onclick = () => { currentTool = 'rectangle'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-rectangle').classList.add('active'); setStatus('Tool: Rectangle'); updateUI(); };
-  document.getElementById('tool-curve-rect').onclick = () => { currentTool = 'curve-rect'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-curve-rect').classList.add('active'); setStatus('Tool: Rounded Rectangle'); updateUI(); };
-  document.getElementById('tool-circle').onclick = () => { currentTool = 'circle'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-circle').classList.add('active'); setStatus('Tool: Circle'); updateUI(); };
-  document.getElementById('tool-polygon').onclick = () => { currentTool = 'polygon'; isDrawingPolygon = true; polygonPoints = []; document.getElementById('curve-status').style.display = 'block'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-polygon').classList.add('active'); setStatus('Tool: Polygon — click points, double-click to finish'); updateUI(); };
-  document.getElementById('tool-select').onclick = () => { currentTool = 'select'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-select').classList.add('active'); setStatus('Tool: Select'); updateUI(); };
-  document.getElementById('tool-extrude').onclick = () => extrudeSelected();
-  document.getElementById('apply-extrude').onclick = () => extrudeSelected();
-  document.getElementById('action-delete').onclick = () => { if(selectedIndex>=0) deleteObject(selectedIndex); else setStatus('No object selected'); };
-  document.getElementById('action-clear').onclick = clearAll;
-  document.getElementById('delete-selected').onclick = () => { if(selectedIndex>=0) deleteObject(selectedIndex); else setStatus('No object selected'); };
-  document.getElementById('duplicate-object').onclick = () => {
-    if (selectedIndex >= 0) {
-      const original = objects[selectedIndex];
-      const newMesh = createShape(original.userData.type, original.position.x + 30, original.position.z + 30, original.userData.width, original.userData.height, original.userData.radius);
-      newMesh.userData.id = ++objectCounter;
-      newMesh.userData.extrudeDepth = original.userData.extrudeDepth;
-      newMesh.position.y = original.position.y;
-      scene.add(newMesh);
-      objects.push(newMesh);
-      selectObject(objects.length - 1);
-      setStatus('Duplicated');
-    }
-  };
+  function updateToolUI() {
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    if (currentTool === 'rectangle') document.getElementById('tool-rectangle').classList.add('active');
+    if (currentTool === 'rounded') document.getElementById('tool-rounded').classList.add('active');
+    if (currentTool === 'circle') document.getElementById('tool-circle').classList.add('active');
+    if (currentTool === 'select') document.getElementById('tool-select').classList.add('active');
+    updateUI();
+  }
   
-  // Property buttons
-  document.getElementById('apply-position').onclick = () => {
-    if (selectedIndex >= 0) {
-      objects[selectedIndex].position.x = parseInt(document.getElementById('prop-x').value) || 0;
-      objects[selectedIndex].position.y = parseInt(document.getElementById('prop-y').value) || 0;
-      objects[selectedIndex].position.z = parseInt(document.getElementById('prop-z').value) || 0;
-      render();
+  // --- Button Event Listeners ---
+  document.getElementById('tool-rectangle').onclick = () => { currentTool = 'rectangle'; updateToolUI(); setStatus('Rectangle tool — click and drag to draw'); };
+  document.getElementById('tool-rounded').onclick = () => { currentTool = 'rounded'; updateToolUI(); setStatus('Rounded Rectangle tool — click and drag to draw'); };
+  document.getElementById('tool-circle').onclick = () => { currentTool = 'circle'; updateToolUI(); setStatus('Circle tool — click and drag to draw'); };
+  document.getElementById('tool-select').onclick = () => { currentTool = 'select'; updateToolUI(); setStatus('Select tool — click objects to select'); };
+  document.getElementById('tool-extrude').onclick = () => {
+    if (selectedObject) {
+      const depth = parseInt(document.getElementById('extrude-height').value) || 40;
+      extrudeObject(selectedObject, depth);
+      selectedObject.position.y = depth / 2;
+      updatePropertiesPanel(selectedObject);
+      setStatus(`Extruded to ${depth}mm`);
+    } else setStatus('Select an object first');
+  };
+  document.getElementById('apply-extrude-btn').onclick = () => {
+    if (selectedObject) {
+      const depth = parseInt(document.getElementById('extrude-height').value) || 40;
+      extrudeObject(selectedObject, depth);
+      selectedObject.position.y = depth / 2;
+      updatePropertiesPanel(selectedObject);
+      setStatus(`Extruded to ${depth}mm`);
+    } else setStatus('Select an object first');
+  };
+  document.getElementById('action-delete').onclick = () => { if (selectedObject) deleteObject(selectedObject); else setStatus('No object selected'); };
+  document.getElementById('action-clear').onclick = clearAll;
+  document.getElementById('delete-selected').onclick = () => { if (selectedObject) deleteObject(selectedObject); else setStatus('No object selected'); };
+  document.getElementById('duplicate-object').onclick = duplicateObject;
+  
+  document.getElementById('apply-pos').onclick = () => {
+    if (selectedObject) {
+      selectedObject.position.x = parseInt(document.getElementById('prop-x').value) || 0;
+      selectedObject.position.y = parseInt(document.getElementById('prop-y').value) || 0;
+      selectedObject.position.z = parseInt(document.getElementById('prop-z').value) || 0;
       setStatus('Position updated');
     }
   };
-  document.getElementById('apply-size').onclick = () => {
-    if (selectedIndex >= 0) {
-      setStatus('Recreate shape with new size (delete and redraw for complex shapes)');
+  document.getElementById('apply-dims').onclick = () => {
+    if (selectedObject) {
+      const w = parseInt(document.getElementById('prop-w').value) || 80;
+      const h = parseInt(document.getElementById('prop-h').value) || 80;
+      const d = parseInt(document.getElementById('prop-d').value) || 40;
+      const r = parseInt(document.getElementById('prop-r').value) || 20;
+      updateObjectDimensions(selectedObject, w, h, d, r);
     }
   };
-  document.getElementById('apply-style').onclick = () => {
-    if (selectedIndex >= 0) {
-      const color = document.getElementById('prop-fill').value;
-      objects[selectedIndex].material.color.set(color);
-      render();
+  document.getElementById('apply-color').onclick = () => {
+    if (selectedObject) {
+      const color = document.getElementById('prop-color').value;
+      selectedObject.material.color.set(color);
       setStatus('Color applied');
     }
   };
   
-  // Menu items
-  document.getElementById('menu-file').onclick = () => setStatus('File menu — Save/Export coming soon');
-  document.getElementById('menu-edit').onclick = () => setStatus('Edit — Undo/Redo coming soon');
+  // Selection mode buttons
+  document.getElementById('sel-body').onclick = () => { selectionMode = 'body'; document.querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active')); document.getElementById('sel-body').classList.add('active'); setStatus('Selection mode: Body'); };
+  document.getElementById('sel-face').onclick = () => { selectionMode = 'face'; document.querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active')); document.getElementById('sel-face').classList.add('active'); setStatus('Face selection (click on object faces)'); };
+  document.getElementById('sel-edge').onclick = () => { selectionMode = 'edge'; document.querySelectorAll('.sel-btn').forEach(b=>b.classList.remove('active')); document.getElementById('sel-edge').classList.add('active'); setStatus('Edge selection'); };
+  
+  // Menu items (working)
+  document.getElementById('menu-file').onclick = () => setStatus('File — Export STL feature coming soon');
+  document.getElementById('menu-edit').onclick = () => setStatus('Edit — Duplicate (Ctrl+D), Delete (Del)');
   document.getElementById('menu-view').onclick = () => {
-    camera.position.set(15, 12, 18);
+    camera.position.set(12, 10, 15);
     camera.lookAt(0, 0, 0);
-    render();
-    setStatus('View reset');
+    setStatus('View reset to perspective');
   };
   
-  document.getElementById('prop-fill').addEventListener('input', (e) => {
-    document.getElementById('fill-preview').style.background = e.target.value;
-  });
+  // Hide radius group initially
+  document.getElementById('radius-group').style.display = 'flex';
   
-  // Demo objects
+  // --- Demo Objects ---
   setTimeout(() => {
-    addObject('rectangle', -40, -30, 80, 60);
-    addObject('circle', 50, -20, 60, 60);
-    addObject('curve-rect', -20, 40, 90, 70, 25);
-    selectObject(-1);
-    setStatus('Welcome to AetherCAD — Fusion 360 style 2D/3D design');
+    const r1 = createShapeMesh('rectangle', -50, -40, 70, 70, 0);
+    extrudeObject(r1, 30);
+    r1.position.y = 15;
+    scene.add(r1);
+    objects.push(r1);
+    
+    const r2 = createShapeMesh('rounded', 40, -35, 80, 80, 20);
+    extrudeObject(r2, 35);
+    r2.position.y = 17.5;
+    scene.add(r2);
+    objects.push(r2);
+    
+    const r3 = createShapeMesh('circle', -10, 50, 65, 65, 0);
+    extrudeObject(r3, 25);
+    r3.position.y = 12.5;
+    scene.add(r3);
+    objects.push(r3);
+    
+    updateUI();
+    setStatus('Welcome! Draw rectangles, rounded rects, or circles → Select → Extrude');
   }, 100);
   
+  // --- Animation Loop ---
   function animate() {
     requestAnimationFrame(animate);
-    render();
+    renderer.render(scene, camera);
   }
   animate();
 })();
