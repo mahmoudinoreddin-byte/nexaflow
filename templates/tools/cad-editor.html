@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD — Professional 3D Studio</title>
+<title>AetherCAD — 2D Design Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg: #0C0C0C;
-  --bg2: #141414;
-  --bg3: #1C1C1E;
-  --bg4: #2C2C2E;
+  --bg: #0F0F0F;
+  --bg2: #161616;
+  --bg3: #1E1E1E;
+  --bg4: #2C2C2C;
   --panel: #141414;
-  --border: #2C2C2E;
-  --border2: #3A3A3C;
+  --border: #2A2A2A;
+  --border2: #3A3A3A;
   --accent: #0A84FF;
-  --accent2: #5E9CFF;
-  --accent3: #409CFF;
+  --accent2: #409CFF;
+  --accent3: #5E9CFF;
   --orange: #FF9F0A;
   --green: #32D74B;
   --red: #FF453A;
-  --text: #E5E5E5;
+  --text: #ECECEC;
   --text2: #98989D;
   --text3: #636366;
   --white: #FFFFFF;
   --header-h: 40px;
-  --ribbon-h: 86px;
+  --toolbar-h: 72px;
   --statusbar-h: 28px;
   --left-w: 260px;
   --right-w: 280px;
@@ -39,30 +39,27 @@ html,body{height:100%;overflow:hidden;background:var(--bg);}
 button{font-family:inherit;cursor:pointer;background:none;border:none;}
 input{font-family:'JetBrains Mono',monospace;}
 
-/* Modern Scrollbar */
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:4px;}
-::-webkit-scrollbar-thumb:hover{background:var(--border2);}
 
 /* Menu Bar */
 #menubar{
   height:var(--header-h);
-  background:rgba(20,20,20,0.98);
+  background:rgba(22,22,22,0.98);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
-  display:flex;align-items:center;
+  display:flex;
+  align-items:center;
   padding:0 16px;
   gap:4px;
-  position:relative;z-index:200;
   flex-shrink:0;
 }
 .app-logo{
-  font-size:15px;font-weight:600;color:var(--white);
+  font-size:15px;font-weight:600;
   padding:0 16px 0 4px;
   margin-right:8px;
   border-right:1px solid var(--border);
-  letter-spacing:-0.3px;
   background:linear-gradient(135deg,#FFFFFF,#8E8E93);
   -webkit-background-clip:text;
   background-clip:text;
@@ -72,7 +69,7 @@ input{font-family:'JetBrains Mono',monospace;}
 .menu-item{
   padding:6px 12px;border-radius:6px;
   font-size:13px;font-weight:500;color:var(--text2);
-  transition:all 0.1s ease;
+  transition:0.1s;
 }
 .menu-item:hover{background:var(--bg4);color:var(--white);}
 #menubar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
@@ -82,219 +79,244 @@ input{font-family:'JetBrains Mono',monospace;}
   background:var(--bg3);border:1px solid var(--border);
 }
 
-/* Ribbon */
-#ribbon{
-  height:var(--ribbon-h);
-  background:rgba(20,20,20,0.96);
-  backdrop-filter:blur(10px);
+/* Main Toolbar */
+#main-toolbar{
+  height:var(--toolbar-h);
+  background:rgba(22,22,22,0.96);
   border-bottom:1px solid var(--border);
   display:flex;
-  flex-direction:column;
+  align-items:center;
+  padding:0 24px;
+  gap:16px;
   flex-shrink:0;
 }
-#ribbon-tabs{
-  display:flex;align-items:flex-end;
-  padding:0 16px;
-  border-bottom:1px solid var(--border);
-  height:28px;
-}
-.rtab{
-  padding:0 20px;height:28px;
-  font-size:12px;font-weight:500;color:var(--text2);
-  border-bottom:2px solid transparent;
-  transition:0.1s;
-}
-.rtab:hover{color:var(--text);}
-.rtab.active{color:var(--white);border-bottom-color:var(--accent);}
-#ribbon-content{
-  display:flex;align-items:center;
-  padding:8px 16px;
-  flex:1;
+.tool-group{
+  display:flex;
   gap:8px;
-  overflow-x:auto;
-}
-.r-group{
-  display:flex;align-items:center;gap:6px;
   padding:0 12px;
   border-right:1px solid var(--border);
-  height:100%;
 }
-.r-group:last-child{border-right:none;}
-.rbtn{
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  gap:4px;
-  padding:6px 12px;
+.tool-group:last-child{border-right:none;}
+.tool-btn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:8px 20px;
   background:var(--bg3);
-  border:1px solid transparent;
-  border-radius:8px;
+  border:1px solid var(--border);
+  border-radius:10px;
   color:var(--text);
-  font-size:11px;
-  min-width:64px;height:56px;
-  transition:0.1s;
+  font-size:12px;
   font-weight:500;
+  min-width:80px;
+  height:56px;
+  transition:0.1s;
 }
-.rbtn:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px);}
-.rbtn.active{background:rgba(10,132,255,0.15);border-color:var(--accent);color:var(--accent2);}
-.rbtn-icon{font-size:22px;margin-bottom:2px;}
-.rbtn-sm{flex-direction:row;gap:8px;min-width:auto;height:34px;padding:0 14px;}
-.rbtn-sm .rbtn-icon{font-size:16px;margin:0;}
-.sep{width:1px;background:var(--border);height:40px;margin:0 4px;}
+.tool-btn:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px);}
+.tool-btn.active{background:rgba(10,132,255,0.15);border-color:var(--accent);color:var(--accent2);}
+.tool-icon{font-size:22px;}
+.tool-label{font-size:11px;}
 
 /* Main Area */
 #main{display:flex;flex:1;overflow:hidden;}
 
-/* Left Browser */
-#browser{
+/* Left Panel - Layers/Objects */
+#left-panel{
   width:var(--left-w);
   background:var(--panel);
   border-right:1px solid var(--border);
-  display:flex;flex-direction:column;
+  display:flex;
+  flex-direction:column;
   flex-shrink:0;
 }
-#browser-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 8px;gap:2px;}
-.btab{
-  flex:1;padding:8px 4px;
-  font-size:11px;font-weight:500;color:var(--text2);
-  border-bottom:2px solid transparent;
+.panel-header{
+  padding:12px 16px;
+  border-bottom:1px solid var(--border);
+  font-weight:600;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#objects-list{
+  flex:1;
+  overflow-y:auto;
+  padding:8px;
+}
+.object-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  margin:4px 0;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:8px;
+  cursor:pointer;
   transition:0.1s;
 }
-.btab:hover{color:var(--text);}
-.btab.active{color:var(--white);border-bottom-color:var(--accent);}
-#browser-body{flex:1;overflow-y:auto;padding:8px;}
-.tree-section{margin-bottom:8px;}
-.tree-header{
-  display:flex;align-items:center;gap:8px;
-  padding:6px 8px;
+.object-item:hover{background:var(--bg4);border-color:var(--border2);}
+.object-item.selected{background:rgba(10,132,255,0.2);border-color:var(--accent);}
+.object-icon{font-size:18px;}
+.object-info{flex:1;}
+.object-name{font-size:12px;font-weight:500;}
+.object-type{font-size:10px;color:var(--text3);}
+.object-delete{
+  opacity:0;
+  padding:4px 8px;
   border-radius:6px;
-  color:var(--text2);font-size:12px;font-weight:500;
-  cursor:pointer;
+  color:var(--red);
+  font-size:14px;
 }
-.tree-header:hover{background:var(--bg3);color:var(--text);}
-.tree-chevron{font-size:10px;transition:0.1s;}
-.tree-header.open .tree-chevron{transform:rotate(90deg);}
-.tree-children{padding-left:20px;display:none;}
-.tree-header.open + .tree-children{display:block;}
-.tree-node{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 8px;margin:2px 0;
-  border-radius:6px;
-  color:var(--text2);font-size:12px;
-  cursor:pointer;transition:0.1s;
-}
-.tree-node:hover{background:var(--bg3);color:var(--text);}
-.tree-node.selected{background:rgba(10,132,255,0.2);color:var(--white);}
-.node-del{margin-left:auto;opacity:0;color:var(--red);padding:2px 6px;border-radius:4px;}
-.tree-node:hover .node-del{opacity:1;}
-.node-del:hover{background:rgba(255,69,58,0.2);}
+.object-item:hover .object-delete{opacity:1;}
+.object-delete:hover{background:rgba(255,69,58,0.2);}
 
-/* Viewport */
-#viewport{flex:1;position:relative;background:#0A0A0A;}
-#vp-canvas{display:block;width:100%;height:100%;}
-.vp-corner{position:absolute;font-size:10px;color:rgba(255,255,255,0.3);pointer-events:none;font-family:'JetBrains Mono',monospace;}
-#vp-tl{top:14px;left:16px;}
-#vp-tr{top:14px;right:16px;}
-#vp-bl{bottom:42px;left:16px;}
-
-/* HUD Elements */
-#transform-hud, #snap-hud, #sel-mode-bar{
-  position:absolute;background:rgba(20,20,20,0.9);backdrop-filter:blur(12px);
-  border:1px solid var(--border2);border-radius:10px;display:flex;z-index:20;
+/* Canvas Area */
+#canvas-area{
+  flex:1;
+  position:relative;
+  background:#0A0A0A;
   overflow:hidden;
 }
-#transform-hud{top:14px;left:50%;transform:translateX(-50%);}
-#snap-hud{top:14px;right:16px;}
-#sel-mode-bar{bottom:16px;left:50%;transform:translateX(-50%);}
-.th-btn, .snap-btn, .sm-btn{
-  padding:6px 16px;font-size:12px;font-weight:500;
-  color:var(--text2);transition:0.1s;border-right:1px solid var(--border);
+#draw-canvas{
+  display:block;
+  width:100%;
+  height:100%;
+  cursor:crosshair;
 }
-.th-btn:last-child, .snap-btn:last-child, .sm-btn:last-child{border-right:none;}
-.th-btn:hover, .snap-btn:hover, .sm-btn:hover{background:var(--bg4);color:var(--white);}
-.th-btn.active, .sm-btn.active{background:rgba(10,132,255,0.2);color:var(--accent2);}
-.snap-btn.active{background:rgba(255,159,10,0.2);color:var(--orange);}
+.canvas-corner{
+  position:absolute;
+  font-size:10px;
+  color:rgba(255,255,255,0.3);
+  pointer-events:none;
+  font-family:'JetBrains Mono',monospace;
+}
+#corner-tl{top:14px;left:16px;}
+#corner-tr{top:14px;right:16px;}
+#corner-bl{bottom:42px;left:16px;}
 
-/* Nav Cube */
-#navcube{
-  position:absolute;bottom:60px;right:20px;
-  display:grid;grid-template-columns:repeat(3,38px);
-  grid-template-rows:repeat(3,38px);
-  gap:3px;z-index:15;
+/* Drawing HUD */
+#drawing-hud{
+  position:absolute;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(22,22,22,0.95);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--border2);
+  border-radius:12px;
+  display:flex;
+  padding:8px 16px;
+  gap:20px;
+  z-index:20;
 }
-.nc-btn{
-  background:rgba(28,28,30,0.85);backdrop-filter:blur(8px);
-  border:1px solid var(--border2);border-radius:6px;
-  color:var(--text2);font-size:10px;font-weight:600;
-  transition:0.1s;
+.hud-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
 }
-.nc-btn:hover{background:var(--accent);border-color:var(--accent);color:white;}
-.nc-center{background:rgba(10,132,255,0.3);border-color:var(--accent);}
+.hud-item label{color:var(--text2);}
+.hud-item input{
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:4px 8px;
+  color:var(--text);
+  width:70px;
+}
+.hud-item input:focus{outline:none;border-color:var(--accent);}
+#apply-transform{
+  background:var(--accent);
+  border:none;
+  padding:4px 16px;
+  border-radius:6px;
+  color:white;
+  font-weight:500;
+}
 
-/* Right Properties */
-#properties{
+/* Right Panel - Properties */
+#right-panel{
   width:var(--right-w);
   background:var(--panel);
   border-left:1px solid var(--border);
-  display:flex;flex-direction:column;
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
 }
-#prop-header{padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:13px;}
-#prop-body{flex:1;overflow-y:auto;padding:8px;}
-.prop-section{border-bottom:1px solid var(--border);margin-bottom:8px;}
-.prop-section-head{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 8px;font-size:11px;font-weight:600;
-  color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;
-  cursor:pointer;
+.prop-section{
+  border-bottom:1px solid var(--border);
+  padding:12px 16px;
 }
-.prop-section-body{padding:4px 8px 12px;}
-.prop-row{display:flex;align-items:center;margin-bottom:8px;gap:8px;}
-.prop-label{font-size:12px;color:var(--text2);width:50px;}
-.prop-input{
-  flex:1;background:var(--bg3);border:1px solid var(--border);
-  border-radius:6px;color:var(--text);padding:6px 8px;font-size:12px;
+.prop-section-title{
+  font-size:11px;
+  font-weight:600;
+  color:var(--text2);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+  margin-bottom:12px;
 }
-.prop-input:focus{outline:none;border-color:var(--accent);}
+.prop-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+.prop-row label{
+  width:60px;
+  color:var(--text2);
+  font-size:12px;
+}
+.prop-row input{
+  flex:1;
+  background:var(--bg3);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:6px 8px;
+  color:var(--text);
+  font-size:12px;
+}
+.prop-row input:focus{outline:none;border-color:var(--accent);}
 .prop-btn{
-  width:100%;background:var(--bg3);border:1px solid var(--border2);
-  border-radius:6px;color:var(--text);padding:7px;font-size:12px;margin-bottom:6px;
-  font-weight:500;transition:0.1s;
+  width:100%;
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:8px;
+  color:var(--text);
+  font-size:12px;
+  font-weight:500;
+  margin-top:8px;
+  transition:0.1s;
 }
 .prop-btn:hover{background:var(--bg4);border-color:var(--accent);}
 .prop-btn.primary{background:var(--accent);border-color:var(--accent);color:white;}
-.prop-btn.warn{background:rgba(255,69,58,0.1);border-color:var(--red);color:var(--red);}
-.prop-btn.warn:hover{background:var(--red);color:white;}
-.slider-row{margin-bottom:12px;}
-.slider-labels{display:flex;justify-content:space-between;margin-bottom:4px;}
-.slider-labels span{font-size:10px;color:var(--text3);}
-input[type=range]{width:100%;-webkit-appearance:none;height:3px;background:var(--bg4);border-radius:3px;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;}
-.mat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
-.mat-tile{
-  background:var(--bg3);border:1px solid var(--border);border-radius:8px;
-  padding:8px 4px;cursor:pointer;text-align:center;font-size:10px;transition:0.1s;
+.prop-btn.danger{background:rgba(255,69,58,0.1);border-color:var(--red);color:var(--red);}
+.prop-btn.danger:hover{background:var(--red);color:white;}
+.color-preview{
+  width:40px;
+  height:32px;
+  border-radius:6px;
+  border:1px solid var(--border);
 }
-.mat-tile:hover{border-color:var(--border2);transform:translateY(-1px);}
-.mat-tile.active{border-color:var(--accent);background:rgba(10,132,255,0.15);}
-.mat-swatch{width:24px;height:24px;border-radius:8px;margin:0 auto 6px;}
-.color-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.color-row input[type=color]{width:40px;height:32px;border-radius:6px;border:1px solid var(--border);}
-.info-line{font-size:11px;color:var(--text3);padding:4px 0;font-family:'JetBrains Mono',monospace;}
-.info-line b{color:var(--text2);}
 
 /* Status Bar */
 #statusbar{
   height:var(--statusbar-h);
-  background:rgba(20,20,20,0.95);
+  background:rgba(22,22,22,0.95);
   border-top:1px solid var(--border);
-  display:flex;align-items:center;
-  padding:0 16px;gap:24px;
+  display:flex;
+  align-items:center;
+  padding:0 16px;
+  gap:24px;
   flex-shrink:0;
   font-size:11px;
 }
-.sb-item{color:var(--text3);display:flex;align-items:center;gap:6px;}
-.sb-item b{color:var(--text2);}
-#sb-coords{margin-left:auto;font-family:'JetBrains Mono',monospace;}
+.status-item{color:var(--text3);display:flex;align-items:center;gap:6px;}
+.status-item b{color:var(--text2);}
+#status-coords{margin-left:auto;font-family:'JetBrains Mono',monospace;}
 
 #wrapper{display:flex;flex-direction:column;height:100vh;}
 </style>
@@ -303,144 +325,666 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;heigh
 <div id="wrapper">
 <div id="menubar">
   <div class="app-logo">Aether<span>CAD</span></div>
-  <button class="menu-item">File</button><button class="menu-item">Edit</button><button class="menu-item">Create</button>
-  <button class="menu-item">Modify</button><button class="menu-item">Select</button><button class="menu-item">View</button>
-  <div id="menubar-right"><div class="mb-badge">DESIGN WORKSPACE</div><div class="mb-badge" style="color:var(--green);">● ACTIVE</div></div>
+  <button class="menu-item">File</button>
+  <button class="menu-item">Edit</button>
+  <button class="menu-item">View</button>
+  <div id="menubar-right">
+    <div class="mb-badge">2D DESIGN WORKSPACE</div>
+    <div class="mb-badge" style="color:var(--green);">● READY</div>
+  </div>
 </div>
 
-<div id="ribbon">
-  <div id="ribbon-tabs"><button class="rtab active" data-tab="solid">SOLID</button><button class="rtab" data-tab="surface">SURFACE</button><button class="rtab" data-tab="mesh">MESH</button></div>
-  <div id="ribbon-content">
-    <div class="r-group"><div style="display:flex;gap:4px;"><button class="rbtn" data-shape="Box"><span class="rbtn-icon">⬛</span>Box</button><button class="rbtn" data-shape="Cylinder"><span class="rbtn-icon">⚫</span>Cylinder</button><button class="rbtn" data-shape="Sphere"><span class="rbtn-icon">🔵</span>Sphere</button><button class="rbtn" data-shape="Cone"><span class="rbtn-icon">🔺</span>Cone</button><button class="rbtn" data-shape="Torus"><span class="rbtn-icon">🍩</span>Torus</button></div><div class="r-group-label">CREATE</div></div>
-    <div class="sep"></div>
-    <div class="r-group"><div style="display:flex;flex-direction:column;gap:4px;"><button class="rbtn rbtn-sm" id="rb-extrude"><span class="rbtn-icon">↕</span>Extrude</button><button class="rbtn rbtn-sm" id="rb-mirror"><span class="rbtn-icon">⇄</span>Mirror</button><button class="rbtn rbtn-sm" id="rb-dup"><span class="rbtn-icon">⧉</span>Duplicate</button><button class="rbtn rbtn-sm" id="rb-center"><span class="rbtn-icon">⊕</span>Center</button></div><div class="r-group-label">MODIFY</div></div>
-    <div class="sep"></div>
-    <div class="r-group"><div style="display:flex;gap:4px;"><button class="rbtn" id="rb-move"><span class="rbtn-icon">✥</span>Move</button><button class="rbtn" id="rb-rotate"><span class="rbtn-icon">↻</span>Rotate</button><button class="rbtn" id="rb-scale"><span class="rbtn-icon">⤢</span>Scale</button></div><div class="r-group-label">TRANSFORM</div></div>
-    <div class="sep"></div>
-    <div class="r-group"><div style="display:flex;flex-direction:column;gap:4px;"><button class="rbtn rbtn-sm danger" id="rb-delete"><span class="rbtn-icon">🗑</span>Delete</button><button class="rbtn rbtn-sm danger" id="rb-clear"><span class="rbtn-icon">✕</span>Clear All</button><button class="rbtn rbtn-sm" id="rb-export"><span class="rbtn-icon">💾</span>Export STL</button></div><div class="r-group-label">SCENE</div></div>
+<div id="main-toolbar">
+  <div class="tool-group">
+    <button class="tool-btn" id="tool-rectangle">
+      <span class="tool-icon">⬛</span>
+      <span class="tool-label">Rectangle</span>
+    </button>
+    <button class="tool-btn" id="tool-curve-rect">
+      <span class="tool-icon">⭔</span>
+      <span class="tool-label">Curve Rect</span>
+    </button>
+    <button class="tool-btn" id="tool-circle">
+      <span class="tool-icon">●</span>
+      <span class="tool-label">Circle</span>
+    </button>
+  </div>
+  <div class="tool-group">
+    <button class="tool-btn" id="tool-select">
+      <span class="tool-icon">🖱</span>
+      <span class="tool-label">Select</span>
+    </button>
+  </div>
+  <div class="tool-group">
+    <button class="tool-btn" id="action-delete">
+      <span class="tool-icon">🗑</span>
+      <span class="tool-label">Delete</span>
+    </button>
+    <button class="tool-btn" id="action-clear">
+      <span class="tool-icon">✕</span>
+      <span class="tool-label">Clear All</span>
+    </button>
   </div>
 </div>
 
 <div id="main">
-  <div id="browser">
-    <div id="browser-tabs"><button class="btab active">Browser</button><button class="btab">Bodies</button></div>
-    <div id="browser-body">
-      <div class="tree-section"><div class="tree-header open" id="th-bodies"><span class="tree-chevron">▶</span><span>📦</span><span>Bodies (<span id="body-count">0</span>)</span></div><div class="tree-children" id="tc-bodies"><div style="padding:8px;color:var(--text4);">No bodies</div></div></div>
+  <div id="left-panel">
+    <div class="panel-header">
+      <span>📋</span> Objects
+      <span style="flex:1"></span>
+      <span id="object-count" style="color:var(--text3);">0</span>
+    </div>
+    <div id="objects-list"></div>
+  </div>
+
+  <div id="canvas-area">
+    <canvas id="draw-canvas"></canvas>
+    <div class="canvas-corner" id="corner-tl">AetherCAD · 2D Studio</div>
+    <div class="canvas-corner" id="corner-tr">Grid: 20px</div>
+    <div class="canvas-corner" id="corner-bl">Click to draw · Drag to move · Select to edit</div>
+    
+    <div id="drawing-hud">
+      <div class="hud-item">
+        <label>Width:</label>
+        <input type="number" id="hud-w" step="1" value="100">
+      </div>
+      <div class="hud-item">
+        <label>Height:</label>
+        <input type="number" id="hud-h" step="1" value="100">
+      </div>
+      <div class="hud-item" id="curve-radius-group">
+        <label>Radius:</label>
+        <input type="number" id="hud-r" step="5" value="20">
+      </div>
+      <button id="apply-transform">Apply Size</button>
     </div>
   </div>
 
-  <div id="viewport">
-    <canvas id="vp-canvas"></canvas>
-    <div class="vp-corner" id="vp-tl">AetherCAD · Design Studio</div><div class="vp-corner" id="vp-tr">Perspective</div><div class="vp-corner" id="vp-bl">LMB orbit · RMB pan · Click select · T/R/S transform</div>
-    <div id="transform-hud"><button class="th-btn active" id="th-select">Select (Q)</button><button class="th-btn" id="th-move">Move (T)</button><button class="th-btn" id="th-rotate">Rotate (R)</button><button class="th-btn" id="th-scale">Scale (S)</button></div>
-    <div id="snap-hud"><button class="snap-btn active" id="snap-grid">Grid Snap</button><button class="snap-btn" id="snap-vertex">Vertex Snap</button></div>
-    <div id="navcube"><div></div><button class="nc-btn" data-view="top">TOP</button><div></div><button class="nc-btn" data-view="left">LFT</button><button class="nc-btn nc-center" data-view="persp">⊙</button><button class="nc-btn" data-view="right">RGT</button><div></div><button class="nc-btn" data-view="front">FRT</button><div></div></div>
-    <div id="sel-mode-bar"><button class="sm-btn active" id="sm-body">Body</button><button class="sm-btn" id="sm-face">Face</button><button class="sm-btn" id="sm-edge">Edge</button></div>
-  </div>
-
-  <div id="properties">
-    <div id="prop-header"><span>⚙</span> <span id="prop-title">Properties</span></div>
-    <div id="prop-body">
-      <div class="prop-section"><div class="prop-section-head">📦 Selection</div><div class="prop-section-body"><div class="info-line" id="p-name"><b>Object:</b> —</div><div class="info-line" id="p-type"><b>Type:</b> —</div><div class="info-line" id="p-pos"><b>Position:</b> —</div></div></div>
-      <div class="prop-section"><div class="prop-section-head">📍 Position</div><div class="prop-section-body"><div class="prop-row"><span class="prop-label">X</span><input type="number" id="p-px" class="prop-input" step="0.1"></div><div class="prop-row"><span class="prop-label">Y</span><input type="number" id="p-py" class="prop-input" step="0.1"></div><div class="prop-row"><span class="prop-label">Z</span><input type="number" id="p-pz" class="prop-input" step="0.1"></div><button class="prop-btn primary" id="apply-pos">Apply Position</button></div></div>
-      <div class="prop-section"><div class="prop-section-head">↻ Rotation</div><div class="prop-section-body"><div class="prop-row"><span class="prop-label">X</span><input type="number" id="p-rx" class="prop-input" step="5"></div><div class="prop-row"><span class="prop-label">Y</span><input type="number" id="p-ry" class="prop-input" step="5"></div><div class="prop-row"><span class="prop-label">Z</span><input type="number" id="p-rz" class="prop-input" step="5"></div><button class="prop-btn primary" id="apply-rot">Apply Rotation</button></div></div>
-      <div class="prop-section"><div class="prop-section-head">⤢ Scale</div><div class="prop-section-body"><div class="prop-row"><span class="prop-label">X</span><input type="number" id="p-sx" class="prop-input" step="0.1" value="1"></div><div class="prop-row"><span class="prop-label">Y</span><input type="number" id="p-sy" class="prop-input" step="0.1" value="1"></div><div class="prop-row"><span class="prop-label">Z</span><input type="number" id="p-sz" class="prop-input" step="0.1" value="1"></div><button class="prop-btn primary" id="apply-scale">Apply Scale</button></div></div>
-      <div class="prop-section"><div class="prop-section-head">🎨 Appearance</div><div class="prop-section-body"><div class="mat-grid" id="mat-grid"><div class="mat-tile active" data-mat="metal"><div class="mat-swatch" style="background:linear-gradient(135deg,#9ab3d5,#6b8cae)"></div>Metal</div><div class="mat-tile" data-mat="plastic"><div class="mat-swatch" style="background:#4a7ac8"></div>Plastic</div><div class="mat-tile" data-mat="glass"><div class="mat-swatch" style="background:#a0d8ef;opacity:0.7"></div>Glass</div><div class="mat-tile" data-mat="gold"><div class="mat-swatch" style="background:#ffd700"></div>Gold</div></div><div class="color-row"><input type="color" id="custom-color" value="#4a7ac8"><label>Color</label><button class="prop-btn" style="width:auto;padding:4px 12px;" id="apply-color">Set</button></div><div class="slider-row"><div class="slider-labels"><span>Metalness</span><span id="sv-met">0.80</span></div><input type="range" id="sl-met" min="0" max="1" step="0.01" value="0.8"></div><div class="slider-row"><div class="slider-labels"><span>Roughness</span><span id="sv-rou">0.25</span></div><input type="range" id="sl-rou" min="0" max="1" step="0.01" value="0.25"></div><button class="prop-btn primary" id="apply-mat">Apply Material</button></div></div>
-      <div class="prop-section"><div class="prop-section-head">⚙ Actions</div><div class="prop-section-body"><button class="prop-btn" id="op-dup">Duplicate</button><button class="prop-btn warn" id="p-delete">Delete Selected</button><button class="prop-btn" id="rb-clear-scene">Clear Scene</button></div></div>
+  <div id="right-panel">
+    <div class="prop-section">
+      <div class="prop-section-title">📐 Selected Object</div>
+      <div id="selected-info" style="color:var(--text3); font-size:12px;">No object selected</div>
+    </div>
+    <div class="prop-section">
+      <div class="prop-section-title">📍 Position</div>
+      <div class="prop-row"><label>X:</label><input type="number" id="prop-x" step="1"></div>
+      <div class="prop-row"><label>Y:</label><input type="number" id="prop-y" step="1"></div>
+      <button class="prop-btn" id="apply-position">Apply Position</button>
+    </div>
+    <div class="prop-section">
+      <div class="prop-section-title">📏 Size</div>
+      <div class="prop-row"><label>Width:</label><input type="number" id="prop-w" step="1"></div>
+      <div class="prop-row"><label>Height:</label><input type="number" id="prop-h" step="1"></div>
+      <div class="prop-row" id="prop-radius-row"><label>Radius:</label><input type="number" id="prop-r" step="1"></div>
+      <button class="prop-btn" id="apply-size">Apply Size</button>
+    </div>
+    <div class="prop-section">
+      <div class="prop-section-title">🎨 Style</div>
+      <div class="prop-row">
+        <label>Fill:</label>
+        <input type="color" id="prop-fill" value="#4a7ac8">
+        <div class="color-preview" id="fill-preview" style="background:#4a7ac8;"></div>
+      </div>
+      <div class="prop-row">
+        <label>Stroke:</label>
+        <input type="color" id="prop-stroke" value="#ffffff">
+        <div class="color-preview" id="stroke-preview" style="background:#ffffff;"></div>
+      </div>
+      <div class="prop-row">
+        <label>Stroke W:</label>
+        <input type="number" id="prop-stroke-width" step="1" value="2" min="1" max="10">
+      </div>
+      <button class="prop-btn" id="apply-style">Apply Style</button>
+    </div>
+    <div class="prop-section">
+      <button class="prop-btn danger" id="delete-selected">Delete Selected</button>
+      <button class="prop-btn" id="duplicate-object">Duplicate</button>
     </div>
   </div>
 </div>
 
-<div id="statusbar"><div class="sb-item" id="sb-status">Ready — Create shapes from ribbon</div><div class="sb-item"><b>Objects:</b> <span id="sb-count">0</span></div><div class="sb-item"><b>Mode:</b> <span id="sb-mode">Select</span></div><div class="sb-item" id="sb-coords"><b>XYZ:</b> 0,0,0</div></div>
+<div id="statusbar">
+  <div class="status-item" id="status-message">Ready — Select a shape to draw</div>
+  <div class="status-item"><b>Objects:</b> <span id="status-count">0</span></div>
+  <div class="status-item"><b>Tool:</b> <span id="status-tool">Rectangle</span></div>
+  <div class="status-item" id="status-coords"><b>Cursor:</b> 0, 0</div>
+</div>
 </div>
 
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { STLExporter } from 'three/addons/exporters/STLExporter.js';
-
-const vp = document.getElementById('viewport');
-const canvas = document.getElementById('vp-canvas');
-const scene = new THREE.Scene(); scene.background = new THREE.Color(0x0A0A0A);
-scene.fog = new THREE.FogExp2(0x0A0A0A, 0.008);
-const camera = new THREE.PerspectiveCamera(45, vp.clientWidth/vp.clientHeight, 0.1, 500);
-camera.position.set(7, 5, 9);
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setSize(vp.clientWidth, vp.clientHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-// Grid & Helpers
-const gridHelper = new THREE.GridHelper(30, 30, 0x3A3A3C, 0x2C2C2E); gridHelper.position.y = -0.05; scene.add(gridHelper);
-const axesHelper = new THREE.AxesHelper(4); scene.add(axesHelper);
-const floorPlane = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.MeshStandardMaterial({ color: 0x121212, roughness: 0.8, metalness: 0.1, side: THREE.DoubleSide }));
-floorPlane.rotation.x = -Math.PI/2; floorPlane.position.y = -0.1; floorPlane.receiveShadow = true; scene.add(floorPlane);
-
-// Lighting
-scene.add(new THREE.AmbientLight(0x2C2C34, 0.8));
-const mainLight = new THREE.DirectionalLight(0xFFFFFF, 2.2); mainLight.position.set(8, 12, 5); mainLight.castShadow = true; mainLight.shadow.mapSize.set(1024,1024); scene.add(mainLight);
-const fillLight = new THREE.PointLight(0x4466CC, 0.6); fillLight.position.set(-4, 3, 6); scene.add(fillLight);
-const backLight = new THREE.PointLight(0xFFAA44, 0.4); backLight.position.set(0, 2, -6); scene.add(backLight);
-
-const orbit = new OrbitControls(camera, renderer.domElement); orbit.enableDamping = true; orbit.dampingFactor = 0.05; orbit.target.set(0,1,0); orbit.rotateSpeed = 1.2;
-const transformCtrl = new TransformControls(camera, renderer.domElement); transformCtrl.addEventListener('dragging-changed', e => orbit.enabled = !e.value); transformCtrl.addEventListener('objectChange', syncProps); scene.add(transformCtrl);
-
-let objects = [], selected = null, objCounter = 0, activeMaterialPreset = 'metal';
-
-const materialPresets = { metal: { color:0x9ab3d5, metalness:0.92, roughness:0.2 }, plastic: { color:0x4a7ac8, metalness:0.1, roughness:0.6 }, glass: { color:0xaaddff, metalness:0.9, roughness:0.08, opacity:0.65 }, gold: { color:0xffcc44, metalness:0.95, roughness:0.25 } };
-function createMaterial(preset, customColor=null) { const p = materialPresets[preset] || materialPresets.metal; return new THREE.MeshStandardMaterial({ color: customColor || p.color, metalness: p.metalness, roughness: p.roughness, transparent: p.opacity ? true : false, opacity: p.opacity || 1 }); }
-
-function refreshUI() { document.getElementById('body-count').innerHTML = objects.length; document.getElementById('sb-count').innerHTML = objects.length; const container = document.getElementById('tc-bodies'); container.innerHTML = ''; if(objects.length===0) { container.innerHTML = '<div style="padding:8px;color:var(--text4);">No bodies</div>'; return; } objects.forEach(obj => { const node = document.createElement('div'); node.className = 'tree-node' + (obj===selected ? ' selected' : ''); node.innerHTML = `<span>${obj.userData.icon||'▪'}</span><span>${obj.name}</span><button class="node-del" title="Delete">✕</button>`; node.addEventListener('click', (e) => { if(e.target.classList.contains('node-del')) deleteObject(obj); else selectObject(obj); }); container.appendChild(node); }); }
-function syncProps() { if(!selected) { ['p-name','p-type','p-pos'].forEach(id=>document.getElementById(id).innerHTML='<b>—</b>'); ['p-px','p-py','p-pz','p-rx','p-ry','p-rz','p-sx','p-sy','p-sz'].forEach(id=>document.getElementById(id).value=''); return; } const p=selected.position, r=selected.rotation, s=selected.scale; document.getElementById('p-name').innerHTML=`<b>Object:</b> ${selected.name}`; document.getElementById('p-type').innerHTML=`<b>Type:</b> ${selected.userData.type}`; document.getElementById('p-pos').innerHTML=`<b>Position:</b> ${p.x.toFixed(2)}, ${p.y.toFixed(2)}, ${p.z.toFixed(2)}`; document.getElementById('p-px').value=p.x.toFixed(3); document.getElementById('p-py').value=p.y.toFixed(3); document.getElementById('p-pz').value=p.z.toFixed(3); document.getElementById('p-rx').value=((r.x*180/Math.PI).toFixed(1)); document.getElementById('p-ry').value=((r.y*180/Math.PI).toFixed(1)); document.getElementById('p-rz').value=((r.z*180/Math.PI).toFixed(1)); document.getElementById('p-sx').value=s.x.toFixed(3); document.getElementById('p-sy').value=s.y.toFixed(3); document.getElementById('p-sz').value=s.z.toFixed(3); document.getElementById('prop-title').innerHTML = selected.name; const mat = selected.userData.savedMat; if(mat){ document.getElementById('sl-met').value = mat.metalness||0.8; document.getElementById('sv-met').innerText = (mat.metalness||0.8).toFixed(2); document.getElementById('sl-rou').value = mat.roughness||0.25; document.getElementById('sv-rou').innerText = (mat.roughness||0.25).toFixed(2); } }
-function selectObject(obj) { if(selected && selected !== obj) { selected.material = selected.userData.savedMat.clone(); selected.material.needsUpdate = true; } if(!obj) { if(selected) transformCtrl.detach(); selected = null; refreshUI(); syncProps(); setStatus('Deselected'); return; } selected = obj; const hlMat = selected.userData.savedMat.clone(); hlMat.emissive = new THREE.Color(0x0A84FF); hlMat.emissiveIntensity = 0.35; selected.material = hlMat; transformCtrl.attach(selected); if(transformCtrl.getMode()==='translate' && document.getElementById('th-move').classList.contains('active')) transformCtrl.setMode('translate'); syncProps(); refreshUI(); setStatus(`Selected: ${selected.name}`); }
-function addObject(type) { const dims = { w:2, h:2, d:2, r:1.2, segs:32 }; let geo; if(type==='Box') geo=new THREE.BoxGeometry(dims.w,dims.h,dims.d); else if(type==='Cylinder') geo=new THREE.CylinderGeometry(dims.r,dims.r,dims.h,32); else if(type==='Sphere') geo=new THREE.SphereGeometry(dims.r,32,32); else if(type==='Cone') geo=new THREE.ConeGeometry(dims.r,dims.h,32); else if(type==='Torus') geo=new THREE.TorusGeometry(dims.r,0.35,32,64); else geo=new THREE.BoxGeometry(1,1,1); objCounter++; const mat = createMaterial(activeMaterialPreset); const mesh = new THREE.Mesh(geo, mat); mesh.name = `${type}_${objCounter}`; mesh.userData = { type: type, savedMat: mat.clone(), icon: type==='Box'?'⬛':type==='Sphere'?'🔵':'⚫' }; mesh.castShadow=true; mesh.receiveShadow=true; mesh.position.set((Math.random()-0.5)*5, type==='Sphere'?1.2:1, (Math.random()-0.5)*5); scene.add(mesh); objects.push(mesh); selectObject(mesh); refreshUI(); setStatus(`Created ${type}`); }
-function deleteObject(obj) { if(!obj) return; scene.remove(obj); obj.geometry.dispose(); obj.material.dispose(); if(obj.userData.savedMat) obj.userData.savedMat.dispose(); objects = objects.filter(o=>o!==obj); if(selected===obj) { selected=null; transformCtrl.detach(); } refreshUI(); syncProps(); setStatus('Deleted'); }
-function clearScene() { objects.forEach(o=>{ scene.remove(o); o.geometry.dispose(); o.material.dispose(); }); objects=[]; selected=null; transformCtrl.detach(); refreshUI(); syncProps(); setStatus('Scene cleared'); }
-function setStatus(msg) { document.getElementById('sb-status').innerHTML = msg; }
-function setMode(mode) { const modes = ['select','move','rotate','scale']; modes.forEach(m=>{ const btn = document.getElementById(`th-${m}`); if(btn) btn.classList.toggle('active', m===mode); }); document.getElementById('sb-mode').innerHTML = mode.charAt(0).toUpperCase()+mode.slice(1); if(mode==='select') transformCtrl.setMode('translate'); else transformCtrl.setMode(mode); if(selected) transformCtrl.attach(selected); }
-
-// Event binding
-document.querySelectorAll('[data-shape]').forEach(btn=>btn.addEventListener('click',()=>addObject(btn.dataset.shape)));
-document.getElementById('th-select').addEventListener('click',()=>setMode('select'));
-document.getElementById('th-move').addEventListener('click',()=>setMode('move'));
-document.getElementById('th-rotate').addEventListener('click',()=>setMode('rotate'));
-document.getElementById('th-scale').addEventListener('click',()=>setMode('scale'));
-document.getElementById('rb-move').addEventListener('click',()=>setMode('move'));
-document.getElementById('rb-rotate').addEventListener('click',()=>setMode('rotate'));
-document.getElementById('rb-scale').addEventListener('click',()=>setMode('scale'));
-document.getElementById('rb-delete').addEventListener('click',()=>deleteObject(selected));
-document.getElementById('p-delete').addEventListener('click',()=>deleteObject(selected));
-document.getElementById('rb-clear').addEventListener('click',clearScene);
-document.getElementById('rb-clear-scene').addEventListener('click',clearScene);
-document.getElementById('apply-pos').addEventListener('click',()=>{ if(selected){ selected.position.set(parseFloat(document.getElementById('p-px').value)||0, parseFloat(document.getElementById('p-py').value)||0, parseFloat(document.getElementById('p-pz').value)||0); syncProps(); setStatus('Position updated'); } });
-document.getElementById('apply-rot').addEventListener('click',()=>{ if(selected){ selected.rotation.set((parseFloat(document.getElementById('p-rx').value)||0)*Math.PI/180, (parseFloat(document.getElementById('p-ry').value)||0)*Math.PI/180, (parseFloat(document.getElementById('p-rz').value)||0)*Math.PI/180); syncProps(); setStatus('Rotation updated'); } });
-document.getElementById('apply-scale').addEventListener('click',()=>{ if(selected){ selected.scale.set(parseFloat(document.getElementById('p-sx').value)||1, parseFloat(document.getElementById('p-sy').value)||1, parseFloat(document.getElementById('p-sz').value)||1); syncProps(); setStatus('Scale updated'); } });
-document.getElementById('rb-dup').addEventListener('click',()=>{ if(selected){ const clone = selected.clone(); clone.material = selected.userData.savedMat.clone(); clone.userData = {...selected.userData, savedMat: clone.material.clone()}; objCounter++; clone.name = `${selected.userData.type}_${objCounter}`; clone.position.x += 2; scene.add(clone); objects.push(clone); selectObject(clone); refreshUI(); setStatus(`Duplicated ${clone.name}`); } });
-document.getElementById('op-dup').addEventListener('click',()=>document.getElementById('rb-dup').click());
-document.getElementById('rb-mirror').addEventListener('click',()=>{ if(selected){ selected.scale.x *= -1; syncProps(); setStatus('Mirrored X'); } });
-document.getElementById('rb-center').addEventListener('click',()=>{ if(selected){ selected.position.x=0; selected.position.z=0; syncProps(); setStatus('Centered'); } });
-document.getElementById('rb-extrude').addEventListener('click',()=>{ if(selected){ selected.scale.y *= 1.3; syncProps(); setStatus('Extruded Y'); } });
-document.getElementById('rb-export').addEventListener('click',()=>{ if(objects.length===0) return setStatus('Nothing to export'); const exporter = new STLExporter(); const group = new THREE.Group(); objects.forEach(o=>{ const c = o.clone(); c.material = new THREE.MeshStandardMaterial(); group.add(c); }); const str = exporter.parse(group); const blob = new Blob([str], {type:'model/stl'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='aethercad_export.stl'; a.click(); setStatus(`Exported ${objects.length} objects`); });
-document.querySelectorAll('.mat-tile').forEach(tile=>{ tile.addEventListener('click',()=>{ document.querySelectorAll('.mat-tile').forEach(t=>t.classList.remove('active')); tile.classList.add('active'); activeMaterialPreset = tile.dataset.mat; if(selected) applyMaterialToSelected(); else setStatus(`Preset: ${activeMaterialPreset}`); }); });
-function applyMaterialToSelected(){ if(!selected) return; const met=parseFloat(document.getElementById('sl-met').value); const rou=parseFloat(document.getElementById('sl-rou').value); const preset=materialPresets[activeMaterialPreset]||materialPresets.metal; const newMat=new THREE.MeshStandardMaterial({ color: selected.userData.savedMat.color.getHex(), metalness:met, roughness:rou, transparent:preset.opacity?true:false, opacity:preset.opacity||1 }); selected.userData.savedMat=newMat.clone(); selected.material=newMat.clone(); selected.material.emissiveIntensity=0.35; selected.material.emissive=new THREE.Color(0x0A84FF); setStatus('Material applied'); }
-document.getElementById('apply-mat').addEventListener('click',()=>applyMaterialToSelected());
-document.getElementById('apply-color').addEventListener('click',()=>{ if(selected){ const hex=document.getElementById('custom-color').value; const color=parseInt(hex.slice(1),16); selected.userData.savedMat.color.setHex(color); selected.material.color.setHex(color); selected.material.needsUpdate=true; setStatus('Color set'); } });
-document.getElementById('sl-met').addEventListener('input',(e)=>{ document.getElementById('sv-met').innerText=parseFloat(e.target.value).toFixed(2); if(selected){ selected.userData.savedMat.metalness=parseFloat(e.target.value); selected.material.metalness=parseFloat(e.target.value); } });
-document.getElementById('sl-rou').addEventListener('input',(e)=>{ document.getElementById('sv-rou').innerText=parseFloat(e.target.value).toFixed(2); if(selected){ selected.userData.savedMat.roughness=parseFloat(e.target.value); selected.material.roughness=parseFloat(e.target.value); } });
-document.querySelectorAll('[data-view]').forEach(btn=>{ btn.addEventListener('click',()=>{ const v=btn.dataset.view; if(v==='top'){ camera.position.set(0,20,0.01); camera.up.set(0,0,-1); orbit.target.set(0,1,0); } else if(v==='front'){ camera.position.set(0,1.5,15); camera.up.set(0,1,0); } else if(v==='right'){ camera.position.set(15,1.5,0); } else if(v==='left'){ camera.position.set(-15,1.5,0); } else if(v==='persp'){ camera.position.set(7,5,9); camera.up.set(0,1,0); } orbit.update(); setStatus(`View: ${v}`); }); });
-// Raycaster selection
-const raycaster = new THREE.Raycaster(); const mouseVec = new THREE.Vector2(); let mouseDownPos={x:0,y:0}, dragStarted=false;
-renderer.domElement.addEventListener('mousedown', e=>{ mouseDownPos={x:e.clientX,y:e.clientY}; dragStarted=false; });
-renderer.domElement.addEventListener('mousemove', e=>{ if(Math.hypot(e.clientX-mouseDownPos.x, e.clientY-mouseDownPos.y)>5) dragStarted=true; });
-renderer.domElement.addEventListener('click', e=>{ if(dragStarted || transformCtrl.dragging) return; const rect=renderer.domElement.getBoundingClientRect(); mouseVec.x=((e.clientX-rect.left)/rect.width)*2-1; mouseVec.y=-((e.clientY-rect.top)/rect.height)*2+1; raycaster.setFromCamera(mouseVec,camera); const intersects=raycaster.intersectObjects(objects); if(intersects.length) selectObject(intersects[0].object); else selectObject(null); });
-window.addEventListener('keydown', e=>{ if(e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(k==='t') setMode('move'); if(k==='r') setMode('rotate'); if(k==='s') setMode('scale'); if(k==='q') setMode('select'); if(k==='delete') deleteObject(selected); if(k==='escape') selectObject(null); if(k==='d' && e.ctrlKey){ e.preventDefault(); document.getElementById('rb-dup').click(); } });
-new ResizeObserver(()=>{ camera.aspect=vp.clientWidth/vp.clientHeight; camera.updateProjectionMatrix(); renderer.setSize(vp.clientWidth,vp.clientHeight); }).observe(vp);
-// Demo objects
-addObject('Box'); if(selected){ selected.position.set(-2.5,1,0); selected.scale.set(1,1.8,1); selected.userData.savedMat=createMaterial('metal'); selected.material=selected.userData.savedMat.clone(); syncProps(); }
-addObject('Cylinder'); if(selected){ selected.position.set(2.8,1,0.5); selected.userData.savedMat=createMaterial('gold'); selected.material=selected.userData.savedMat.clone(); syncProps(); }
-addObject('Sphere'); if(selected){ selected.position.set(0,1.2,2.5); selected.userData.savedMat=createMaterial('glass'); selected.material=selected.userData.savedMat.clone(); syncProps(); }
-selectObject(null); refreshUI(); setStatus('AetherCAD ready — Click shapes, use T/R/S to transform');
-function animate(){ requestAnimationFrame(animate); orbit.update(); renderer.render(scene,camera); } animate();
+<script>
+(function(){
+  const canvas = document.getElementById('draw-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  let objects = [];
+  let selectedIndex = -1;
+  let currentTool = 'rectangle'; // rectangle, curve-rect, circle, select
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
+  let dragObject = false;
+  let dragOffset = { x: 0, y: 0 };
+  let objectCounter = 0;
+  
+  // Grid settings
+  const GRID_SIZE = 20;
+  let panX = 0, panY = 0;
+  let scale = 1;
+  let isPanning = false;
+  let panStart = { x: 0, y: 0 };
+  
+  // Resize canvas
+  function resizeCanvas() {
+    const container = document.getElementById('canvas-area');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    render();
+  }
+  
+  // Snap to grid
+  function snapToGrid(val) {
+    return Math.round(val / GRID_SIZE) * GRID_SIZE;
+  }
+  
+  // Convert screen to world coordinates
+  function screenToWorld(screenX, screenY) {
+    return {
+      x: (screenX - panX) / scale,
+      y: (screenY - panY) / scale
+    };
+  }
+  
+  function worldToScreen(worldX, worldY) {
+    return {
+      x: worldX * scale + panX,
+      y: worldY * scale + panY
+    };
+  }
+  
+  // Draw a rectangle with optional rounded corners
+  function drawShape(ctx, obj, isSelected = false) {
+    ctx.save();
+    ctx.translate(obj.x, obj.y);
+    
+    ctx.beginPath();
+    if (obj.type === 'circle') {
+      ctx.ellipse(0, 0, obj.width/2, obj.height/2, 0, 0, Math.PI * 2);
+    } else if (obj.type === 'curve-rect') {
+      const radius = obj.radius || 20;
+      ctx.moveTo(radius, 0);
+      ctx.lineTo(obj.width - radius, 0);
+      ctx.quadraticCurveTo(obj.width, 0, obj.width, radius);
+      ctx.lineTo(obj.width, obj.height - radius);
+      ctx.quadraticCurveTo(obj.width, obj.height, obj.width - radius, obj.height);
+      ctx.lineTo(radius, obj.height);
+      ctx.quadraticCurveTo(0, obj.height, 0, obj.height - radius);
+      ctx.lineTo(0, radius);
+      ctx.quadraticCurveTo(0, 0, radius, 0);
+    } else {
+      ctx.rect(0, 0, obj.width, obj.height);
+    }
+    
+    ctx.fillStyle = obj.fillColor;
+    ctx.fill();
+    ctx.strokeStyle = obj.strokeColor;
+    ctx.lineWidth = obj.strokeWidth;
+    ctx.stroke();
+    
+    if (isSelected) {
+      ctx.strokeStyle = '#0A84FF';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([5, 5]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      
+      // Draw resize handles
+      ctx.fillStyle = '#0A84FF';
+      const handles = [
+        { x: 0, y: 0 }, { x: obj.width, y: 0 },
+        { x: 0, y: obj.height }, { x: obj.width, y: obj.height }
+      ];
+      handles.forEach(h => {
+        ctx.fillRect(h.x - 4, h.y - 4, 8, 8);
+      });
+    }
+    ctx.restore();
+  }
+  
+  function render() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw grid
+    ctx.save();
+    ctx.translate(panX, panY);
+    ctx.scale(scale, scale);
+    
+    ctx.strokeStyle = '#2A2A2A';
+    ctx.lineWidth = 1 / scale;
+    const startX = Math.floor(-panX / scale / GRID_SIZE) * GRID_SIZE;
+    const startY = Math.floor(-panY / scale / GRID_SIZE) * GRID_SIZE;
+    const endX = startX + canvas.width / scale + GRID_SIZE;
+    const endY = startY + canvas.height / scale + GRID_SIZE;
+    
+    for (let x = startX; x < endX; x += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(x, startY);
+      ctx.lineTo(x, endY);
+      ctx.stroke();
+    }
+    for (let y = startY; y < endY; y += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(startX, y);
+      ctx.lineTo(endX, y);
+      ctx.stroke();
+    }
+    
+    // Draw objects
+    objects.forEach((obj, idx) => {
+      drawShape(ctx, obj, idx === selectedIndex);
+    });
+    ctx.restore();
+    
+    // Draw preview for drawing
+    if (isDragging && !dragObject && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
+      const startWorld = screenToWorld(dragStart.x, dragStart.y);
+      const currentWorld = screenToWorld(window.lastMouseX || dragStart.x, window.lastMouseY || dragStart.y);
+      const w = currentWorld.x - startWorld.x;
+      const h = currentWorld.y - startWorld.y;
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      if (currentTool === 'circle') {
+        const radius = Math.abs(w) / 2;
+        const centerX = startWorld.x + w/2;
+        const centerY = startWorld.y + h/2;
+        const screenCenter = worldToScreen(centerX, centerY);
+        const screenRadius = radius * scale;
+        ctx.ellipse(screenCenter.x, screenCenter.y, screenRadius, screenRadius, 0, 0, Math.PI * 2);
+      } else if (currentTool === 'curve-rect') {
+        const radius = Math.min(Math.abs(w), Math.abs(h)) * 0.2;
+        const x = Math.min(startWorld.x, currentWorld.x);
+        const y = Math.min(startWorld.y, currentWorld.y);
+        const width = Math.abs(w);
+        const height = Math.abs(h);
+        const screenX = x * scale + panX;
+        const screenY = y * scale + panY;
+        const screenW = width * scale;
+        const screenH = height * scale;
+        const screenR = radius * scale;
+        ctx.moveTo(screenX + screenR, screenY);
+        ctx.lineTo(screenX + screenW - screenR, screenY);
+        ctx.quadraticCurveTo(screenX + screenW, screenY, screenX + screenW, screenY + screenR);
+        ctx.lineTo(screenX + screenW, screenY + screenH - screenR);
+        ctx.quadraticCurveTo(screenX + screenW, screenY + screenH, screenX + screenW - screenR, screenY + screenH);
+        ctx.lineTo(screenX + screenR, screenY + screenH);
+        ctx.quadraticCurveTo(screenX, screenY + screenH, screenX, screenY + screenH - screenR);
+        ctx.lineTo(screenX, screenY + screenR);
+        ctx.quadraticCurveTo(screenX, screenY, screenX + screenR, screenY);
+      } else {
+        const x = Math.min(startWorld.x, currentWorld.x);
+        const y = Math.min(startWorld.y, currentWorld.y);
+        const width = Math.abs(w);
+        const height = Math.abs(h);
+        ctx.fillRect(x * scale + panX, y * scale + panY, width * scale, height * scale);
+      }
+      ctx.fillStyle = 'rgba(10,132,255,0.3)';
+      ctx.fill();
+      ctx.strokeStyle = '#0A84FF';
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+  
+  function addObject(type, x, y, w, h, radius = 20) {
+    const obj = {
+      id: ++objectCounter,
+      type: type,
+      x: snapToGrid(x),
+      y: snapToGrid(y),
+      width: Math.max(20, snapToGrid(w)),
+      height: Math.max(20, snapToGrid(h)),
+      radius: type === 'curve-rect' ? radius : 0,
+      fillColor: '#4a7ac8',
+      strokeColor: '#ffffff',
+      strokeWidth: 2
+    };
+    objects.push(obj);
+    selectedIndex = objects.length - 1;
+    updateUI();
+    render();
+    setStatus(`Created ${type === 'curve-rect' ? 'Curve Rectangle' : type}`);
+  }
+  
+  function updateUI() {
+    const listEl = document.getElementById('objects-list');
+    listEl.innerHTML = '';
+    objects.forEach((obj, idx) => {
+      const div = document.createElement('div');
+      div.className = 'object-item' + (idx === selectedIndex ? ' selected' : '');
+      div.innerHTML = `
+        <div class="object-icon">${obj.type === 'circle' ? '●' : (obj.type === 'curve-rect' ? '⭔' : '⬛')}</div>
+        <div class="object-info">
+          <div class="object-name">${obj.type === 'curve-rect' ? 'Curve Rect' : obj.type} ${obj.id}</div>
+          <div class="object-type">${obj.width} × ${obj.height}</div>
+        </div>
+        <button class="object-delete" data-idx="${idx}">✕</button>
+      `;
+      div.addEventListener('click', (e) => {
+        if (e.target.classList.contains('object-delete')) {
+          e.stopPropagation();
+          deleteObject(idx);
+        } else {
+          selectObject(idx);
+        }
+      });
+      listEl.appendChild(div);
+    });
+    document.getElementById('object-count').innerText = objects.length;
+    document.getElementById('status-count').innerText = objects.length;
+    document.getElementById('status-tool').innerText = 
+      currentTool === 'rectangle' ? 'Rectangle' : (currentTool === 'curve-rect' ? 'Curve Rect' : (currentTool === 'circle' ? 'Circle' : 'Select'));
+    
+    if (selectedIndex >= 0 && objects[selectedIndex]) {
+      const obj = objects[selectedIndex];
+      document.getElementById('selected-info').innerHTML = `${obj.type} #${obj.id}<br>Size: ${obj.width}×${obj.height}`;
+      document.getElementById('prop-x').value = obj.x;
+      document.getElementById('prop-y').value = obj.y;
+      document.getElementById('prop-w').value = obj.width;
+      document.getElementById('prop-h').value = obj.height;
+      document.getElementById('prop-fill').value = obj.fillColor;
+      document.getElementById('prop-stroke').value = obj.strokeColor;
+      document.getElementById('prop-stroke-width').value = obj.strokeWidth;
+      document.getElementById('fill-preview').style.background = obj.fillColor;
+      document.getElementById('stroke-preview').style.background = obj.strokeColor;
+      if (obj.type === 'curve-rect') {
+        document.getElementById('prop-radius-row').style.display = 'flex';
+        document.getElementById('prop-r').value = obj.radius || 20;
+      } else {
+        document.getElementById('prop-radius-row').style.display = 'none';
+      }
+    } else {
+      document.getElementById('selected-info').innerHTML = 'No object selected';
+      document.getElementById('prop-x').value = '';
+      document.getElementById('prop-y').value = '';
+      document.getElementById('prop-w').value = '';
+      document.getElementById('prop-h').value = '';
+    }
+    
+    // Update HUD visibility
+    const curveGroup = document.getElementById('curve-radius-group');
+    if (currentTool === 'curve-rect') {
+      curveGroup.style.display = 'flex';
+    } else {
+      curveGroup.style.display = 'none';
+    }
+  }
+  
+  function selectObject(idx) {
+    selectedIndex = idx;
+    updateUI();
+    render();
+    if (idx >= 0) setStatus(`Selected ${objects[idx].type} #${objects[idx].id}`);
+    else setStatus('Deselected');
+  }
+  
+  function deleteObject(idx) {
+    objects.splice(idx, 1);
+    if (selectedIndex >= objects.length) selectedIndex = objects.length - 1;
+    if (objects.length === 0) selectedIndex = -1;
+    updateUI();
+    render();
+    setStatus('Object deleted');
+  }
+  
+  function clearAll() {
+    objects = [];
+    selectedIndex = -1;
+    updateUI();
+    render();
+    setStatus('All objects cleared');
+  }
+  
+  function setStatus(msg) {
+    document.getElementById('status-message').innerHTML = msg;
+    setTimeout(() => {
+      if (document.getElementById('status-message').innerHTML === msg) {
+        document.getElementById('status-message').innerHTML = 'Ready';
+      }
+    }, 2000);
+  }
+  
+  // Mouse handlers
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (e.clientX - rect.left) * (canvas.width / rect.width),
+      y: (e.clientY - rect.top) * (canvas.height / rect.height)
+    };
+  }
+  
+  canvas.addEventListener('mousedown', (e) => {
+    const pos = getMousePos(e);
+    window.lastMouseX = pos.x;
+    window.lastMouseY = pos.y;
+    
+    if (e.button === 1 || e.shiftKey) {
+      isPanning = true;
+      panStart = { x: pos.x - panX, y: pos.y - panY };
+      return;
+    }
+    
+    if (currentTool === 'select') {
+      // Check if clicking on an object
+      const worldPos = screenToWorld(pos.x, pos.y);
+      let hitIndex = -1;
+      for (let i = objects.length - 1; i >= 0; i--) {
+        const obj = objects[i];
+        if (worldPos.x >= obj.x && worldPos.x <= obj.x + obj.width &&
+            worldPos.y >= obj.y && worldPos.y <= obj.y + obj.height) {
+          hitIndex = i;
+          break;
+        }
+      }
+      if (hitIndex >= 0) {
+        selectObject(hitIndex);
+        dragObject = true;
+        dragOffset = {
+          x: worldPos.x - objects[hitIndex].x,
+          y: worldPos.y - objects[hitIndex].y
+        };
+      } else {
+        selectObject(-1);
+      }
+      render();
+    } else if (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle') {
+      isDragging = true;
+      dragStart = { x: pos.x, y: pos.y };
+      render();
+    }
+  });
+  
+  canvas.addEventListener('mousemove', (e) => {
+    const pos = getMousePos(e);
+    window.lastMouseX = pos.x;
+    window.lastMouseY = pos.y;
+    const worldPos = screenToWorld(pos.x, pos.y);
+    document.getElementById('status-coords').innerHTML = `<b>Cursor:</b> ${Math.round(worldPos.x)}, ${Math.round(worldPos.y)}`;
+    
+    if (isPanning) {
+      panX = pos.x - panStart.x;
+      panY = pos.y - panStart.y;
+      render();
+      return;
+    }
+    
+    if (dragObject && selectedIndex >= 0) {
+      const obj = objects[selectedIndex];
+      obj.x = snapToGrid(worldPos.x - dragOffset.x);
+      obj.y = snapToGrid(worldPos.y - dragOffset.y);
+      render();
+      updateUI();
+    } else if (isDragging && !dragObject) {
+      render();
+    }
+  });
+  
+  canvas.addEventListener('mouseup', (e) => {
+    if (isPanning) {
+      isPanning = false;
+      return;
+    }
+    
+    if (isDragging && !dragObject && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
+      const endPos = getMousePos(e);
+      const startWorld = screenToWorld(dragStart.x, dragStart.y);
+      const endWorld = screenToWorld(endPos.x, endPos.y);
+      const w = Math.abs(endWorld.x - startWorld.x);
+      const h = Math.abs(endWorld.y - startWorld.y);
+      const x = Math.min(startWorld.x, endWorld.x);
+      const y = Math.min(startWorld.y, endWorld.y);
+      
+      if (w > 10 && h > 10) {
+        const radius = parseInt(document.getElementById('hud-r').value) || 20;
+        addObject(currentTool, x, y, w, h, radius);
+      }
+    }
+    
+    isDragging = false;
+    dragObject = false;
+    render();
+  });
+  
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(3, Math.max(0.5, scale * delta));
+    render();
+  });
+  
+  // Tool buttons
+  document.getElementById('tool-rectangle').addEventListener('click', () => {
+    currentTool = 'rectangle';
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('tool-rectangle').classList.add('active');
+    setStatus('Tool: Rectangle — click and drag to draw');
+    updateUI();
+  });
+  document.getElementById('tool-curve-rect').addEventListener('click', () => {
+    currentTool = 'curve-rect';
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('tool-curve-rect').classList.add('active');
+    setStatus('Tool: Curve Rectangle — click and drag to draw rounded rectangles');
+    updateUI();
+  });
+  document.getElementById('tool-circle').addEventListener('click', () => {
+    currentTool = 'circle';
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('tool-circle').classList.add('active');
+    setStatus('Tool: Circle — click and drag to draw ellipses');
+    updateUI();
+  });
+  document.getElementById('tool-select').addEventListener('click', () => {
+    currentTool = 'select';
+    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('tool-select').classList.add('active');
+    setStatus('Tool: Select — click objects to select, drag to move');
+    updateUI();
+  });
+  
+  document.getElementById('action-delete').addEventListener('click', () => {
+    if (selectedIndex >= 0) deleteObject(selectedIndex);
+    else setStatus('No object selected');
+  });
+  document.getElementById('action-clear').addEventListener('click', clearAll);
+  document.getElementById('delete-selected').addEventListener('click', () => {
+    if (selectedIndex >= 0) deleteObject(selectedIndex);
+    else setStatus('No object selected');
+  });
+  document.getElementById('duplicate-object').addEventListener('click', () => {
+    if (selectedIndex >= 0) {
+      const original = objects[selectedIndex];
+      const newObj = JSON.parse(JSON.stringify(original));
+      newObj.id = ++objectCounter;
+      newObj.x += 30;
+      newObj.y += 30;
+      objects.push(newObj);
+      selectedIndex = objects.length - 1;
+      updateUI();
+      render();
+      setStatus(`Duplicated ${original.type}`);
+    } else setStatus('No object selected');
+  });
+  
+  // Property updates
+  document.getElementById('apply-position').addEventListener('click', () => {
+    if (selectedIndex >= 0) {
+      objects[selectedIndex].x = snapToGrid(parseInt(document.getElementById('prop-x').value) || 0);
+      objects[selectedIndex].y = snapToGrid(parseInt(document.getElementById('prop-y').value) || 0);
+      updateUI();
+      render();
+      setStatus('Position updated');
+    }
+  });
+  document.getElementById('apply-size').addEventListener('click', () => {
+    if (selectedIndex >= 0) {
+      objects[selectedIndex].width = Math.max(20, parseInt(document.getElementById('prop-w').value) || 50);
+      objects[selectedIndex].height = Math.max(20, parseInt(document.getElementById('prop-h').value) || 50);
+      if (objects[selectedIndex].type === 'curve-rect') {
+        objects[selectedIndex].radius = parseInt(document.getElementById('prop-r').value) || 20;
+      }
+      updateUI();
+      render();
+      setStatus('Size updated');
+    }
+  });
+  document.getElementById('apply-style').addEventListener('click', () => {
+    if (selectedIndex >= 0) {
+      objects[selectedIndex].fillColor = document.getElementById('prop-fill').value;
+      objects[selectedIndex].strokeColor = document.getElementById('prop-stroke').value;
+      objects[selectedIndex].strokeWidth = parseInt(document.getElementById('prop-stroke-width').value) || 2;
+      document.getElementById('fill-preview').style.background = objects[selectedIndex].fillColor;
+      document.getElementById('stroke-preview').style.background = objects[selectedIndex].strokeColor;
+      updateUI();
+      render();
+      setStatus('Style applied');
+    }
+  });
+  document.getElementById('apply-transform').addEventListener('click', () => {
+    if (selectedIndex >= 0) {
+      objects[selectedIndex].width = Math.max(20, parseInt(document.getElementById('hud-w').value) || 100);
+      objects[selectedIndex].height = Math.max(20, parseInt(document.getElementById('hud-h').value) || 100);
+      if (objects[selectedIndex].type === 'curve-rect') {
+        objects[selectedIndex].radius = parseInt(document.getElementById('hud-r').value) || 20;
+      }
+      updateUI();
+      render();
+      setStatus('Size applied');
+    } else {
+      setStatus('Select an object first');
+    }
+  });
+  
+  // Color preview
+  document.getElementById('prop-fill').addEventListener('input', (e) => {
+    document.getElementById('fill-preview').style.background = e.target.value;
+  });
+  document.getElementById('prop-stroke').addEventListener('input', (e) => {
+    document.getElementById('stroke-preview').style.background = e.target.value;
+  });
+  
+  // Add some demo objects
+  addObject('rectangle', 100, 100, 120, 80);
+  addObject('curve-rect', 300, 150, 140, 100, 25);
+  addObject('circle', 550, 120, 90, 90);
+  selectObject(-1);
+  
+  // Initial setup
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  document.getElementById('tool-rectangle').classList.add('active');
+  
+  render();
+})();
 </script>
 </body>
 </html>
