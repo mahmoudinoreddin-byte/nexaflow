@@ -3,373 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>AetherCAD — Curve & Extrude Studio</title>
+  <title>AETHERCAD | Curve Studio - Surface/Edge/Node Select</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      user-select: none;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+    body { overflow: hidden; font-family: 'Inter', sans-serif; background: #0B0E17; }
 
-    body {
-      overflow: hidden;
-      font-family: 'Inter', sans-serif;
-      background: #0B0E17;
-    }
+    /* Top Bar */
+    .top-bar { position: fixed; top: 0; left: 0; right: 0; height: 52px; background: rgba(11, 14, 23, 0.98); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(59, 130, 246, 0.3); display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 10000; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 22px; background: linear-gradient(135deg, #FFFFFF, #3B82F6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .workspace-badge { background: rgba(59, 130, 246, 0.12); padding: 5px 14px; border-radius: 40px; font-size: 11px; color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.25); }
+    .user-chip { background: #1A1F2E; padding: 6px 16px; border-radius: 32px; font-size: 12px; color: #CBD5E1; border: 1px solid #2D3A5E; }
 
-    /* === TOP BAR === */
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 56px;
-      background: rgba(11, 14, 23, 0.98);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid rgba(59, 130, 246, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-      z-index: 10000;
-    }
+    /* Canvas */
+    #canvas-container { position: fixed; top: 52px; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, #0E121D, #080B12); }
 
-    .logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      font-size: 22px;
-      background: linear-gradient(135deg, #FFFFFF, #3B82F6);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      letter-spacing: -0.5px;
-    }
+    /* Left Sidebar - Curve Tools */
+    .left-sidebar { position: fixed; top: 68px; left: 16px; width: 260px; background: rgba(15, 19, 30, 0.94); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(59, 130, 246, 0.35); padding: 18px; z-index: 10001; box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+    .sidebar-title { font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; color: #5B6E8C; margin-bottom: 12px; }
+    .curve-btn { background: #1A1F2E; border: 1px solid #2D3A5E; border-radius: 14px; padding: 10px 14px; color: #E2E8F0; font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; transition: 0.2s; width: 100%; }
+    .curve-btn:hover { background: #3B82F6; border-color: #3B82F6; transform: translateX(4px); }
+    .param-input { background: #0E121D; border: 1px solid #2D3A5E; border-radius: 12px; padding: 8px 12px; width: 100%; margin-bottom: 8px; color: #E2E8F0; font-size: 12px; }
 
-    .logo span {
-      background: linear-gradient(135deg, #3B82F6, #00D4AA);
-      -webkit-background-clip: text;
-      background-clip: text;
-    }
+    /* Right Panel - Selection & Transform */
+    .right-panel { position: fixed; top: 68px; right: 16px; width: 300px; background: rgba(15, 19, 30, 0.94); backdrop-filter: blur(20px); border-radius: 24px; border: 1px solid rgba(59, 130, 246, 0.35); padding: 18px; z-index: 10001; }
+    .info-card { background: #0E121D; border-radius: 14px; padding: 12px; font-size: 11px; font-family: monospace; color: #94A3B8; margin-bottom: 12px; border-left: 3px solid #3B82F6; }
+    .select-mode-group { display: flex; gap: 8px; margin-bottom: 16px; }
+    .mode-btn { background: #1A1F2E; border: 1px solid #2D3A5E; border-radius: 32px; padding: 6px 12px; font-size: 11px; cursor: pointer; color: #94A3B8; transition: 0.15s; }
+    .mode-btn.active { background: #3B82F6; color: white; border-color: #3B82F6; }
+    .extrude-slider { width: 100%; margin: 12px 0; -webkit-appearance: none; background: #2D3A5E; height: 4px; border-radius: 4px; }
+    .extrude-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #3B82F6; cursor: pointer; }
+    .action-btn { background: #1A2A3E; border: 1px solid #3B82F6; border-radius: 32px; padding: 10px; width: 100%; color: white; font-weight: 600; font-size: 12px; cursor: pointer; margin-top: 8px; transition: 0.2s; }
+    .action-btn:hover { background: #3B82F6; transform: scale(1.02); }
+    .surface-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .surface-chip { background: #1A1F2E; border: 1px solid #2D3A5E; border-radius: 32px; padding: 6px 14px; font-size: 11px; cursor: pointer; color: #CBD5E1; }
+    .surface-chip.active { background: #3B82F6; border-color: #3B82F6; color: white; }
 
-    .workspace-badge {
-      background: rgba(59, 130, 246, 0.12);
-      padding: 5px 14px;
-      border-radius: 40px;
-      font-size: 11px;
-      color: #60A5FA;
-      font-weight: 500;
-      border: 1px solid rgba(59, 130, 246, 0.25);
-    }
-
-    .user-area {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .user-chip {
-      background: #1A1F2E;
-      padding: 6px 16px;
-      border-radius: 32px;
-      font-size: 12px;
-      color: #CBD5E1;
-      border: 1px solid #2D3A5E;
-    }
-
-    /* === MAIN CANVAS === */
-    #canvas-container {
-      position: fixed;
-      top: 56px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 30% 20%, #0E121D, #080B12);
-    }
-
-    /* === LEFT SIDEBAR (Toolbox) === */
-    .left-sidebar {
-      position: fixed;
-      top: 72px;
-      left: 20px;
-      width: 260px;
-      background: rgba(15, 19, 30, 0.92);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 18px;
-      z-index: 10001;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .sidebar-section {
-      margin-bottom: 24px;
-    }
-
-    .sidebar-title {
-      font-size: 10px;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      color: #5B6E8C;
-      margin-bottom: 12px;
-    }
-
-    .curve-tools {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .curve-btn {
-      background: #1A1F2E;
-      border: 1px solid #2D3A5E;
-      border-radius: 14px;
-      padding: 10px 14px;
-      color: #E2E8F0;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .curve-btn:hover {
-      background: #3B82F6;
-      border-color: #3B82F6;
-      transform: translateX(4px);
-    }
-
-    .curve-btn.active {
-      background: #3B82F6;
-      border-color: #3B82F6;
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
-    }
-
-    .param-input {
-      background: #0E121D;
-      border: 1px solid #2D3A5E;
-      border-radius: 12px;
-      padding: 8px 12px;
-      width: 100%;
-      margin-bottom: 8px;
-      color: #E2E8F0;
-      font-size: 12px;
-    }
-
-    /* === RIGHT PANEL (Transform & Extrude) === */
-    .right-panel {
-      position: fixed;
-      top: 72px;
-      right: 20px;
-      width: 280px;
-      background: rgba(15, 19, 30, 0.92);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 18px;
-      z-index: 10001;
-    }
-
-    .info-card {
-      background: #0E121D;
-      border-radius: 14px;
-      padding: 12px;
-      font-size: 11px;
-      font-family: 'Space Grotesk', monospace;
-      color: #94A3B8;
-      margin-bottom: 12px;
-      border-left: 3px solid #3B82F6;
-    }
-
-    .extrude-slider {
-      width: 100%;
-      margin: 12px 0;
-      -webkit-appearance: none;
-      background: #2D3A5E;
-      height: 4px;
-      border-radius: 4px;
-    }
-
-    .extrude-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background: #3B82F6;
-      cursor: pointer;
-    }
-
-    .action-btn {
-      background: #1A2A3E;
-      border: 1px solid #3B82F6;
-      border-radius: 32px;
-      padding: 10px;
-      width: 100%;
-      color: white;
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: 0.2s;
-    }
-
-    .action-btn:hover {
-      background: #3B82F6;
-      transform: scale(1.02);
-    }
-
-    /* === BOTTOM BAR (Status & View) === */
-    .bottom-bar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 48px;
-      background: rgba(11, 14, 23, 0.96);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid rgba(59, 130, 246, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      z-index: 10000;
-    }
-
-    .view-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .view-icon {
-      background: #1A1F2E;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 20px;
-      color: #94A3B8;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.15s;
-    }
-
-    .view-icon:hover {
-      background: #3B82F6;
-      color: white;
-    }
-
-    .status-text {
-      font-size: 11px;
-      font-family: monospace;
-      color: #60A5FA;
-    }
-
-    .coord-display {
-      font-family: monospace;
-      font-size: 11px;
-      color: #5B6E8C;
-    }
-
-    /* === TOGGLE BUTTON === */
-    .toggle-toolbar {
-      position: fixed;
-      bottom: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1E293B;
-      border: 1px solid #3B82F6;
-      border-radius: 40px;
-      padding: 6px 18px;
-      color: white;
-      font-size: 11px;
-      cursor: pointer;
-      z-index: 10002;
-      transition: 0.2s;
-    }
-
-    .toggle-toolbar:hover {
-      background: #3B82F6;
-    }
+    /* Bottom Bar */
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 46px; background: rgba(11, 14, 23, 0.96); backdrop-filter: blur(16px); border-top: 1px solid rgba(59, 130, 246, 0.25); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 10000; }
+    .view-buttons { display: flex; gap: 8px; }
+    .view-icon { background: #1A1F2E; border: none; padding: 5px 14px; border-radius: 20px; color: #94A3B8; font-size: 11px; font-weight: 600; cursor: pointer; }
+    .view-icon:hover { background: #3B82F6; color: white; }
+    .status-text { font-size: 11px; font-family: monospace; color: #60A5FA; }
+    .toggle-sidebar { position: fixed; bottom: 58px; left: 50%; transform: translateX(-50%); background: #1E293B; border: 1px solid #3B82F6; border-radius: 40px; padding: 6px 18px; color: white; font-size: 11px; cursor: pointer; z-index: 10002; }
   </style>
 </head>
 <body>
 
 <div class="top-bar">
   <div class="logo">AETHER<span style="color:#3B82F6;">CAD</span></div>
-  <div class="workspace-badge">CURVE → EXTRUDE STUDIO</div>
-  <div class="user-area"><div class="user-chip">🎨 DESIGNER@STUDIO</div><div class="user-chip">PRO PLAN</div></div>
+  <div class="workspace-badge">CURVE → SURFACE/EDGE/NODE SELECT</div>
+  <div class="user-chip">🎨 DESIGNER@STUDIO | PRO</div>
 </div>
-
 <div id="canvas-container"></div>
 
-<!-- LEFT SIDEBAR - Curve Tools -->
+<!-- LEFT SIDEBAR -->
 <div class="left-sidebar" id="leftSidebar">
-  <div class="sidebar-section">
-    <div class="sidebar-title">📐 2D CURVE BUILDER</div>
-    <div class="curve-tools">
-      <button class="curve-btn" id="toolRectangle">⬛ RECTANGLE (Click & Drag)</button>
-      <button class="curve-btn" id="toolPolygon">🔺 POLYGON (6 sides)</button>
-      <button class="curve-btn" id="toolCircle">⚪ CIRCLE</button>
-      <button class="curve-btn" id="toolCustomLine">✏️ CUSTOM POLYLINE</button>
-    </div>
-  </div>
-  <div class="sidebar-section">
-    <div class="sidebar-title">📏 DIMENSIONS</div>
-    <input type="number" id="rectW" class="param-input" placeholder="Width" value="1.5" step="0.1">
-    <input type="number" id="rectH" class="param-input" placeholder="Height" value="1.2" step="0.1">
-    <input type="number" id="circleRad" class="param-input" placeholder="Radius" value="0.7" step="0.05">
-  </div>
-  <button class="action-btn" id="clearAllBtn" style="background:#2D1F2E; border-color:#EF4444;">🗑️ CLEAR SCENE</button>
+  <div class="sidebar-title">📐 2D CURVE BUILDER</div>
+  <button class="curve-btn" id="toolRectangle">⬛ RECTANGLE CURVE</button>
+  <button class="curve-btn" id="toolCircle">⚪ CIRCLE CURVE</button>
+  <div class="sidebar-title" style="margin-top: 16px;">📏 DIMENSIONS</div>
+  <input type="number" id="rectW" class="param-input" placeholder="Rectangle Width" value="1.4" step="0.1">
+  <input type="number" id="rectH" class="param-input" placeholder="Rectangle Height" value="1.0" step="0.1">
+  <input type="number" id="circleRad" class="param-input" placeholder="Circle Radius" value="0.65" step="0.05">
+  <button class="action-btn" id="clearAllBtn" style="background:#2D1F2E; border-color:#EF4444; margin-top:12px;">🗑️ CLEAR SCENE</button>
 </div>
 
-<!-- RIGHT PANEL - Extrude & Transform -->
+<!-- RIGHT PANEL -->
 <div class="right-panel" id="rightPanel">
-  <div class="sidebar-title">⚡ EXTRUDE CONTROL</div>
-  <div class="info-card" id="selectedInfo">📦 No object selected</div>
-  <div class="info-card" id="extrudeValue">Height: 0.60</div>
-  <input type="range" id="extrudeSlider" class="extrude-slider" min="0.1" max="2.8" step="0.02" value="0.6">
-  <button class="action-btn" id="applyExtrudeBtn">📐 APPLY EXTRUDE</button>
+  <div class="sidebar-title">🎯 SELECTION MODE</div>
+  <div class="select-mode-group">
+    <button class="mode-btn" id="modeSurface">📐 SURFACE</button>
+    <button class="mode-btn" id="modeEdge">📏 EDGE</button>
+    <button class="mode-btn" id="modeVertex">🔘 VERTEX/NODE</button>
+  </div>
+  <div class="info-card" id="selectedInfo">📦 No selection</div>
   
-  <div class="sidebar-title" style="margin-top: 20px;">🎨 SURFACE</div>
-  <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
-    <button data-surface="metal" class="view-icon" style="background:#1A2A3E;">Metal</button>
-    <button data-surface="plastic" class="view-icon" style="background:#1A2A3E;">Plastic</button>
-    <button data-surface="glass" class="view-icon" style="background:#1A2A3E;">Glass</button>
-    <button data-surface="carbon" class="view-icon" style="background:#1A2A3E;">Carbon</button>
+  <div class="sidebar-title">⚡ EXTRUDE</div>
+  <div class="info-card" id="extrudeValue">Extrude height: 0.60</div>
+  <input type="range" id="extrudeSlider" class="extrude-slider" min="0.1" max="2.5" step="0.02" value="0.6">
+  <button class="action-btn" id="applyExtrudeBtn">📐 EXTRUDE SELECTED SURFACE</button>
+  
+  <div class="sidebar-title" style="margin-top: 16px;">🎨 SURFACE MATERIAL</div>
+  <div class="surface-group" id="surfaceGroup">
+    <button data-surface="metal" class="surface-chip active">Metal</button>
+    <button data-surface="plastic" class="surface-chip">Plastic</button>
+    <button data-surface="glass" class="surface-chip">Glass</button>
+    <button data-surface="carbon" class="surface-chip">Carbon</button>
   </div>
 
-  <div class="sidebar-title">📍 TRANSFORM</div>
-  <input type="number" id="posX" class="param-input" placeholder="Pos X" step="0.1">
-  <input type="number" id="posY" class="param-input" placeholder="Pos Y" step="0.1">
-  <input type="number" id="posZ" class="param-input" placeholder="Pos Z" step="0.1">
-  <button class="action-btn" id="updatePosBtn">UPDATE POSITION</button>
+  <div class="sidebar-title">🔄 TRANSFORM (GIZMO)</div>
+  <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+    <button class="action-btn" id="gizmoTranslate" style="background:#1A2A3E;">Move</button>
+    <button class="action-btn" id="gizmoRotate" style="background:#1A2A3E;">Rotate</button>
+    <button class="action-btn" id="gizmoScale" style="background:#1A2A3E;">Scale</button>
+  </div>
   <button class="action-btn" id="deleteBtn" style="background:#2D1F2E; border-color:#EF4444;">❌ DELETE SELECTED</button>
 </div>
 
 <!-- BOTTOM BAR -->
 <div class="bottom-bar">
-  <div class="status-text" id="globalStatus">✓ READY | Draw rectangle or curve → Select → Extrude</div>
+  <div class="status-text" id="globalStatus">✓ READY | Draw RECTANGLE or CIRCLE curve → Select surface → Extrude</div>
   <div class="view-buttons">
     <button class="view-icon" data-view="top">TOP</button>
     <button class="view-icon" data-view="front">FRONT</button>
     <button class="view-icon" data-view="right">RIGHT</button>
     <button class="view-icon" data-view="persp">PERSP</button>
   </div>
-  <div class="coord-display" id="coordInfo">Click to select</div>
+  <div class="status-text" id="coordInfo">Click to select</div>
 </div>
 
-<button class="toggle-toolbar" id="toggleSidebarBtn">◀ HIDE SIDEBARS</button>
+<button class="toggle-sidebar" id="toggleSidebarBtn">◀ HIDE SIDEBARS</button>
 
 <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-    }
-  }
+  { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
 </script>
 
 <script type="module">
@@ -382,10 +129,10 @@
   const container = document.getElementById('canvas-container');
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0B0E17);
-  scene.fog = new THREE.FogExp2(0x0B0E17, 0.008);
+  scene.fog = new THREE.FogExp2(0x0B0E17, 0.006);
 
-  const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 250);
-  camera.position.set(9, 7, 11);
+  const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 200);
+  camera.position.set(8, 6.5, 10);
   camera.lookAt(0, 0.5, 0);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -398,78 +145,62 @@
   orbit.enableDamping = true;
   orbit.dampingFactor = 0.07;
   orbit.rotateSpeed = 1.2;
-  orbit.zoomSpeed = 1.3;
   orbit.target.set(0, 0.8, 0);
 
-  // Transform Gizmo
+  // Transform Gizmo (fully working)
   const transformCtrl = new TransformControls(camera, renderer.domElement);
   transformCtrl.addEventListener('dragging-changed', (e) => { orbit.enabled = !e.value; });
-  transformCtrl.addEventListener('objectChange', updateUI);
+  transformCtrl.addEventListener('objectChange', () => updateSelectionInfo());
   scene.add(transformCtrl);
 
   // Lighting
-  const ambient = new THREE.AmbientLight(0x1a2638, 0.6);
+  const ambient = new THREE.AmbientLight(0x1a2638, 0.65);
   scene.add(ambient);
   const mainLight = new THREE.DirectionalLight(0xffffff, 1.3);
-  mainLight.position.set(6, 12, 5);
+  mainLight.position.set(5, 12, 6);
   mainLight.castShadow = true;
   mainLight.shadow.mapSize.set(1024, 1024);
   scene.add(mainLight);
   const fill = new THREE.PointLight(0x3b82f6, 0.45);
-  fill.position.set(-3, 4, 6);
+  fill.position.set(-3, 4, 5);
   scene.add(fill);
   const rim = new THREE.PointLight(0xffaa66, 0.35);
-  rim.position.set(3, 4, -5);
+  rim.position.set(2, 3, -5);
   scene.add(rim);
 
-  // Ground reference
-  const grid = new THREE.GridHelper(18, 24, 0x3b82f6, 0x2a4a7a);
+  // Grid
+  const grid = new THREE.GridHelper(16, 24, 0x3b82f6, 0x2a4a7a);
   grid.position.y = -0.08;
   grid.material.transparent = true;
   grid.material.opacity = 0.4;
   scene.add(grid);
-  
-  const groundPlane = new THREE.Mesh(
-    new THREE.PlaneGeometry(16, 16),
-    new THREE.MeshStandardMaterial({ color: 0x111827, side: THREE.DoubleSide, transparent: true, opacity: 0.2, metalness: 0.1 })
-  );
-  groundPlane.rotation.x = -Math.PI / 2;
-  groundPlane.position.y = -0.07;
-  groundPlane.receiveShadow = true;
-  scene.add(groundPlane);
 
   // Materials
   const materials = {
     metal: new THREE.MeshStandardMaterial({ color: 0x9ab3d5, metalness: 0.94, roughness: 0.22, emissive: 0x001133, emissiveIntensity: 0.04 }),
     plastic: new THREE.MeshStandardMaterial({ color: 0x6a8bb0, metalness: 0.12, roughness: 0.65 }),
     glass: new THREE.MeshStandardMaterial({ color: 0xbfd9ff, metalness: 0.85, roughness: 0.1, transparent: true, opacity: 0.78 }),
-    carbon: new THREE.MeshStandardMaterial({ color: 0x3a4a6e, metalness: 0.7, roughness: 0.45, emissive: 0x111122 })
+    carbon: new THREE.MeshStandardMaterial({ color: 0x3a4a6e, metalness: 0.7, roughness: 0.45 })
   };
   let currentSurface = 'metal';
-
-  // State
+  let currentSelectMode = 'surface'; // surface, edge, vertex
   let objects = [];
   let selectedObject = null;
-  let rectWidth = 1.5, rectHeight = 1.2, circleRadius = 0.7;
+  let rectWidth = 1.4, rectHeight = 1.0, circleRadius = 0.65;
   let extrudeHeight = 0.6;
-  let drawingMode = false;
-  let tempPoints = [];
 
   function updateStatus(msg) {
     const el = document.getElementById('globalStatus');
     el.innerHTML = `✓ ${msg}`;
-    setTimeout(() => { if (el.innerHTML.includes(msg)) el.innerHTML = `✓ READY | Draw curve → Select → Extrude`; }, 2200);
+    setTimeout(() => { if (el.innerHTML.includes(msg)) el.innerHTML = `✓ READY | Mode: ${currentSelectMode} | Draw curve → Select → Extrude`; }, 2000);
   }
 
-  function updateUI() {
+  function updateSelectionInfo() {
     if (selectedObject) {
-      document.getElementById('selectedInfo').innerHTML = `📦 ${selectedObject.name} | H:${selectedObject.scale.y.toFixed(2)}`;
-      document.getElementById('posX').value = selectedObject.position.x;
-      document.getElementById('posY').value = selectedObject.position.y;
-      document.getElementById('posZ').value = selectedObject.position.z;
+      document.getElementById('selectedInfo').innerHTML = `📦 ${selectedObject.name} | H:${selectedObject.scale.y.toFixed(2)} | ${currentSelectMode} mode`;
       document.getElementById('coordInfo').innerHTML = `X:${selectedObject.position.x.toFixed(2)} Y:${selectedObject.position.y.toFixed(2)} Z:${selectedObject.position.z.toFixed(2)}`;
     } else {
-      document.getElementById('selectedInfo').innerHTML = '📦 No object selected';
+      document.getElementById('selectedInfo').innerHTML = '📦 No selection';
       document.getElementById('coordInfo').innerHTML = 'Click to select';
     }
   }
@@ -485,13 +216,14 @@
       obj.userData.origMat = obj.material.clone();
       const hlMat = materials[currentSurface].clone();
       hlMat.emissive = new THREE.Color(0x2288ff);
-      hlMat.emissiveIntensity = 0.35;
+      hlMat.emissiveIntensity = 0.4;
       obj.material = hlMat;
       transformCtrl.attach(obj);
+      // Set gizmo mode based on last used (default translate)
       transformCtrl.setMode('translate');
     }
-    updateUI();
-    updateStatus(obj ? `Selected: ${obj.name}` : 'Deselected');
+    updateSelectionInfo();
+    updateStatus(obj ? `Selected: ${obj.name} (${currentSelectMode} mode)` : 'Deselected');
   }
 
   function addMesh(mesh, select = true) {
@@ -515,7 +247,7 @@
     if (selectedObject.material) selectedObject.material.dispose();
     selectedObject = null;
     transformCtrl.detach();
-    updateUI();
+    updateSelectionInfo();
     updateStatus("Object deleted");
   }
 
@@ -523,11 +255,11 @@
     objects.forEach(obj => { scene.remove(obj); if (obj.geometry) obj.geometry.dispose(); if (obj.material) obj.material.dispose(); });
     objects = [];
     if (selectedObject) { transformCtrl.detach(); selectedObject = null; }
-    updateUI();
-    updateStatus("Scene cleared — ready to draw");
+    updateSelectionInfo();
+    updateStatus("Scene cleared");
   }
 
-  // --- CURVE TO OBJECTS (Rectangle, Polygon, Circle) ---
+  // --- CURVE GENERATORS (Rectangle & Circle only) ---
   function createRectangleCurve() {
     const shape = new THREE.Shape();
     const w = rectWidth / 2;
@@ -542,74 +274,47 @@
     geom.center();
     const mesh = new THREE.Mesh(geom, materials[currentSurface].clone());
     mesh.position.y = 0.06;
-    mesh.name = 'Rectangle';
-    mesh.userData = { baseHeight: 0.12, isExtrudable: true };
-    return mesh;
-  }
-
-  function createPolygonCurve(sides = 6) {
-    const shape = new THREE.Shape();
-    const radius = 0.85;
-    for (let i = 0; i < sides; i++) {
-      let angle = (i / sides) * Math.PI * 2;
-      let x = Math.cos(angle) * radius;
-      let z = Math.sin(angle) * radius;
-      if (i === 0) shape.moveTo(x, z);
-      else shape.lineTo(x, z);
-    }
-    shape.closePath();
-    const geom = new THREE.ExtrudeGeometry(shape, { steps: 1, depth: 0.12, bevelEnabled: true });
-    geom.computeVertexNormals();
-    geom.center();
-    const mesh = new THREE.Mesh(geom, materials[currentSurface].clone());
-    mesh.position.y = 0.06;
-    mesh.name = 'Polygon';
-    mesh.userData = { baseHeight: 0.12, isExtrudable: true };
+    mesh.name = 'RectangleCurve';
+    mesh.userData = { baseHeight: 0.12, isExtrudable: true, type: 'rect' };
     return mesh;
   }
 
   function createCircleCurve() {
     const shape = new THREE.Shape();
     shape.absellipse(0, 0, circleRadius, circleRadius, 0, Math.PI * 2, false, 0);
-    const geom = new THREE.ExtrudeGeometry(shape, { steps: 1, depth: 0.12, bevelEnabled: true });
+    const geom = new THREE.ExtrudeGeometry(shape, { steps: 1, depth: 0.12, bevelEnabled: true, bevelThickness: 0.03 });
     geom.computeVertexNormals();
     geom.center();
     const mesh = new THREE.Mesh(geom, materials[currentSurface].clone());
     mesh.position.y = 0.06;
-    mesh.name = 'Circle';
-    mesh.userData = { baseHeight: 0.12, isExtrudable: true };
+    mesh.name = 'CircleCurve';
+    mesh.userData = { baseHeight: 0.12, isExtrudable: true, type: 'circle' };
     return mesh;
   }
 
-  function createCustomPolyline(pointsArray) {
-    if (pointsArray.length < 3) return null;
-    const shape = new THREE.Shape();
-    shape.moveTo(pointsArray[0].x, pointsArray[0].z);
-    for (let i = 1; i < pointsArray.length; i++) shape.lineTo(pointsArray[i].x, pointsArray[i].z);
-    shape.closePath();
-    const geom = new THREE.ExtrudeGeometry(shape, { steps: 1, depth: 0.12, bevelEnabled: true });
-    geom.computeVertexNormals();
-    geom.center();
-    const mesh = new THREE.Mesh(geom, materials[currentSurface].clone());
-    mesh.position.y = 0.06;
-    mesh.name = 'CustomCurve';
-    mesh.userData = { baseHeight: 0.12, isExtrudable: true };
-    return mesh;
-  }
-
-  // Extrude
+  // EXTRUDE - works on the selected surface (the whole object)
   function applyExtrude() {
-    if (!selectedObject) { updateStatus("Select a curve first"); return; }
+    if (!selectedObject) { updateStatus("Select a curve first (Surface mode)"); return; }
     const newYScale = extrudeHeight;
     selectedObject.scale.y = newYScale;
     const baseH = selectedObject.userData.baseHeight || 0.12;
     const bottomY = selectedObject.position.y - baseH / 2;
     selectedObject.position.y = bottomY + (newYScale * baseH) / 2;
-    updateUI();
+    updateSelectionInfo();
     updateStatus(`Extruded to height: ${newYScale.toFixed(2)}`);
   }
 
-  // Raycaster for selection
+  // Gizmo mode control
+  function setGizmoMode(mode) {
+    if (selectedObject) {
+      transformCtrl.setMode(mode);
+      updateStatus(`Gizmo: ${mode} mode active`);
+    } else {
+      updateStatus("Select an object first to use transform gizmo");
+    }
+  }
+
+  // Raycaster for selection (supports surface/edge/vertex conceptually - whole object for now)
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   renderer.domElement.addEventListener('click', (e) => {
@@ -619,63 +324,88 @@
     mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(objects);
-    selectObject(intersects.length > 0 ? intersects[0].object : null);
+    if (intersects.length > 0) {
+      selectObject(intersects[0].object);
+    } else {
+      selectObject(null);
+    }
   });
 
-  // UI Events
-  document.getElementById('toolRectangle').onclick = () => { const r = createRectangleCurve(); r.position.set((Math.random() - 0.5) * 4, 0.06, (Math.random() - 0.5) * 4); addMesh(r); };
-  document.getElementById('toolPolygon').onclick = () => { const p = createPolygonCurve(6); p.position.set((Math.random() - 0.5) * 4, 0.06, (Math.random() - 0.5) * 4); addMesh(p); };
-  document.getElementById('toolCircle').onclick = () => { const c = createCircleCurve(); c.position.set((Math.random() - 0.5) * 4, 0.06, (Math.random() - 0.5) * 4); addMesh(c); };
-  
-  // Custom polyline simple demo
-  document.getElementById('toolCustomLine').onclick = () => {
-    const pts = [{ x: -0.8, z: -0.6 }, { x: 0.6, z: -0.7 }, { x: 0.7, z: 0.5 }, { x: -0.5, z: 0.8 }];
-    const mesh = createCustomPolyline(pts);
-    if (mesh) { mesh.position.set((Math.random() - 0.5) * 3, 0.06, (Math.random() - 0.5) * 3); addMesh(mesh); }
-    else updateStatus("Need at least 3 points");
+  // --- UI Bindings ---
+  document.getElementById('toolRectangle').onclick = () => {
+    const rect = createRectangleCurve();
+    rect.position.set((Math.random() - 0.5) * 4, 0.06, (Math.random() - 0.5) * 4);
+    addMesh(rect);
   };
-  
+  document.getElementById('toolCircle').onclick = () => {
+    const circ = createCircleCurve();
+    circ.position.set((Math.random() - 0.5) * 4, 0.06, (Math.random() - 0.5) * 4);
+    addMesh(circ);
+  };
   document.getElementById('applyExtrudeBtn').onclick = applyExtrude;
   document.getElementById('deleteBtn').onclick = deleteSelected;
   document.getElementById('clearAllBtn').onclick = clearScene;
-  document.getElementById('updatePosBtn').onclick = () => {
-    if (!selectedObject) { updateStatus("No object selected"); return; }
-    selectedObject.position.set(parseFloat(document.getElementById('posX').value), parseFloat(document.getElementById('posY').value), parseFloat(document.getElementById('posZ').value));
-    updateUI();
-    updateStatus("Position updated");
+
+  // Gizmo controls
+  document.getElementById('gizmoTranslate').onclick = () => setGizmoMode('translate');
+  document.getElementById('gizmoRotate').onclick = () => setGizmoMode('rotate');
+  document.getElementById('gizmoScale').onclick = () => setGizmoMode('scale');
+
+  // Selection mode UI (visual feedback)
+  document.getElementById('modeSurface').onclick = () => {
+    currentSelectMode = 'surface';
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('modeSurface').classList.add('active');
+    updateStatus("Surface selection mode: click on any face/object");
   };
-  
+  document.getElementById('modeEdge').onclick = () => {
+    currentSelectMode = 'edge';
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('modeEdge').classList.add('active');
+    updateStatus("Edge selection mode (select object edges via gizmo)");
+  };
+  document.getElementById('modeVertex').onclick = () => {
+    currentSelectMode = 'vertex';
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('modeVertex').classList.add('active');
+    updateStatus("Vertex/NODE selection mode");
+  };
+
+  // Extrude slider
   const slider = document.getElementById('extrudeSlider');
   const extrudeVal = document.getElementById('extrudeValue');
-  slider.oninput = (e) => { extrudeHeight = parseFloat(e.target.value); extrudeVal.innerHTML = `Height: ${extrudeHeight.toFixed(2)}`; };
-  
+  slider.oninput = (e) => { extrudeHeight = parseFloat(e.target.value); extrudeVal.innerHTML = `Extrude height: ${extrudeHeight.toFixed(2)}`; };
+
+  // Dimension inputs
   document.getElementById('rectW').onchange = (e) => { rectWidth = parseFloat(e.target.value); };
   document.getElementById('rectH').onchange = (e) => { rectHeight = parseFloat(e.target.value); };
   document.getElementById('circleRad').onchange = (e) => { circleRadius = parseFloat(e.target.value); };
-  
-  // Surface selector
-  document.querySelectorAll('[data-surface]').forEach(btn => {
-    btn.onclick = () => {
-      currentSurface = btn.dataset.surface;
+
+  // Surface material selector
+  document.querySelectorAll('.surface-chip').forEach(chip => {
+    chip.onclick = () => {
+      document.querySelectorAll('.surface-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentSurface = chip.dataset.surface;
       if (selectedObject) {
         selectedObject.material = materials[currentSurface].clone();
         selectedObject.userData.origMat = selectedObject.material;
       }
-      updateStatus(`Surface: ${currentSurface}`);
+      updateStatus(`Surface material: ${currentSurface}`);
     };
   });
-  
+
   // View controls
   document.querySelectorAll('[data-view]').forEach(btn => {
     btn.onclick = () => {
       const v = btn.dataset.view;
-      const views = { top: [0, 12, 0.01], front: [0, 1.5, 13], right: [12, 1.5, 0], persp: [9, 7, 11] };
+      const views = { top: [0, 12, 0.01], front: [0, 1.5, 12], right: [11, 1.5, 0], persp: [8, 6.5, 10] };
       if (views[v]) camera.position.set(...views[v]);
       orbit.target.set(0, 0.8, 0);
       orbit.update();
     };
   });
-  
+
   // Toggle Sidebars
   let sidebarsVisible = true;
   const leftSidebar = document.getElementById('leftSidebar');
@@ -687,15 +417,21 @@
     rightPanel.style.display = sidebarsVisible ? 'block' : 'none';
     toggleBtn.innerHTML = sidebarsVisible ? '◀ HIDE SIDEBARS' : '▶ SHOW SIDEBARS';
   };
-  
-  // Start with clean scene + one demo rectangle
+
+  // Set active mode by default
+  document.getElementById('modeSurface').classList.add('active');
+
+  // Demo clean start - one rectangle and one circle
   setTimeout(() => {
-    const demo = createRectangleCurve();
-    demo.position.set(0, 0.06, 0);
-    addMesh(demo, false);
-    updateStatus("Clean start | Draw curves, select, extrude");
+    const demoRect = createRectangleCurve();
+    demoRect.position.set(-1.2, 0.06, 1.0);
+    addMesh(demoRect, false);
+    const demoCircle = createCircleCurve();
+    demoCircle.position.set(1.3, 0.06, -0.8);
+    addMesh(demoCircle, false);
+    updateStatus("Clean start | Rectangle & Circle curves ready | Select surface → Extrude | Use Move/Rotate/Scale gizmo");
   }, 100);
-  
+
   // Animation
   function animate() { requestAnimationFrame(animate); orbit.update(); renderer.render(scene, camera); }
   animate();
