@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Login — NexaFlow{% endblock %}
+
+{% block extra_css %}
+<style>
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:40px;width:100%;max-width:420px;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.login-logo{font-family:var(--font-head);font-size:1.6rem;font-weight:800;margin-bottom:8px}
+.login-logo span{color:var(--accent)}
+.login-sub{color:var(--muted);font-size:.9rem;margin-bottom:32px}
+.mesh{position:fixed;pointer-events:none;z-index:0;border-radius:50%;filter:blur(120px);opacity:.12}
+.ma{width:600px;height:600px;background:var(--accent2);top:-200px;left:-200px}
+.mb{width:400px;height:400px;background:var(--accent3);bottom:-100px;right:-100px}
+.login-wrap .login-card{position:relative;z-index:1}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mesh ma"></div>
+<div class="mesh mb"></div>
+<div class="login-wrap">
+  <div class="login-card">
+    <div class="login-logo">Nexa<span>Flow</span></div>
+    <p class="login-sub">Sign in to your dashboard</p>
+
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post" action="{% url 'accounts:login' %}">
+      {% csrf_token %}
+      {% if request.GET.next %}
+      <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" placeholder="your@email.com"
+               value="{{ form.email.value|default:'' }}" required autofocus>
+        {% if form.email.errors %}
+        <p style="color:var(--danger);font-size:.8rem;margin-top:4px">{{ form.email.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        {% if form.password.errors %}
+        <p style="color:var(--danger);font-size:.8rem;margin-top:4px">{{ form.password.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;margin-top:8px;font-size:1rem">
+        Sign In →
+      </button>
+    </form>
+
+    <p style="margin-top:24px;text-align:center;font-size:.82rem;color:var(--muted)">
+      Don't have an account?
+      <a href="/" style="color:var(--accent);font-weight:600">Subscribe on Gumroad</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
