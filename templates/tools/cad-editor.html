@@ -3,858 +3,825 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>FusionCore CAD Editor — NexaFlow</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>FusionCore CAD | Surface Studio & Drawing Toolkit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none;
+    }
 
     body {
       overflow: hidden;
-      font-family: 'DM Mono', monospace;
-      background: #060b14;
+      font-family: 'Inter', sans-serif;
+      background: #0A0C12;
     }
 
-    /* ── NexaFlow Identity Bar ─────────────────────────────────────── */
-    #nf-bar {
+    /* ===== NEXA IDENTITY BAR ===== */
+    .nexa-bar {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 44px;
-      background: linear-gradient(90deg, #050d1a 0%, #0a1628 60%, #060f20 100%);
-      border-bottom: 1px solid rgba(0, 200, 150, 0.25);
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48px;
+      background: rgba(8, 12, 20, 0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0, 200, 150, 0.3);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 18px;
+      padding: 0 24px;
       z-index: 1000;
-      gap: 12px;
+      font-size: 13px;
+      letter-spacing: 0.2px;
     }
 
-    #nf-bar .nf-left {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
+      gap: 16px;
     }
 
-    #nf-bar .nf-logo {
-      font-family: 'Syne', sans-serif;
+    .logo-text {
       font-weight: 800;
-      font-size: 14px;
-      color: #fff;
-      letter-spacing: -0.3px;
+      font-size: 18px;
+      background: linear-gradient(135deg, #fff, #00c896);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
     }
-    #nf-bar .nf-logo span { color: #00c896; }
 
-    #nf-bar .nf-sep {
+    .divider {
       width: 1px;
-      height: 20px;
+      height: 24px;
       background: rgba(255,255,255,0.12);
     }
 
-    #nf-bar .nf-service-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: #e8f0fa;
+    .service-badge {
+      color: #94a3b8;
+      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    #nf-bar .nf-right {
+    .right-badges {
       display: flex;
+      gap: 16px;
       align-items: center;
-      gap: 10px;
     }
 
-    #nf-bar .nf-user-badge {
-      background: rgba(0, 200, 150, 0.1);
-      border: 1px solid rgba(0, 200, 150, 0.3);
-      border-radius: 20px;
+    .user-chip {
+      background: rgba(0, 200, 150, 0.08);
+      border: 1px solid rgba(0, 200, 150, 0.25);
+      border-radius: 40px;
       padding: 4px 12px 4px 8px;
       display: flex;
       align-items: center;
-      gap: 7px;
-      font-size: 11px;
+      gap: 8px;
       color: #00c896;
       font-weight: 500;
+      font-size: 12px;
     }
 
-    #nf-bar .nf-avatar {
-      width: 22px;
-      height: 22px;
+    .avatar {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(145deg, #00c896, #0066ff);
       border-radius: 50%;
-      background: linear-gradient(135deg, #00c896, #0078ff);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: 700;
-      color: #fff;
-      font-family: 'Syne', sans-serif;
-      flex-shrink: 0;
-    }
-
-    #nf-bar .nf-plan-tag {
-      background: rgba(0,120,255,0.15);
-      border: 1px solid rgba(0,120,255,0.3);
-      border-radius: 10px;
-      padding: 3px 8px;
-      font-size: 10px;
-      color: #60a5fa;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    #nf-bar .nf-token-info {
-      font-size: 10px;
-      color: rgba(255,255,255,0.25);
-      font-family: 'DM Mono', monospace;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    #nf-bar .nf-token-info .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #00c896;
-      box-shadow: 0 0 6px #00c896;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    #nf-bar .nf-back-btn {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #94a3b8;
-      padding: 5px 12px;
-      border-radius: 8px;
-      font-size: 11px;
-      cursor: pointer;
-      font-family: 'DM Mono', monospace;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.15s;
-    }
-    #nf-bar .nf-back-btn:hover {
-      background: rgba(255,255,255,0.1);
-      color: #e2e8f0;
-    }
-
-    /* ── CAD viewport offset for bar ──────────────────────────────── */
-    #cad-root {
-      position: fixed;
-      top: 44px; left: 0; right: 0; bottom: 0;
-    }
-
-    /* ── CAD UI overlay ─────────────────────────────────────────────── */
-    .ui-container {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .top-bar {
-      position: absolute;
-      top: 12px; left: 12px; right: 12px;
-      background: rgba(8, 15, 30, 0.96);
-      backdrop-filter: blur(20px);
-      border-radius: 14px;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      pointer-events: auto;
-      border: 1px solid rgba(59, 130, 246, 0.35);
-      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
-      flex-wrap: wrap;
-      gap: 8px;
-      z-index: 20;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo {
-      background: linear-gradient(135deg, #3b82f6, #1e40af);
-      width: 32px; height: 32px;
-      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 11px;
       color: white;
-      font-family: 'Syne', sans-serif;
     }
 
-    .cad-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: #e2e8f0;
+    .plan-tag {
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #60a5fa;
     }
 
-    .tools-group {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .tool-btn {
-      background: rgba(30, 41, 59, 0.9);
-      border: 1px solid rgba(59,130,246,0.2);
+    .back-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 5px 12px;
       color: #94a3b8;
-      padding: 6px 13px;
-      border-radius: 30px;
+      cursor: pointer;
       font-size: 12px;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    /* ===== MAIN CAD VIEWPORT ===== */
+    #canvas-container {
+      position: fixed;
+      top: 48px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0A0C12;
+    }
+
+    /* ===== FLOATING UI PANELS ===== */
+    .ui-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .toolbar-main {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: rgba(12, 16, 26, 0.92);
+      backdrop-filter: blur(20px);
+      border-radius: 48px;
+      padding: 8px 16px;
+      display: flex;
+      gap: 8px;
+      pointer-events: auto;
+      border: 1px solid rgba(59,130,246,0.3);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .tool-group {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 40px;
+      padding: 2px;
+    }
+
+    .cad-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 6px 16px;
+      border-radius: 32px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      transition: 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cad-btn i { font-style: normal; font-weight: 600; }
+
+    .cad-btn:hover {
+      background: rgba(59,130,246,0.2);
+      color: white;
+    }
+
+    .cad-btn.active {
+      background: #3b82f6;
+      color: white;
+      box-shadow: 0 0 12px rgba(59,130,246,0.5);
+    }
+
+    .right-dock {
+      position: absolute;
+      top: 80px;
+      right: 18px;
+      width: 280px;
+      background: rgba(12, 16, 26, 0.92);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      border: 1px solid rgba(59,130,246,0.25);
+      pointer-events: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .section {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 14px;
+    }
+    .section:last-child { border-bottom: none; }
+
+    .section-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #475569;
+      margin-bottom: 12px;
+    }
+
+    .surface-selector {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .surface-chip {
+      background: rgba(30,41,59,0.7);
+      border: 1px solid rgba(59,130,246,0.3);
+      border-radius: 32px;
+      padding: 6px 12px;
+      font-size: 11px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.15s;
-      font-family: 'DM Mono', monospace;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      color: #cbd5e1;
     }
 
-    .tool-btn:hover, .tool-btn.active-mode {
+    .surface-chip.active-surface {
       background: #3b82f6;
-      color: white;
       border-color: #3b82f6;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59,130,246,0.3);
-    }
-
-    .transform-group {
-      background: rgba(20, 30, 50, 0.9);
-      border: 1px solid rgba(59,130,246,0.2);
-      border-radius: 30px;
-      padding: 3px;
-      display: inline-flex;
-      gap: 2px;
-    }
-
-    .transform-btn {
-      background: transparent;
-      border: none;
-      color: #64748b;
-      padding: 5px 11px;
-      border-radius: 26px;
-      cursor: pointer;
-      font-size: 11px;
-      font-family: 'DM Mono', monospace;
-      transition: all 0.15s;
-    }
-
-    .transform-btn.active {
-      background: #3b82f6;
       color: white;
-      box-shadow: 0 0 10px rgba(59,130,246,0.4);
-    }
-
-    .transform-btn:hover:not(.active) { background: rgba(59,130,246,0.2); color: #93c5fd; }
-
-    .right-panel {
-      position: absolute;
-      top: 80px; right: 14px;
-      background: rgba(8, 15, 30, 0.96);
-      backdrop-filter: blur(16px);
-      border-radius: 16px;
-      padding: 14px;
-      pointer-events: auto;
-      border: 1px solid rgba(59,130,246,0.3);
-      width: 240px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 20;
-    }
-
-    .panel-section { border-top: 1px solid rgba(59,130,246,0.15); padding-top: 10px; }
-    .panel-title {
-      color: #475569;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      margin-bottom: 7px;
-      font-family: 'Syne', sans-serif;
+      box-shadow: 0 0 8px #3b82f6;
     }
 
     .coord-input {
       background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(59,130,246,0.4);
-      color: #e2e8f0;
-      padding: 6px 8px;
-      border-radius: 6px;
+      border: 1px solid #2d3a5e;
+      border-radius: 10px;
+      padding: 8px 10px;
       width: 100%;
-      font-size: 11px;
-      margin-bottom: 6px;
-      font-family: 'DM Mono', monospace;
+      margin-bottom: 8px;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
     }
-    .coord-input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
 
-    .coord-display {
+    .info-row {
       background: rgba(0,0,0,0.4);
-      border: 1px solid rgba(51,65,85,0.6);
-      color: #64748b;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-      font-family: 'DM Mono', monospace;
-      margin-bottom: 4px;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-family: monospace;
+      margin-bottom: 6px;
+      color: #94a3b8;
     }
 
-    .snap-indicator {
-      background: rgba(59,130,246,0.15);
-      border: 1px solid rgba(59,130,246,0.3);
-      color: #60a5fa;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 10px;
-      text-align: center;
-      font-family: 'DM Mono', monospace;
+    .draw-status {
+      background: #0f172a;
+      border-left: 3px solid #3b82f6;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-family: monospace;
     }
 
-    .view-cube-panel {
+    .view-cube {
       position: absolute;
-      bottom: 20px; right: 20px;
-      background: rgba(8, 15, 30, 0.96);
+      bottom: 24px;
+      right: 24px;
+      background: rgba(12, 16, 26, 0.9);
       backdrop-filter: blur(12px);
-      border-radius: 18px;
-      padding: 10px;
+      border-radius: 20px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       pointer-events: auto;
-      border: 1px solid rgba(59,130,246,0.3);
-      z-index: 20;
+      border: 1px solid #2d3a5e;
     }
 
-    .view-row { display: flex; gap: 6px; justify-content: center; }
+    .cube-row {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
 
     .view-btn {
-      background: rgba(20,30,50,0.9);
-      border: 1px solid rgba(59,130,246,0.2);
-      color: #94a3b8;
-      width: 42px; height: 42px;
-      border-radius: 10px;
-      font-size: 11px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.15s;
-      font-family: 'DM Mono', monospace;
-    }
-    .view-btn:hover { background: #3b82f6; color: white; border-color: #3b82f6; }
-
-    .status-bar {
-      position: absolute;
-      bottom: 16px; left: 16px;
-      background: rgba(0,0,0,0.88);
-      backdrop-filter: blur(8px);
-      padding: 7px 14px;
-      border-radius: 20px;
-      color: #64748b;
-      font-size: 11px;
-      pointer-events: none;
-      font-family: 'DM Mono', monospace;
-      border-left: 3px solid #3b82f6;
-      z-index: 20;
-      max-width: calc(100% - 280px);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .instruction-panel {
-      position: absolute;
-      top: 80px; left: 14px;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(8px);
-      padding: 12px;
+      width: 44px;
+      height: 44px;
+      background: #1e293b;
+      border: none;
       border-radius: 12px;
-      color: #64748b;
-      font-size: 10px;
-      pointer-events: none;
-      max-width: 180px;
-      z-index: 20;
-      line-height: 1.7;
-      border: 1px solid rgba(255,255,255,0.05);
+      color: #94a3b8;
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.1s;
     }
-    .instruction-panel strong { color: #94a3b8; }
+
+    .view-btn:hover {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .status-foot {
+      position: absolute;
+      bottom: 18px;
+      left: 18px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 11px;
+      font-family: monospace;
+      color: #94a3b8;
+      pointer-events: none;
+      border-left: 3px solid #00c896;
+    }
 
     @media (max-width: 900px) {
-      .right-panel, .instruction-panel { display: none; }
+      .right-dock { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ── NexaFlow Identity Bar ─────────────────────────────── -->
-  <div id="nf-bar">
-    <div class="nf-left">
-      <div class="nf-logo">Nexa<span>Flow</span></div>
-      <div class="nf-sep"></div>
-      <div class="nf-service-name">
-        <span>⚙️</span> FusionCore CAD Editor
-      </div>
+<div class="nexa-bar">
+  <div class="brand">
+    <div class="logo-text">NEXA<span style="color:#00c896;">FLOW</span></div>
+    <div class="divider"></div>
+    <div class="service-badge"><span>🔷</span> FusionCore CAD · Surface Studio</div>
+  </div>
+  <div class="right-badges">
+    <div class="user-chip">
+      <div class="avatar">J</div>
+      <span>jason@nexaflow.ai</span>
     </div>
-    <div class="nf-right">
-      <div class="nf-token-info">
-        <div class="dot"></div>
-        secured · {{ token|slice:":8" }}…
-      </div>
-      <div class="nf-plan-tag">{{ user.get_plan_display }}</div>
-      <div class="nf-user-badge">
-        <div class="nf-avatar">{{ user.username|first|upper }}</div>
-        {{ user.email }}
-      </div>
-      <a href="/services/my/" class="nf-back-btn">← Dashboard</a>
+    <div class="plan-tag">PRODUCT DESIGN</div>
+    <a href="#" class="back-btn">← Dashboard</a>
+  </div>
+</div>
+
+<div id="canvas-container"></div>
+
+<div class="ui-overlay">
+  <!-- Main Toolbar -->
+  <div class="toolbar-main">
+    <div class="tool-group">
+      <button class="cad-btn" id="tool-select">🔍 Select</button>
+      <button class="cad-btn" id="tool-draw-line">✏️ Draw Line</button>
+      <button class="cad-btn" id="tool-draw-rect">⬚ Rectangle</button>
+      <button class="cad-btn" id="tool-extrude">📐 Extrude Face</button>
+    </div>
+    <div class="tool-group">
+      <button class="cad-btn" id="prim-box">🧊 Box</button>
+      <button class="cad-btn" id="prim-sphere">⚪ Sphere</button>
+      <button class="cad-btn" id="prim-cylinder">⬤ Cylinder</button>
+    </div>
+    <div class="tool-group">
+      <button class="cad-btn" id="clean-scene">🗑️ Clean Scene</button>
+      <button class="cad-btn" id="export-stl">💾 STL</button>
+      <button class="cad-btn" id="export-gcode">⚙️ G-code</button>
     </div>
   </div>
 
-  <!-- ── CAD Viewport ──────────────────────────────────────── -->
-  <div id="cad-root">
-
-    <div class="ui-container">
-      <!-- Top toolbar -->
-      <div class="top-bar">
-        <div class="logo-area">
-          <div class="logo">FC</div>
-          <div class="cad-title">FusionCore Pro</div>
-        </div>
-        <div class="tools-group">
-          <div class="transform-group">
-            <button class="transform-btn" id="transform-translate">📐 Move</button>
-            <button class="transform-btn" id="transform-rotate">🔄 Rotate</button>
-            <button class="transform-btn" id="transform-scale">📏 Scale</button>
-          </div>
-          <button class="tool-btn" id="mode-select">🔍 Select</button>
-          <button class="tool-btn" id="mode-extrude">📐 Extrude</button>
-          <button class="tool-btn" id="mode-box">⬛ Box</button>
-          <button class="tool-btn" id="mode-sphere">⚪ Sphere</button>
-          <button class="tool-btn" id="mode-cylinder">⬤ Cylinder</button>
-          <button class="tool-btn" id="btn-clear">🗑️ Clear</button>
-          <button class="tool-btn" id="btn-export-gcode">⚙️ G-Code</button>
-          <button class="tool-btn" id="btn-export-stl">📦 STL</button>
-        </div>
+  <!-- Right Panel: Surfaces & Transform -->
+  <div class="right-dock">
+    <div class="section">
+      <div class="section-title">🎨 SURFACE SELECTOR</div>
+      <div class="surface-selector" id="surface-selector-ui">
+        <div data-surface="metal" class="surface-chip active-surface">Metal (Brushed)</div>
+        <div data-surface="plastic" class="surface-chip">Plastic (Matte)</div>
+        <div data-surface="glass" class="surface-chip">Glass (Reflective)</div>
+        <div data-surface="painted" class="surface-chip">Painted (Gloss)</div>
       </div>
-
-      <!-- Right panel -->
-      <div class="right-panel">
-        <div class="panel-section">
-          <div class="panel-title">📍 Selected Object</div>
-          <div class="coord-display" id="selected-name">None selected</div>
-          <div class="coord-display" id="selected-pos">Position: -</div>
-          <div class="coord-display" id="selected-scale">Scale: -</div>
-          <div class="coord-display" id="selected-rot">Rotation: -</div>
-        </div>
-        <div class="panel-section">
-          <div class="panel-title">⚙️ Transform</div>
-          <input type="number" id="pos-x" class="coord-input" placeholder="Position X" step="0.1">
-          <input type="number" id="pos-y" class="coord-input" placeholder="Position Y" step="0.1">
-          <input type="number" id="pos-z" class="coord-input" placeholder="Position Z" step="0.1">
-          <button class="tool-btn" id="apply-transform" style="width:100%;justify-content:center">Apply Position</button>
-        </div>
-        <div class="panel-section">
-          <div class="panel-title">🎨 Extrude</div>
-          <input type="number" id="extrude-depth" class="coord-input" value="0.5" step="0.1">
-          <button class="tool-btn" id="apply-extrude" style="width:100%;justify-content:center">Extrude Selected</button>
-        </div>
-        <div class="panel-section">
-          <div class="panel-title">🔗 Snap</div>
-          <button class="tool-btn" id="toggle-snap" style="width:100%;justify-content:center">🔗 Snap: ON</button>
-          <div class="snap-indicator" id="snap-status">Grid Snap · 0.5 units</div>
-        </div>
-        <div class="panel-section">
-          <div class="panel-title">🔐 Session</div>
-          <div class="coord-display" style="word-break:break-all;font-size:9px;color:#334155">
-            Token: {{ token|slice:":16" }}…
-          </div>
-          <div class="coord-display" style="font-size:9px;color:#1e3a5f">
-            User: {{ user.email }}
-          </div>
-        </div>
-      </div>
-
-      <!-- Instructions -->
-      <div class="instruction-panel">
-        <strong>🎮 Controls</strong><br>
-        • <strong>Select</strong>: Click any object<br>
-        • <strong>Gizmo</strong>: Drag axes after select<br>
-        • <strong>Red</strong>=X · <strong>Green</strong>=Y · <strong>Blue</strong>=Z<br>
-        • <strong>Orbit</strong>: Left drag<br>
-        • <strong>Pan</strong>: Right drag<br>
-        • <strong>Zoom</strong>: Scroll
-      </div>
-
-      <!-- View cube -->
-      <div class="view-cube-panel">
-        <div class="view-row">
-          <button class="view-btn" data-view="top">Top</button>
-          <button class="view-btn" data-view="bottom">Bot</button>
-          <button class="view-btn" data-view="front">Front</button>
-        </div>
-        <div class="view-row">
-          <button class="view-btn" data-view="right">Right</button>
-          <button class="view-btn" data-view="left">Left</button>
-          <button class="view-btn" data-view="perspective">Persp</button>
-        </div>
-      </div>
-
-      <div class="status-bar" id="statusMsg">✅ Ready · Select objects to see RGB transform gizmo</div>
     </div>
 
-  </div><!-- /#cad-root -->
+    <div class="section">
+      <div class="section-title">📍 SELECTED OBJECT</div>
+      <div class="info-row" id="sel-name">None</div>
+      <div class="info-row" id="sel-pos">Position: -</div>
+      <div class="info-row" id="sel-surface">Surface: -</div>
+      <div class="coord-input" id="pos-x" placeholder="Pos X" value="0">Pos X</div>
+      <div class="coord-input" id="pos-y" placeholder="Pos Y">Pos Y</div>
+      <div class="coord-input" id="pos-z" placeholder="Pos Z">Pos Z</div>
+      <button class="cad-btn" id="apply-pos" style="width:100%; justify-content:center; background:#1e293b;">Update Position</button>
+    </div>
 
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
-      }
+    <div class="section">
+      <div class="section-title">✏️ DRAWING (CAD Sketcher)</div>
+      <div class="draw-status" id="draw-status-msg">⚡ Line Mode: Click on grid plane to draw edges</div>
+      <button class="cad-btn" id="finish-drawing" style="margin-top:6px; background:#0f172a;">✔ Finish Drawing → Extrude</button>
+    </div>
+  </div>
+
+  <!-- View Cube -->
+  <div class="view-cube">
+    <div class="cube-row">
+      <button class="view-btn" data-view="top">TOP</button>
+      <button class="view-btn" data-view="front">FRONT</button>
+      <button class="view-btn" data-view="right">RIGHT</button>
+    </div>
+    <div class="cube-row">
+      <button class="view-btn" data-view="persp">PERSP</button>
+      <button class="view-btn" data-view="bottom">BOT</button>
+      <button class="view-btn" data-view="left">LEFT</button>
+    </div>
+  </div>
+  <div class="status-foot" id="global-status">✓ Ready | Surface: Metal | Draw: Line</div>
+</div>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
     }
-  </script>
+  }
+</script>
 
-  <script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-    import { TransformControls } from 'three/addons/controls/TransformControls.js';
-    import { STLExporter } from 'three/addons/exporters/STLExporter.js';
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { TransformControls } from 'three/addons/controls/TransformControls.js';
+  import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 
-    // Mount renderer inside #cad-root so it respects the 44px bar offset
-    const cadRoot = document.getElementById('cad-root');
+  // --- Setup Scene & Camera ---
+  const container = document.getElementById('canvas-container');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0A0C12);
+  scene.fog = new THREE.FogExp2(0x0A0C12, 0.008);
 
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x060b14);
-    scene.fog = new THREE.FogExp2(0x060b14, 0.006);
+  const camera = new THREE.PerspectiveCamera(42, container.clientWidth / container.clientHeight, 0.1, 500);
+  camera.position.set(12, 9, 14);
+  camera.lookAt(0, 0, 0);
 
-    const W = cadRoot.clientWidth;
-    const H = cadRoot.clientHeight;
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.setPixelRatio(window.devicePixelRatio);
+  container.appendChild(renderer.domElement);
 
-    const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 1000);
-    camera.position.set(10, 8, 12);
-    camera.lookAt(0, 0, 0);
+  // Controls
+  const orbit = new OrbitControls(camera, renderer.domElement);
+  orbit.enableDamping = true;
+  orbit.dampingFactor = 0.06;
+  orbit.rotateSpeed = 1.2;
+  orbit.zoomSpeed = 1.2;
+  orbit.panSpeed = 0.8;
+  orbit.target.set(0, 1, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.top = '0';
-    renderer.domElement.style.left = '0';
-    cadRoot.appendChild(renderer.domElement);
+  // Transform Controls (Gizmo)
+  const transformCtrl = new TransformControls(camera, renderer.domElement);
+  transformCtrl.addEventListener('dragging-changed', (e) => { orbit.enabled = !e.value; });
+  transformCtrl.addEventListener('objectChange', () => updateUIFromSelection());
+  scene.add(transformCtrl);
 
-    // Orbit
-    const orbitControls = new OrbitControls(camera, renderer.domElement);
-    orbitControls.enableDamping = true;
-    orbitControls.dampingFactor = 0.05;
-    orbitControls.rotateSpeed = 1.0;
-    orbitControls.zoomSpeed = 1.2;
-    orbitControls.panSpeed = 0.8;
-    orbitControls.target.set(0, 0, 0);
-
-    // Transform gizmo
-    const transformControls = new TransformControls(camera, renderer.domElement);
-    transformControls.addEventListener('dragging-changed', e => { orbitControls.enabled = !e.value; });
-    transformControls.addEventListener('objectChange', () => updateSelectedInfo());
-    scene.add(transformControls);
-
-    // Lighting
-    scene.add(new THREE.AmbientLight(0x1a2333));
-    const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    mainLight.position.set(5, 10, 7);
-    mainLight.castShadow = true;
-    mainLight.shadow.mapSize.set(1024, 1024);
-    scene.add(mainLight);
-    const fillLight = new THREE.PointLight(0x3b82f6, 0.5);
-    fillLight.position.set(-2, 3, 4);
-    scene.add(fillLight);
-    const rimLight = new THREE.PointLight(0x4f7df3, 0.4);
-    rimLight.position.set(0, 2, -5);
-    scene.add(rimLight);
-    const backLight = new THREE.PointLight(0xffaa66, 0.3);
-    backLight.position.set(3, 2, -3);
-    scene.add(backLight);
-
-    // Grid
-    const gridHelper = new THREE.GridHelper(20, 40, 0x1e3a5f, 0x0f2040);
-    gridHelper.position.y = -0.01;
-    gridHelper.material.transparent = true;
-    gridHelper.material.opacity = 0.5;
-    scene.add(gridHelper);
-
-    const axesHelper = new THREE.AxesHelper(5);
-    axesHelper.material.transparent = true;
-    axesHelper.material.opacity = 0.12;
-    scene.add(axesHelper);
-
-    const referencePlane = new THREE.Mesh(
-      new THREE.PlaneGeometry(18, 18),
-      new THREE.MeshStandardMaterial({ color: 0x060f20, side: THREE.DoubleSide, transparent: true, opacity: 0.15 })
-    );
-    referencePlane.rotation.x = -Math.PI / 2;
-    referencePlane.position.y = -0.02;
-    referencePlane.receiveShadow = true;
-    scene.add(referencePlane);
-
-    // Materials
-    const defaultMat = new THREE.MeshStandardMaterial({
-      color: 0x2a5fA8, metalness: 0.65, roughness: 0.35, emissive: 0x001133, emissiveIntensity: 0.05
+  // --- Lighting ---
+  const ambient = new THREE.AmbientLight(0x1a202c);
+  scene.add(ambient);
+  const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  mainLight.position.set(5, 12, 6);
+  mainLight.castShadow = true;
+  mainLight.shadow.mapSize.set(1024, 1024);
+  scene.add(mainLight);
+  const fillLight = new THREE.PointLight(0x3b82f6, 0.4);
+  fillLight.position.set(-3, 4, 5);
+  scene.add(fillLight);
+  const rim = new THREE.PointLight(0xffaa66, 0.3);
+  rim.position.set(2, 3, -4);
+  scene.add(rim);
+  
+  // Helpers
+  const gridHelper = new THREE.GridHelper(20, 30, 0x2d3a5e, 0x1e293b);
+  gridHelper.position.y = -0.05;
+  scene.add(gridHelper);
+  const axes = new THREE.AxesHelper(5);
+  axes.material.transparent = true;
+  axes.material.opacity = 0.12;
+  scene.add(axes);
+  
+  // Ground reference plane (invisible but for raycasting)
+  const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  
+  // --- Surface Material Library ---
+  const surfaceMaterials = {
+    metal: new THREE.MeshStandardMaterial({ color: 0x6c8bb8, metalness: 0.92, roughness: 0.28, emissive: 0x001133, emissiveIntensity: 0.02 }),
+    plastic: new THREE.MeshStandardMaterial({ color: 0x4f7ea0, metalness: 0.12, roughness: 0.55, emissive: 0x000000 }),
+    glass: new THREE.MeshStandardMaterial({ color: 0x88aadd, metalness: 0.95, roughness: 0.18, transparent: true, opacity: 0.82, emissive: 0x112233 }),
+    painted: new THREE.MeshStandardMaterial({ color: 0xc97e5a, metalness: 0.25, roughness: 0.35, emissive: 0x331100 })
+  };
+  let currentSurfaceType = 'metal';
+  
+  // Global state
+  let objects = [];
+  let selectedObject = null;
+  let currentTool = 'select'; // select, drawLine, drawRect, extrude
+  let drawingPoints = []; // for polyline
+  let tempLineMesh = null;
+  let currentDrawingGroup = null;
+  
+  // --- Helper Functions ---
+  function updateGlobalStatus(msg) {
+    const el = document.getElementById('global-status');
+    el.innerHTML = `✓ ${msg} | Surface: ${currentSurfaceType.toUpperCase()}`;
+    setTimeout(() => {
+      if (el.innerHTML.includes(msg)) el.innerHTML = `✓ Ready | Surface: ${currentSurfaceType.toUpperCase()} | Tool: ${currentTool}`;
+    }, 2000);
+  }
+  
+  function applySurfaceToMesh(mesh, surfType = currentSurfaceType) {
+    if (!mesh) return;
+    const newMat = surfaceMaterials[surfType].clone();
+    mesh.material = newMat;
+    mesh.userData.surface = surfType;
+  }
+  
+  function updateUIFromSelection() {
+    if (selectedObject) {
+      document.getElementById('sel-name').innerHTML = `📦 ${selectedObject.name || 'Object'}`;
+      const pos = selectedObject.position;
+      document.getElementById('sel-pos').innerHTML = `X:${pos.x.toFixed(2)} Y:${pos.y.toFixed(2)} Z:${pos.z.toFixed(2)}`;
+      const surf = selectedObject.userData.surface || currentSurfaceType;
+      document.getElementById('sel-surface').innerHTML = `Surface: ${surf}`;
+      document.getElementById('pos-x').value = pos.x;
+      document.getElementById('pos-y').value = pos.y;
+      document.getElementById('pos-z').value = pos.z;
+    } else {
+      document.getElementById('sel-name').innerHTML = 'None selected';
+      document.getElementById('sel-pos').innerHTML = 'Position: -';
+      document.getElementById('sel-surface').innerHTML = 'Surface: -';
+    }
+  }
+  
+  function selectObject(obj) {
+    if (selectedObject === obj) return;
+    if (selectedObject) transformCtrl.detach();
+    selectedObject = obj;
+    if (obj) {
+      transformCtrl.attach(obj);
+      transformCtrl.setMode('translate');
+    }
+    updateUIFromSelection();
+    updateGlobalStatus(`Selected ${obj ? obj.name : 'none'}`);
+  }
+  
+  function addMeshToScene(mesh, selectIt = true, customSurface = null) {
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    const surf = customSurface || currentSurfaceType;
+    mesh.material = surfaceMaterials[surf].clone();
+    mesh.userData.surface = surf;
+    mesh.userData.originalMat = mesh.material;
+    scene.add(mesh);
+    objects.push(mesh);
+    if (selectIt) selectObject(mesh);
+    updateGlobalStatus(`Added: ${mesh.name}`);
+    return mesh;
+  }
+  
+  // --- Primitive generators ---
+  function createBoxAt(x, z) {
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), surfaceMaterials[currentSurfaceType].clone());
+    box.position.set(x, 0.5, z);
+    box.name = 'Box';
+    return box;
+  }
+  function createSphereAt(x, z) {
+    const sph = new THREE.Mesh(new THREE.SphereGeometry(0.55, 32, 32), surfaceMaterials[currentSurfaceType].clone());
+    sph.position.set(x, 0.55, z);
+    sph.name = 'Sphere';
+    return sph;
+  }
+  function createCylAt(x, z) {
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.1, 32), surfaceMaterials[currentSurfaceType].clone());
+    cyl.position.set(x, 0.55, z);
+    cyl.name = 'Cylinder';
+    return cyl;
+  }
+  
+  // --- Drawing / CAD Sketch logic (Line drawing on grid plane) ---
+  function startDrawingLine() {
+    if (drawingPoints.length) finishDrawing();
+    drawingPoints = [];
+    if (tempLineMesh) scene.remove(tempLineMesh);
+    updateGlobalStatus("Draw mode: Click on ground plane to set vertices. Press 'Finish' to extrude.");
+  }
+  
+  function addDrawingPoint(point3d) {
+    if (!currentTool === 'drawLine' && currentTool !== 'drawRect') return;
+    drawingPoints.push(point3d.clone());
+    updateTempLine();
+    updateGlobalStatus(`Point added. Total: ${drawingPoints.length}`);
+  }
+  
+  function updateTempLine() {
+    if (tempLineMesh) scene.remove(tempLineMesh);
+    if (drawingPoints.length < 2) return;
+    const points = drawingPoints.map(p => p.clone());
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+    const material = new THREE.LineBasicMaterial({ color: 0x3b82f6, linewidth: 2 });
+    tempLineMesh = new THREE.Line(geometry, material);
+    scene.add(tempLineMesh);
+  }
+  
+  function finishDrawing() {
+    if (drawingPoints.length < 3) {
+      updateGlobalStatus("Need at least 3 points to create a face.");
+      return;
+    }
+    // Create a planar shape from points (simple polygon extrusion)
+    const shape = new THREE.Shape();
+    shape.moveTo(drawingPoints[0].x, drawingPoints[0].z);
+    for (let i = 1; i < drawingPoints.length; i++) {
+      shape.lineTo(drawingPoints[i].x, drawingPoints[i].z);
+    }
+    shape.closePath();
+    const extrudeSettings = { steps: 1, depth: 0.3, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 3 };
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.computeVertexNormals();
+    geometry.center();
+    const mesh = new THREE.Mesh(geometry, surfaceMaterials[currentSurfaceType].clone());
+    mesh.position.y = 0.15;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.name = "DrawnPart";
+    mesh.userData.isExtruded = true;
+    addMeshToScene(mesh, true);
+    // Clean drawing
+    if (tempLineMesh) scene.remove(tempLineMesh);
+    drawingPoints = [];
+    tempLineMesh = null;
+    updateGlobalStatus("Extruded polygon created from sketch.");
+  }
+  
+  // --- Extrude selected object's face (scaling on Y as dynamic extrusion) ---
+  function extrudeSelectedFace(delta = 0.4) {
+    if (!selectedObject) { updateGlobalStatus("Select an object first to extrude"); return; }
+    selectedObject.scale.y += delta;
+    selectedObject.position.y += delta / 2;
+    updateUIFromSelection();
+    updateGlobalStatus(`Extruded face by ${delta.toFixed(2)}`);
+  }
+  
+  // --- Clean Scene (remove all objects except helpers) ---
+  function cleanScene() {
+    objects.forEach(obj => {
+      scene.remove(obj);
+      if (obj.geometry) obj.geometry.dispose();
+      if (obj.material) obj.material.dispose();
     });
-    const highlightMat = new THREE.MeshStandardMaterial({
-      color: 0x3b82f6, metalness: 0.7, roughness: 0.25, emissive: 0x0044cc, emissiveIntensity: 0.2
-    });
-
-    // State
-    let objects = [];
-    let selectedObject = null;
-    let snapEnabled = true;
-    const snapSize = 0.5;
-    let currentTransformMode = 'translate';
-
-    // ── Helpers ──────────────────────────────────────────────────
-    function updateStatus(msg) {
-      const el = document.getElementById('statusMsg');
-      el.innerHTML = `✅ ${msg}`;
-      setTimeout(() => {
-        if (el.innerHTML.includes(msg))
-          el.innerHTML = `✅ Ready · ${currentTransformMode.toUpperCase()} · ${selectedObject ? selectedObject.name : 'No selection'}`;
-      }, 2500);
-    }
-
-    function updateSelectedInfo() {
-      if (selectedObject) {
-        document.getElementById('selected-name').innerHTML = `📦 ${selectedObject.name}`;
-        document.getElementById('selected-pos').innerHTML = `X:${selectedObject.position.x.toFixed(2)} Y:${selectedObject.position.y.toFixed(2)} Z:${selectedObject.position.z.toFixed(2)}`;
-        document.getElementById('selected-scale').innerHTML = `Scale: ${selectedObject.scale.x.toFixed(2)} / ${selectedObject.scale.y.toFixed(2)} / ${selectedObject.scale.z.toFixed(2)}`;
-        document.getElementById('selected-rot').innerHTML = `Rot: ${(selectedObject.rotation.x * 180/Math.PI).toFixed(0)}° / ${(selectedObject.rotation.y * 180/Math.PI).toFixed(0)}°`;
-        document.getElementById('pos-x').value = selectedObject.position.x;
-        document.getElementById('pos-y').value = selectedObject.position.y;
-        document.getElementById('pos-z').value = selectedObject.position.z;
-      } else {
-        document.getElementById('selected-name').innerHTML = 'None selected';
-        document.getElementById('selected-pos').innerHTML = 'Position: -';
-        document.getElementById('selected-scale').innerHTML = 'Scale: -';
-        document.getElementById('selected-rot').innerHTML = 'Rotation: -';
-      }
-    }
-
-    function snapToGrid(pos) {
-      if (!snapEnabled) return pos;
-      return new THREE.Vector3(
-        Math.round(pos.x / snapSize) * snapSize,
-        Math.round(pos.y / snapSize) * snapSize,
-        Math.round(pos.z / snapSize) * snapSize
-      );
-    }
-
-    function selectObject(obj) {
-      if (selectedObject === obj) return;
-      if (selectedObject && selectedObject.userData.originalMaterial) {
-        selectedObject.material = selectedObject.userData.originalMaterial.clone();
-      }
-      selectedObject = obj;
-      transformControls.detach();
-      if (selectedObject) {
-        selectedObject.userData.originalMaterial = selectedObject.material.clone();
-        selectedObject.material = highlightMat.clone();
-        transformControls.attach(selectedObject);
-        setTransformMode(currentTransformMode);
-      }
-      updateSelectedInfo();
-      updateStatus(`Selected: ${obj ? obj.name : 'None'}`);
-    }
-
-    function deselect() {
-      if (selectedObject && selectedObject.userData.originalMaterial) {
-        selectedObject.material = selectedObject.userData.originalMaterial.clone();
-      }
+    objects = [];
+    if (selectedObject) {
+      transformCtrl.detach();
       selectedObject = null;
-      transformControls.detach();
-      updateSelectedInfo();
     }
-
-    function setTransformMode(mode) {
-      currentTransformMode = mode;
-      if (selectedObject) transformControls.setMode(mode);
-      document.querySelectorAll('.transform-btn').forEach(b => b.classList.remove('active'));
-      const map = { translate: 'transform-translate', rotate: 'transform-rotate', scale: 'transform-scale' };
-      if (map[mode]) document.getElementById(map[mode]).classList.add('active');
-    }
-
-    function addMesh(mesh, sel = true) {
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      mesh.userData.originalMaterial = mesh.material.clone();
-      scene.add(mesh);
-      objects.push(mesh);
-      if (sel) selectObject(mesh);
-      updateStatus(`Added: ${mesh.name}`);
-      return mesh;
-    }
-
-    function clearScene() {
-      objects.forEach(o => { scene.remove(o); o.geometry?.dispose(); o.material?.dispose(); });
-      objects = [];
-      deselect();
-      updateStatus('Scene cleared');
-    }
-
-    // ── Primitives ────────────────────────────────────────────────
-    function mkPos(x, z) {
-      let p = new THREE.Vector3(x, 0.5, z);
-      return snapEnabled ? snapToGrid(p) : p;
-    }
-
-    function createBox(x, z) {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), defaultMat.clone());
-      m.name = 'Box'; m.position.copy(mkPos(x, z)); return m;
-    }
-    function createSphere(x, z) {
-      const m = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), defaultMat.clone());
-      m.name = 'Sphere'; m.position.copy(mkPos(x, z)); return m;
-    }
-    function createCylinder(x, z) {
-      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1, 32), defaultMat.clone());
-      m.name = 'Cylinder'; m.position.copy(mkPos(x, z)); return m;
-    }
-
-    function extrudeSelected(depth) {
-      if (!selectedObject) { updateStatus('No object selected!'); return; }
-      selectedObject.scale.y = Math.max(0.2, selectedObject.scale.y + depth);
-      selectedObject.position.y = selectedObject.scale.y / 2;
-      updateSelectedInfo();
-      updateStatus(`Extruded by ${depth}`);
-    }
-
-    // ── Raycasting ────────────────────────────────────────────────
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    renderer.domElement.addEventListener('click', e => {
-      if (transformControls.dragging) return;
-      const rect = renderer.domElement.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-      const hits = raycaster.intersectObjects(objects);
-      if (hits.length > 0) selectObject(hits[0].object);
-      else deselect();
+    updateUIFromSelection();
+    updateGlobalStatus("Scene cleaned. All objects removed.");
+  }
+  
+  // --- Export ---
+  function exportSTL() {
+    if (objects.length === 0) { updateGlobalStatus("No objects to export"); return; }
+    const group = new THREE.Group();
+    objects.forEach(obj => group.add(obj.clone()));
+    const exporter = new STLExporter();
+    const stlString = exporter.parse(group);
+    const blob = new Blob([stlString], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'fusioncore_design.stl';
+    link.click();
+    updateGlobalStatus("STL exported");
+  }
+  
+  function exportGCode() {
+    if (!objects.length) { updateGlobalStatus("No geometry for GCode"); return; }
+    let gcode = `; FusionCore CAD - Surface Model\nG21 G90 G28\nG0 Z5\n`;
+    objects.forEach((obj, idx) => {
+      const bbox = new THREE.Box3().setFromObject(obj);
+      const size = bbox.getSize(new THREE.Vector3());
+      const center = bbox.getCenter(new THREE.Vector3());
+      gcode += `; Object ${idx}: ${obj.name}\nG0 X${(center.x - size.x/2).toFixed(2)} Y${(center.z - size.z/2).toFixed(2)}\nG1 Z0.2 F200\n`;
+      gcode += `G1 X${(center.x + size.x/2).toFixed(2)} Y${(center.z - size.z/2).toFixed(2)} F500\n`;
+      gcode += `G1 Y${(center.z + size.z/2).toFixed(2)}\nG1 X${(center.x - size.x/2).toFixed(2)}\nG1 Y${(center.z - size.z/2).toFixed(2)}\nG0 Z5\n`;
     });
-
-    // ── G-Code ────────────────────────────────────────────────────
-    function downloadGCode() {
-      if (!objects.length) { updateStatus('No objects'); return; }
-      let g = `; FusionCore CAD — NexaFlow\n; User: {{ user.email }}\n; Token: {{ token|slice:":8" }}…\nG21 G90 G28\nG0 Z5.0\n`;
-      objects.forEach((o, i) => {
-        const bbox = new THREE.Box3().setFromObject(o);
-        const sz = bbox.getSize(new THREE.Vector3());
-        const p = o.position;
-        g += `\n; Object ${i}: ${o.name}\nG0 X${(p.x-sz.x/2).toFixed(2)} Y${(p.z-sz.z/2).toFixed(2)}\nG1 Z0.2 F200\n`;
-        g += `G1 X${(p.x+sz.x/2).toFixed(2)} Y${(p.z-sz.z/2).toFixed(2)} F500\n`;
-        g += `G1 Y${(p.z+sz.z/2).toFixed(2)}\nG1 X${(p.x-sz.x/2).toFixed(2)}\nG1 Y${(p.z-sz.z/2).toFixed(2)}\nG0 Z5.0\n`;
-      });
-      g += '\nM30\n';
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([g], { type: 'text/plain' }));
-      a.download = 'fusioncore.gcode'; a.click();
-      updateStatus('G-Code exported');
+    gcode += "M30\n";
+    const blob = new Blob([gcode], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'fusioncore_output.gcode';
+    link.click();
+    updateGlobalStatus("G-Code generated");
+  }
+  
+  // --- Raycaster for selection & drawing ---
+  const raycaster = new THREE.Raycaster();
+  const mouseVec = new THREE.Vector2();
+  const planeForDrawing = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  
+  renderer.domElement.addEventListener('click', (e) => {
+    if (transformCtrl.dragging) return;
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouseVec.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouseVec.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouseVec, camera);
+    
+    if (currentTool === 'drawLine' || currentTool === 'drawRect') {
+      // Intersect with ground plane (Y=0)
+      const intersectionPoint = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(planeForDrawing, intersectionPoint)) {
+        const snapped = new THREE.Vector3(
+          Math.round(intersectionPoint.x * 2) / 2,
+          0,
+          Math.round(intersectionPoint.z * 2) / 2
+        );
+        addDrawingPoint(snapped);
+      }
+      return;
     }
-
-    function exportSTL() {
-      if (!objects.length) { updateStatus('No objects'); return; }
-      const grp = new THREE.Group();
-      objects.forEach(o => { const c = o.clone(); grp.add(c); });
-      const stl = new STLExporter().parse(grp);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([stl], { type: 'text/plain' }));
-      a.download = 'fusioncore.stl'; a.click();
-      updateStatus('STL exported');
+    else if (currentTool === 'select') {
+      const intersects = raycaster.intersectObjects(objects);
+      if (intersects.length > 0) selectObject(intersects[0].object);
+      else selectObject(null);
     }
-
-    // ── View ──────────────────────────────────────────────────────
-    function setView(v) {
-      const views = {
-        top:         [0, 15, 0.01],
-        bottom:      [0, -15, 0.01],
-        front:       [0, 0, 15],
-        right:       [15, 0, 0],
-        left:        [-15, 0, 0],
-        perspective: [10, 8, 12],
-      };
-      if (views[v]) camera.position.set(...views[v]);
-      orbitControls.target.set(0, 0, 0);
-      orbitControls.update();
-      updateStatus(`View: ${v}`);
+    else if (currentTool === 'extrude') {
+      const intersects = raycaster.intersectObjects(objects);
+      if (intersects.length) {
+        selectObject(intersects[0].object);
+        extrudeSelectedFace(0.35);
+      } else updateGlobalStatus("Click on a solid to extrude");
     }
-
-    // ── UI Bindings ────────────────────────────────────────────────
-    document.getElementById('transform-translate').addEventListener('click', () => setTransformMode('translate'));
-    document.getElementById('transform-rotate').addEventListener('click', () => setTransformMode('rotate'));
-    document.getElementById('transform-scale').addEventListener('click', () => setTransformMode('scale'));
-    document.getElementById('mode-select').addEventListener('click', () => updateStatus('Select mode active'));
-    document.getElementById('mode-extrude').addEventListener('click', () => updateStatus('Select an object then click Extrude'));
-    document.getElementById('mode-box').addEventListener('click', () => addMesh(createBox((Math.random()-.5)*6, (Math.random()-.5)*6)));
-    document.getElementById('mode-sphere').addEventListener('click', () => addMesh(createSphere((Math.random()-.5)*6, (Math.random()-.5)*6)));
-    document.getElementById('mode-cylinder').addEventListener('click', () => addMesh(createCylinder((Math.random()-.5)*6, (Math.random()-.5)*6)));
-    document.getElementById('apply-extrude').addEventListener('click', () => extrudeSelected(parseFloat(document.getElementById('extrude-depth').value)));
-    document.getElementById('apply-transform').addEventListener('click', () => {
-      if (!selectedObject) { updateStatus('No object selected'); return; }
-      selectedObject.position.set(
-        parseFloat(document.getElementById('pos-x').value),
-        parseFloat(document.getElementById('pos-y').value),
-        parseFloat(document.getElementById('pos-z').value)
-      );
-      updateSelectedInfo(); updateStatus('Position updated');
+  });
+  
+  // --- UI Events & Mode Switching ---
+  document.getElementById('tool-select').addEventListener('click', () => { currentTool = 'select'; updateGlobalStatus("Select mode active"); });
+  document.getElementById('tool-draw-line').addEventListener('click', () => { currentTool = 'drawLine'; startDrawingLine(); });
+  document.getElementById('tool-draw-rect').addEventListener('click', () => { currentTool = 'drawLine'; startDrawingLine(); updateGlobalStatus("Rectangle: click 4 corners (manually)"); });
+  document.getElementById('tool-extrude').addEventListener('click', () => { currentTool = 'extrude'; updateGlobalStatus("Click on an object to extrude face"); });
+  document.getElementById('finish-drawing').addEventListener('click', () => { finishDrawing(); currentTool = 'select'; });
+  document.getElementById('prim-box').addEventListener('click', () => { const b = createBoxAt((Math.random()-0.5)*4, (Math.random()-0.5)*4); addMeshToScene(b); });
+  document.getElementById('prim-sphere').addEventListener('click', () => { const s = createSphereAt((Math.random()-0.5)*4, (Math.random()-0.5)*4); addMeshToScene(s); });
+  document.getElementById('prim-cylinder').addEventListener('click', () => { const c = createCylAt((Math.random()-0.5)*4, (Math.random()-0.5)*4); addMeshToScene(c); });
+  document.getElementById('clean-scene').addEventListener('click', cleanScene);
+  document.getElementById('export-stl').addEventListener('click', exportSTL);
+  document.getElementById('export-gcode').addEventListener('click', exportGCode);
+  document.getElementById('apply-pos').addEventListener('click', () => {
+    if (!selectedObject) { updateGlobalStatus("No object selected"); return; }
+    selectedObject.position.set(parseFloat(document.getElementById('pos-x').value), parseFloat(document.getElementById('pos-y').value), parseFloat(document.getElementById('pos-z').value));
+    updateUIFromSelection();
+    updateGlobalStatus("Position updated");
+  });
+  
+  // Surface selector UI
+  document.querySelectorAll('[data-surface]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('[data-surface]').forEach(btn => btn.classList.remove('active-surface'));
+      el.classList.add('active-surface');
+      currentSurfaceType = el.dataset.surface;
+      if (selectedObject) {
+        applySurfaceToMesh(selectedObject, currentSurfaceType);
+        updateUIFromSelection();
+      }
+      updateGlobalStatus(`Surface set to ${currentSurfaceType}`);
     });
-    document.getElementById('toggle-snap').addEventListener('click', () => {
-      snapEnabled = !snapEnabled;
-      document.getElementById('toggle-snap').innerHTML = snapEnabled ? '🔗 Snap: ON' : '🔗 Snap: OFF';
-      document.getElementById('snap-status').textContent = snapEnabled ? 'Grid Snap · 0.5 units' : 'Snap Disabled';
-      updateStatus(`Snap ${snapEnabled ? 'ON' : 'OFF'}`);
+  });
+  
+  // View controls
+  document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      const views = { top: [0, 15, 0.01], front: [0, 1, 12], right: [12, 1, 0], left: [-12, 1, 0], bottom: [0, -12, 0.01], persp: [10, 8, 12] };
+      if (views[view]) camera.position.set(...views[view]);
+      orbit.target.set(0, 1, 0);
+      orbit.update();
     });
-    document.getElementById('btn-clear').addEventListener('click', clearScene);
-    document.getElementById('btn-export-gcode').addEventListener('click', downloadGCode);
-    document.getElementById('btn-export-stl').addEventListener('click', exportSTL);
-    document.querySelectorAll('.view-btn').forEach(btn => btn.addEventListener('click', () => setView(btn.dataset.view)));
-
-    // ── Resize ────────────────────────────────────────────────────
-    window.addEventListener('resize', () => {
-      const W = cadRoot.clientWidth;
-      const H = cadRoot.clientHeight;
-      camera.aspect = W / H;
-      camera.updateProjectionMatrix();
-      renderer.setSize(W, H);
-    });
-
-    // ── Demo objects ──────────────────────────────────────────────
-    addMesh(createBox(1.5, 1.5), false);
-    addMesh(createSphere(-1.5, 1.2), false);
-    addMesh(createCylinder(0, -1.8), false);
-
-    // ── Loop ──────────────────────────────────────────────────────
-    function animate() {
-      requestAnimationFrame(animate);
-      orbitControls.update();
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    setTransformMode('translate');
-    updateStatus('FusionCore ready · authenticated as {{ user.username }}');
-  </script>
+  });
+  
+  // Demo starter objects
+  const demoBox = createBoxAt(1.2, 1.2); demoBox.name = "DemoBox"; addMeshToScene(demoBox, false);
+  const demoSph = createSphereAt(-1.5, 1.0); demoSph.name = "DemoSphere"; addMeshToScene(demoSph, false);
+  const demoCyl = createCylAt(0.2, -1.8); demoCyl.name = "DemoCyl"; addMeshToScene(demoCyl, false);
+  
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    orbit.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+  
+  window.addEventListener('resize', () => {
+    const w = container.clientWidth, h = container.clientHeight;
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  });
+  
+  updateGlobalStatus("FusionCore active | Surface ready | CAD drawing enabled");
+</script>
 </body>
 </html>
