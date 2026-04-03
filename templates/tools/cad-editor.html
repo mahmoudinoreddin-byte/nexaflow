@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD Pro - 3D Solid Modeler</title>
+<title>AetherCAD Pro - Fixed Sketch & Camera</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
@@ -471,8 +471,6 @@ function exitSketchMode() { sketchMode=false; sketchPoints=[]; svgOverlay.classL
 function finishSketch() {
   if(sketchPoints.length<2) { statusMsg('Need 2 points'); return; }
   const extH = parseFloat(document.getElementById('dh-ext').value) || 50;
-  const wInp = parseFloat(document.getElementById('dh-w').value) || 100;
-  const hInp = parseFloat(document.getElementById('dh-h').value) || 100;
   if(activeTool === 'rect') {
     const p0 = sketchPoints[0], p1 = sketchPoints[1];
     const w = Math.abs(p1.x - p0.x), d = Math.abs(p1.z - p0.z);
