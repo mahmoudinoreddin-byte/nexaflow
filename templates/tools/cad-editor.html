@@ -2,619 +2,732 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD — Professional 3D Design Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AetherCAD — Professional 3D Design Tool</title>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    user-select: none;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
 
-  :root {
-    --bg: #0D0D0F;
-    --bg2: #141416;
-    --bg3: #1C1C1F;
-    --bg4: #242428;
-    --bg5: #2E2E33;
-    --border: #2A2A2F;
-    --border2: #38383F;
-    --accent: #0A84FF;
-    --accent-h: #3A9FFF;
-    --green: #30D158;
-    --orange: #FF9F0A;
-    --red: #FF453A;
-    --text: #E8E8EA;
-    --text2: #8E8E96;
-    --text3: #55555C;
-  }
+:root {
+  --bg: #0D0D0F;
+  --bg2: #141416;
+  --bg3: #1C1C1F;
+  --bg4: #242428;
+  --accent: #0A84FF;
+  --accent-glow: rgba(10,132,255,0.3);
+  --green: #30D158;
+  --red: #FF453A;
+  --text: #E8E8EA;
+  --text2: #8E8E96;
+  --border: #2A2A2F;
+}
 
-  body, html {
-    height: 100%;
-    overflow: hidden;
-    background: var(--bg);
-    font-family: 'Sora', sans-serif;
-    font-size: 12px;
-    color: var(--text);
-  }
+body, html {
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--bg);
+}
 
-  button {
-    font-family: inherit;
-    cursor: pointer;
-    background: none;
-    border: none;
-    color: inherit;
-  }
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
 
-  input {
-    font-family: 'JetBrains Mono', monospace;
-    color: var(--text);
-  }
+input {
+  font-family: 'JetBrains Mono', monospace;
+}
 
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--bg5);
-    border-radius: 4px;
-  }
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
-  #app {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
+/* Simple clean header - no broken menus */
+#header {
+  height: 48px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
 
-  /* Clean menubar - only logo, no broken menu items */
-  #menubar {
-    height: 42px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    flex-shrink: 0;
-  }
-  .logo {
-    font-weight: 700;
-    font-size: 16px;
-    letter-spacing: -0.3px;
-    color: var(--text);
-  }
-  .logo em {
-    color: var(--accent);
-    font-style: normal;
-  }
-  .ml {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .tag {
-    font-size: 10px;
-    padding: 2px 10px;
-    border-radius: 20px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    color: var(--text3);
-  }
-  .tag.ok {
-    color: var(--green);
-    border-color: rgba(48,209,88,.3);
-  }
+.logo {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.5px;
+}
 
-  /* Toolbar - Clean & functional */
-  #toolbar {
-    height: 68px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 8px;
-    flex-shrink: 0;
-  }
-  .tg {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 0 14px;
-    border-right: 1px solid var(--border);
-  }
-  .tg:last-child {
-    border-right: none;
-  }
-  .tbtn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 6px 14px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text2);
-    font-size: 10px;
-    font-weight: 500;
-    min-width: 68px;
-    height: 50px;
-    transition: all 0.12s ease;
-  }
-  .tbtn:hover {
-    background: var(--bg5);
-    border-color: var(--border2);
-    color: var(--text);
-    transform: translateY(-1px);
-  }
-  .tbtn.active {
-    background: rgba(10,132,255,.2);
-    border-color: var(--accent);
-    color: var(--accent-h);
-    box-shadow: 0 0 6px rgba(10,132,255,0.2);
-  }
-  .tbtn.danger:hover {
-    background: rgba(255,69,58,.12);
-    border-color: var(--red);
-    color: var(--red);
-  }
-  .ticon {
-    font-size: 20px;
-  }
+.logo em {
+  color: var(--accent);
+  font-style: normal;
+}
 
-  /* Main layout */
-  #main {
-    display: flex;
-    flex: 1;
-    overflow: hidden;
-  }
+.status-badge {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
 
-  /* Left Panel */
-  #lpanel {
-    width: 260px;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-  }
-  .ph {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-weight: 600;
-    font-size: 11px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text2);
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  #obj-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 8px;
-  }
-  .oi {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.1s;
-    border: 1px solid transparent;
-    margin-bottom: 4px;
-  }
-  .oi:hover {
-    background: var(--bg3);
-    border-color: var(--border);
-  }
-  .oi.sel {
-    background: rgba(10,132,255,.18);
-    border-color: rgba(10,132,255,.5);
-  }
-  .oi-icon {
-    font-size: 16px;
-  }
-  .oi-name {
-    font-size: 12px;
-    font-weight: 500;
-  }
-  .oi-dim {
-    font-size: 9px;
-    color: var(--text3);
-    font-family: monospace;
-  }
-  .oi-del {
-    opacity: 0;
-    color: var(--red);
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-  .oi:hover .oi-del {
-    opacity: 1;
-  }
-  .empty-state {
-    padding: 24px;
-    text-align: center;
-    color: var(--text3);
-    font-size: 11px;
-  }
+.badge {
+  font-size: 10px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text2);
+}
 
-  /* Viewport */
-  #vp {
-    flex: 1;
-    position: relative;
-    background: #0A0A0B;
-    cursor: crosshair;
-  }
-  #vp-canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+.badge.active {
+  color: var(--green);
+  border-color: var(--green);
+}
 
-  /* Transform HUD */
-  #thud {
-    position: absolute;
-    top: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(20,20,28,0.9);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border2);
-    border-radius: 40px;
-    display: flex;
-    overflow: hidden;
-    z-index: 30;
-  }
-  .thbtn {
-    padding: 6px 22px;
-    font-size: 12px;
-    font-weight: 600;
-    background: none;
-    border: none;
-    border-right: 1px solid var(--border);
-    color: var(--text2);
-    transition: 0.1s;
-  }
-  .thbtn:last-child {
-    border-right: none;
-  }
-  .thbtn.active {
-    background: var(--accent);
-    color: white;
-  }
+/* Toolbar */
+#toolbar {
+  height: 70px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 8px;
+  flex-shrink: 0;
+}
 
-  /* Draw HUD */
-  #dhud {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(14,14,18,0.95);
-    backdrop-filter: blur(8px);
-    border: 1px solid var(--border2);
-    border-radius: 48px;
-    display: flex;
-    align-items: center;
-    padding: 8px 20px;
-    gap: 18px;
-    z-index: 30;
-  }
-  .dh-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .dh-item label {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text2);
-  }
-  .dh-item input {
-    width: 70px;
-    background: var(--bg3);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 5px 8px;
-    font-size: 11px;
-  }
-  .dh-btn {
-    background: var(--accent);
-    border-radius: 30px;
-    padding: 5px 20px;
-    color: white;
-    font-weight: 600;
-    font-size: 12px;
-  }
-  .dh-btn:hover {
-    background: var(--accent-h);
-  }
+.tool-group {
+  display: flex;
+  gap: 6px;
+  padding: 0 15px;
+  border-right: 1px solid var(--border);
+}
 
-  /* Right Panel */
-  #rpanel {
-    width: 280px;
-    background: var(--bg2);
-    border-left: 1px solid var(--border);
-    overflow-y: auto;
-    flex-shrink: 0;
-  }
-  .ps {
-    border-bottom: 1px solid var(--border);
-  }
-  .psh {
-    padding: 10px 16px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text3);
-    text-transform: uppercase;
-    background: var(--bg3);
-  }
-  .psb {
-    padding: 12px 16px;
-  }
-  .pr {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .pr label {
-    width: 40px;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text2);
-  }
-  .pr input {
-    flex: 1;
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px 8px;
-    font-size: 11px;
-  }
-  .pb {
-    width: 100%;
-    background: var(--bg4);
-    border: 1px solid var(--border2);
-    border-radius: 8px;
-    padding: 7px;
-    font-size: 11px;
-    font-weight: 500;
-    margin-top: 8px;
-    transition: 0.1s;
-  }
-  .pb.primary {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: white;
-  }
-  .pb.primary:hover {
-    background: var(--accent-h);
-  }
-  .info-box {
-    background: var(--bg3);
-    border-radius: 8px;
-    padding: 10px;
-    font-family: monospace;
-    font-size: 10px;
-    border-left: 3px solid var(--accent);
-  }
-  .sl-wrap {
-    margin-bottom: 12px;
-  }
-  .sl-top {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-  }
-  input[type="range"] {
-    width: 100%;
-    height: 3px;
-    background: var(--bg5);
-    border-radius: 2px;
-  }
+.tool-group:last-child {
+  border-right: none;
+}
 
-  /* Status bar */
-  #statusbar {
-    height: 28px;
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    padding: 0 18px;
-    gap: 24px;
-    font-size: 10px;
-    font-family: monospace;
-  }
+.tool-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text2);
+  font-size: 10px;
+  font-weight: 500;
+  min-width: 70px;
+  transition: all 0.1s;
+}
+
+.tool-btn:hover {
+  background: var(--bg4);
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.tool-btn.active {
+  background: rgba(10,132,255,0.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.tool-icon {
+  font-size: 18px;
+}
+
+/* Main layout */
+#main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Left Panel */
+#left-panel {
+  width: 260px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--text2);
+  display: flex;
+  justify-content: space-between;
+}
+
+#object-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.object-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 4px;
+  border: 1px solid transparent;
+  transition: all 0.1s;
+}
+
+.object-item:hover {
+  background: var(--bg3);
+  border-color: var(--border);
+}
+
+.object-item.selected {
+  background: rgba(10,132,255,0.15);
+  border-color: var(--accent);
+}
+
+.object-icon {
+  font-size: 16px;
+}
+
+.object-name {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.object-info {
+  font-size: 9px;
+  color: var(--text2);
+  font-family: monospace;
+}
+
+.delete-btn {
+  margin-left: auto;
+  opacity: 0;
+  color: var(--red);
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.object-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px;
+  color: var(--text2);
+  font-size: 11px;
+}
+
+/* Viewport */
+#viewport {
+  flex: 1;
+  position: relative;
+  background: #0A0A0B;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Transform HUD */
+#transform-hud {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,28,0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  display: flex;
+  z-index: 20;
+}
+
+.transform-btn {
+  padding: 8px 24px;
+  font-size: 12px;
+  font-weight: 600;
+  border: none;
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+  border-radius: 40px;
+}
+
+.transform-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Draw HUD */
+#draw-hud {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,28,0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  padding: 8px 24px;
+  gap: 20px;
+  z-index: 20;
+}
+
+.draw-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.draw-control label {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.draw-control input {
+  width: 70px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.extrude-btn {
+  background: var(--accent);
+  border: none;
+  padding: 6px 20px;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Right Panel */
+#right-panel {
+  width: 280px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.section {
+  border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+  padding: 10px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text2);
+  background: var(--bg3);
+}
+
+.section-content {
+  padding: 12px 16px;
+}
+
+.property-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.property-row label {
+  width: 35px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text2);
+}
+
+.property-row input {
+  flex: 1;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.apply-btn {
+  width: 100%;
+  background: var(--accent);
+  border: none;
+  padding: 8px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 11px;
+  margin-top: 8px;
+  cursor: pointer;
+}
+
+.secondary-btn {
+  width: 100%;
+  background: var(--bg4);
+  border: 1px solid var(--border);
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 11px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.info-box {
+  background: var(--bg3);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  font-size: 10px;
+  border-left: 3px solid var(--accent);
+}
+
+/* Status bar */
+#status-bar {
+  height: 28px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 20px;
+  font-size: 10px;
+  font-family: monospace;
+  color: var(--text2);
+}
+
+#status-message {
+  flex: 1;
+}
+
+/* Draw preview */
+#draw-preview {
+  position: absolute;
+  border: 2px solid var(--accent);
+  background: rgba(10,132,255,0.1);
+  pointer-events: none;
+  display: none;
+  z-index: 15;
+}
 </style>
 </head>
 <body>
 <div id="app">
-  <div id="menubar">
+  <div id="header">
     <div class="logo">Aether<em>CAD</em></div>
-    <div class="ml">
-      <div class="tag">PROFESSIONAL</div>
-      <div class="tag ok">● READY</div>
+    <div class="status-badge">
+      <div class="badge active">● READY</div>
     </div>
   </div>
 
   <div id="toolbar">
-    <div class="tg">
-      <button class="tbtn active" id="tb-rect"><span class="ticon">▯</span>Rectangle</button>
-      <button class="tbtn" id="tb-round"><span class="ticon">◧</span>Rounded</button>
-      <button class="tbtn" id="tb-circle"><span class="ticon">⬤</span>Circle</button>
+    <div class="tool-group">
+      <button class="tool-btn active" id="tool-rect"><span class="tool-icon">□</span>Rectangle</button>
+      <button class="tool-btn" id="tool-round"><span class="tool-icon">◧</span>Rounded</button>
+      <button class="tool-btn" id="tool-circle"><span class="tool-icon">●</span>Circle</button>
     </div>
-    <div class="tg">
-      <button class="tbtn" id="tb-sel"><span class="ticon">🖱️</span>Select</button>
-      <button class="tbtn" id="tb-move"><span class="ticon">✥</span>Move</button>
-      <button class="tbtn" id="tb-rot"><span class="ticon">↻</span>Rotate</button>
-      <button class="tbtn" id="tb-scale"><span class="ticon">⤢</span>Scale</button>
+    <div class="tool-group">
+      <button class="tool-btn" id="tool-select"><span class="tool-icon">🖱</span>Select</button>
+      <button class="tool-btn" id="tool-move"><span class="tool-icon">✥</span>Move</button>
+      <button class="tool-btn" id="tool-rotate"><span class="tool-icon">↻</span>Rotate</button>
+      <button class="tool-btn" id="tool-scale"><span class="tool-icon">⤢</span>Scale</button>
     </div>
-    <div class="tg">
-      <button class="tbtn" id="tb-dup"><span class="ticon">⧉</span>Duplicate</button>
-      <button class="tbtn danger" id="tb-del"><span class="ticon">🗑️</span>Delete</button>
+    <div class="tool-group">
+      <button class="tool-btn" id="tool-duplicate"><span class="tool-icon">⧉</span>Duplicate</button>
+      <button class="tool-btn" id="tool-delete"><span class="tool-icon">🗑</span>Delete</button>
+      <button class="tool-btn" id="tool-clear"><span class="tool-icon">✕</span>Clear All</button>
     </div>
   </div>
 
   <div id="main">
-    <div id="lpanel">
-      <div class="ph">📦 OBJECTS <span id="obj-count" style="margin-left:auto;">0</span></div>
-      <div id="obj-list"><div class="empty-state">No objects.<br>Draw a shape on canvas.</div></div>
-    </div>
-
-    <div id="vp">
-      <canvas id="vp-canvas"></canvas>
-      <div id="thud">
-        <button class="thbtn active" id="th-sel">SELECT</button>
-        <button class="thbtn" id="th-move">MOVE</button>
-        <button class="thbtn" id="th-rot">ROTATE</button>
-        <button class="thbtn" id="th-scale">SCALE</button>
+    <div id="left-panel">
+      <div class="panel-header">
+        <span>📦 OBJECTS</span>
+        <span id="object-count">0</span>
       </div>
-      <div id="dhud">
-        <div class="dh-item"><label>W</label><input type="number" id="dh-w" value="100" step="10"></div>
-        <div class="dh-item"><label>D</label><input type="number" id="dh-d" value="80" step="10"></div>
-        <div class="dh-item" id="dh-r-wrap"><label>R</label><input type="number" id="dh-r" value="15"></div>
-        <div class="dh-item"><label>Extrude</label><input type="number" id="dh-h" value="40"></div>
-        <button class="dh-btn" id="dh-ext">APPLY EXTRUDE</button>
+      <div id="object-list">
+        <div class="empty-state">No objects<br>Draw a shape on the canvas</div>
       </div>
     </div>
 
-    <div id="rpanel">
-      <div class="ps"><div class="psh">📐 SELECTION</div><div class="psb"><div class="info-box" id="sel-info">No object selected</div></div></div>
-      <div class="ps"><div class="psh">📍 POSITION</div><div class="psb"><div class="pr"><label>X</label><input type="number" id="p-x" step="5"></div><div class="pr"><label>Y</label><input type="number" id="p-y" step="5"></div><div class="pr"><label>Z</label><input type="number" id="p-z" step="5"></div><button class="pb primary" id="ap-pos">APPLY</button></div></div>
-      <div class="ps"><div class="psh">↻ ROTATION</div><div class="psb"><div class="pr"><label>X</label><input type="number" id="r-x" step="5"></div><div class="pr"><label>Y</label><input type="number" id="r-y" step="5"></div><div class="pr"><label>Z</label><input type="number" id="r-z" step="5"></div><button class="pb primary" id="ap-rot">APPLY</button></div></div>
-      <div class="ps"><div class="psh">📏 DIMENSIONS</div><div class="psb"><div class="pr"><label>W</label><input type="number" id="d-w"></div><div class="pr"><label>D</label><input type="number" id="d-d"></div><div class="pr"><label>H</label><input type="number" id="d-h"></div><div class="pr" id="d-r-row"><label>Radius</label><input type="number" id="d-r"></div><button class="pb primary" id="ap-dim">REBUILD</button></div></div>
-      <div class="ps"><div class="psh">🎨 MATERIAL</div><div class="psb"><div class="pr"><label>Color</label><input type="color" id="col-pick" value="#4a7ac8"></div><button class="pb primary" id="ap-mat">APPLY</button></div></div>
-      <div class="ps"><div class="psh">⚡ EXTRUDE</div><div class="psb"><div class="sl-wrap"><div class="sl-top"><span>Height</span><span id="ext-sv">40</span></div><input type="range" id="ext-sl" min="1" max="200" value="40"></div><button class="pb primary" id="ap-ext">EXTRUDE</button></div></div>
-      <div class="ps"><div class="psh">🛠️ OPERATIONS</div><div class="psb"><button class="pb" id="op-dup">Duplicate</button><button class="pb warn" id="op-del">Delete</button><button class="pb" id="op-snap">Snap to Ground</button></div></div>
+    <div id="viewport">
+      <canvas id="canvas"></canvas>
+      <div id="draw-preview"></div>
+      <div id="transform-hud">
+        <button class="transform-btn active" data-mode="select">SELECT</button>
+        <button class="transform-btn" data-mode="translate">MOVE</button>
+        <button class="transform-btn" data-mode="rotate">ROTATE</button>
+        <button class="transform-btn" data-mode="scale">SCALE</button>
+      </div>
+      <div id="draw-hud">
+        <div class="draw-control"><label>W</label><input type="number" id="draw-width" value="80" step="10"></div>
+        <div class="draw-control"><label>D</label><input type="number" id="draw-depth" value="80" step="10"></div>
+        <div class="draw-control" id="radius-control"><label>R</label><input type="number" id="draw-radius" value="15" step="5"></div>
+        <div class="draw-control"><label>Height</label><input type="number" id="draw-height" value="40" step="5"></div>
+        <button class="extrude-btn" id="apply-extrude">EXTRUDE</button>
+      </div>
+    </div>
+
+    <div id="right-panel">
+      <div class="section">
+        <div class="section-title">📐 SELECTION</div>
+        <div class="section-content">
+          <div class="info-box" id="selection-info">No object selected</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📍 POSITION</div>
+        <div class="section-content">
+          <div class="property-row"><label>X</label><input type="number" id="pos-x" step="5"></div>
+          <div class="property-row"><label>Y</label><input type="number" id="pos-y" step="5"></div>
+          <div class="property-row"><label>Z</label><input type="number" id="pos-z" step="5"></div>
+          <button class="apply-btn" id="apply-position">APPLY</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">↻ ROTATION</div>
+        <div class="section-content">
+          <div class="property-row"><label>X</label><input type="number" id="rot-x" step="15"></div>
+          <div class="property-row"><label>Y</label><input type="number" id="rot-y" step="15"></div>
+          <div class="property-row"><label>Z</label><input type="number" id="rot-z" step="15"></div>
+          <button class="apply-btn" id="apply-rotation">APPLY</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">📏 DIMENSIONS</div>
+        <div class="section-content">
+          <div class="property-row"><label>W</label><input type="number" id="dim-w" step="5"></div>
+          <div class="property-row"><label>D</label><input type="number" id="dim-d" step="5"></div>
+          <div class="property-row"><label>H</label><input type="number" id="dim-h" step="5"></div>
+          <div class="property-row" id="dim-radius-row"><label>R</label><input type="number" id="dim-r" step="5"></div>
+          <button class="apply-btn" id="apply-dimensions">REBUILD</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🎨 COLOR</div>
+        <div class="section-content">
+          <div class="property-row"><label>Color</label><input type="color" id="color-picker" value="#4a7ac8"></div>
+          <button class="apply-btn" id="apply-color">APPLY</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">⚡ OPERATIONS</div>
+        <div class="section-content">
+          <button class="secondary-btn" id="op-duplicate">Duplicate</button>
+          <button class="secondary-btn" id="op-snap-ground">Snap to Ground</button>
+          <button class="secondary-btn" id="op-center">Center on Grid</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div id="statusbar">
-    <span id="si-msg">Ready — Draw shapes, click to select, transform with gizmo</span>
-    <span><b>Objects:</b> <span id="si-count">0</span></span>
-    <span><b>Mode:</b> <span id="si-tool">Rectangle</span></span>
+  <div id="status-bar">
+    <span id="status-message">Ready — Click and drag to draw shapes</span>
+    <span>Objects: <span id="stat-count">0</span></span>
+    <span>Tool: <span id="stat-tool">Rectangle</span></span>
   </div>
 </div>
 
 <script type="importmap">
-  {"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
 </script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
-// --- Setup Scene ---
-const vp = document.getElementById('vp');
-const canvas = document.getElementById('vp-canvas');
+// ========== INITIALIZATION ==========
+const viewport = document.getElementById('viewport');
+const canvas = document.getElementById('canvas');
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0A0A0B);
-scene.fog = new THREE.FogExp2(0x0A0A0B, 0.0003);
+scene.fog = new THREE.FogExp2(0x0A0A0B, 0.0002);
 
 const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 2000);
-camera.position.set(280, 220, 340);
-camera.lookAt(0, 40, 0);
+camera.position.set(250, 200, 350);
+camera.lookAt(0, 50, 0);
 
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-renderer.setSize(vp.clientWidth, vp.clientHeight);
+renderer.setSize(viewport.clientWidth, viewport.clientHeight);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setPixelRatio(window.devicePixelRatio);
 
-// --- Lighting (Studio quality) ---
-const ambient = new THREE.AmbientLight(0x404060, 0.9);
-scene.add(ambient);
-const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.8);
+// ========== LIGHTING ==========
+const ambientLight = new THREE.AmbientLight(0x404060, 0.7);
+scene.add(ambientLight);
+
+const mainLight = new THREE.DirectionalLight(0xfff5e0, 1.5);
 mainLight.position.set(150, 300, 100);
 mainLight.castShadow = true;
 mainLight.shadow.mapSize.set(1024, 1024);
+mainLight.shadow.camera.near = 0.5;
+mainLight.shadow.camera.far = 800;
+mainLight.shadow.camera.left = -200;
+mainLight.shadow.camera.right = 200;
+mainLight.shadow.camera.top = 200;
+mainLight.shadow.camera.bottom = -200;
 scene.add(mainLight);
-const fillLight = new THREE.PointLight(0x4466cc, 0.8);
-fillLight.position.set(-100, 80, 150);
-scene.add(fillLight);
-const rim = new THREE.PointLight(0xffaa66, 0.6);
-rim.position.set(80, 120, -180);
-scene.add(rim);
-scene.add(new THREE.AmbientLight(0x22222a, 0.5));
 
-// --- Grid & Ground ---
-const gridHelper = new THREE.GridHelper(1200, 60, 0x3a3a44, 0x22222a);
-gridHelper.position.y = -0.2;
+const fillLight = new THREE.PointLight(0x4488ff, 0.6);
+fillLight.position.set(-100, 100, 150);
+scene.add(fillLight);
+
+const backLight = new THREE.PointLight(0xffaa66, 0.5);
+backLight.position.set(50, 80, -200);
+scene.add(backLight);
+
+// ========== GROUND & GRID ==========
+const gridHelper = new THREE.GridHelper(1200, 60, 0x4a4a55, 0x2a2a35);
+gridHelper.position.y = -0.5;
 scene.add(gridHelper);
+
 const groundPlane = new THREE.Mesh(
   new THREE.PlaneGeometry(1200, 1200),
-  new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.9, metalness: 0.1 })
+  new THREE.MeshStandardMaterial({ color: 0x0c0c10, roughness: 0.8, metalness: 0.1 })
 );
 groundPlane.rotation.x = -Math.PI / 2;
 groundPlane.position.y = -0.8;
 groundPlane.receiveShadow = true;
 scene.add(groundPlane);
 
-// --- Orbit Controls (fully functional) ---
-const orbit = new OrbitControls(camera, renderer.domElement);
-orbit.enableDamping = true;
-orbit.dampingFactor = 0.07;
-orbit.rotateSpeed = 1.2;
-orbit.zoomSpeed = 1.3;
-orbit.panSpeed = 0.9;
-orbit.target.set(0, 40, 0);
+// Axis helper (subtle)
+const axesHelper = new THREE.AxesHelper(80);
+axesHelper.material.transparent = true;
+axesHelper.material.opacity = 0.15;
+scene.add(axesHelper);
 
-// --- Transform Controls (Gizmo) ---
-const transformCtrl = new TransformControls(camera, renderer.domElement);
-transformCtrl.addEventListener('dragging-changed', (e) => { orbit.enabled = !e.value; });
-transformCtrl.addEventListener('objectChange', () => updateUI());
-scene.add(transformCtrl);
+// ========== CONTROLS ==========
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enableDamping = true;
+orbitControls.dampingFactor = 0.05;
+orbitControls.rotateSpeed = 1.2;
+orbitControls.zoomSpeed = 1.2;
+orbitControls.panSpeed = 0.8;
+orbitControls.target.set(0, 50, 0);
 
-// --- Data State ---
+const transformControls = new TransformControls(camera, renderer.domElement);
+transformControls.addEventListener('dragging-changed', (e) => {
+  orbitControls.enabled = !e.value;
+});
+transformControls.addEventListener('objectChange', () => {
+  updatePropertyPanel();
+});
+scene.add(transformControls);
+
+// ========== STATE ==========
 let objects = [];
-let selectedObj = null;
+let selectedObject = null;
 let nextId = 1;
-let currentDrawType = 'rect'; // rect, round, circle
+let currentDrawType = 'rect';
+let isDrawing = false;
+let drawStartPoint = null;
+let currentTransformMode = 'select';
 
-// Helper: Build extruded geometry
-function buildExtrudedMesh(type, width, depth, height, radius = 12) {
-  const w = Math.max(8, width);
-  const d = Math.max(8, depth);
+// ========== UTILITY FUNCTIONS ==========
+function setStatus(message) {
+  document.getElementById('status-message').textContent = message;
+}
+
+function getGroundPointFromMouse(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  const mouse = new THREE.Vector2(
+    ((event.clientX - rect.left) / rect.width) * 2 - 1,
+    -((event.clientY - rect.top) / rect.height) * 2 + 1
+  );
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+  const intersection = new THREE.Vector3();
+  if (raycaster.ray.intersectPlane(plane, intersection)) {
+    return { x: Math.round(intersection.x / 10) * 10, z: Math.round(intersection.z / 10) * 10 };
+  }
+  return null;
+}
+
+// ========== GEOMETRY BUILDER ==========
+function buildExtrudedGeometry(type, width, depth, height, cornerRadius = 15) {
+  const w = Math.max(10, width);
+  const d = Math.max(10, depth);
   const h = Math.max(2, height);
   const halfW = w / 2;
   const halfD = d / 2;
+  
   const shape = new THREE.Shape();
   
   if (type === 'circle') {
-    const segments = 48;
+    const segments = 64;
     for (let i = 0; i <= segments; i++) {
       const angle = (i / segments) * Math.PI * 2;
-      const px = Math.cos(angle) * halfW;
-      const py = Math.sin(angle) * halfD;
-      if (i === 0) shape.moveTo(px, py);
-      else shape.lineTo(px, py);
+      const x = Math.cos(angle) * halfW;
+      const z = Math.sin(angle) * halfD;
+      if (i === 0) shape.moveTo(x, z);
+      else shape.lineTo(x, z);
     }
     shape.closePath();
   } 
   else if (type === 'round') {
-    const r = Math.min(Math.abs(radius), halfW * 0.45, halfD * 0.45);
+    const r = Math.min(Math.abs(cornerRadius), halfW * 0.45, halfD * 0.45);
     shape.moveTo(-halfW + r, -halfD);
-    shape.lineTo( halfW - r, -halfD);
-    shape.quadraticCurveTo( halfW, -halfD,  halfW, -halfD + r);
-    shape.lineTo( halfW,  halfD - r);
-    shape.quadraticCurveTo( halfW,  halfD,  halfW - r,  halfD);
-    shape.lineTo(-halfW + r,  halfD);
-    shape.quadraticCurveTo(-halfW,  halfD, -halfW,  halfD - r);
+    shape.lineTo(halfW - r, -halfD);
+    shape.quadraticCurveTo(halfW, -halfD, halfW, -halfD + r);
+    shape.lineTo(halfW, halfD - r);
+    shape.quadraticCurveTo(halfW, halfD, halfW - r, halfD);
+    shape.lineTo(-halfW + r, halfD);
+    shape.quadraticCurveTo(-halfW, halfD, -halfW, halfD - r);
     shape.lineTo(-halfW, -halfD + r);
     shape.quadraticCurveTo(-halfW, -halfD, -halfW + r, -halfD);
   } 
-  else { // rectangle
+  else {
     shape.moveTo(-halfW, -halfD);
-    shape.lineTo( halfW, -halfD);
-    shape.lineTo( halfW,  halfD);
-    shape.lineTo(-halfW,  halfD);
+    shape.lineTo(halfW, -halfD);
+    shape.lineTo(halfW, halfD);
+    shape.lineTo(-halfW, halfD);
     shape.closePath();
   }
   
@@ -622,155 +735,218 @@ function buildExtrudedMesh(type, width, depth, height, radius = 12) {
     steps: 1,
     depth: h,
     bevelEnabled: true,
-    bevelThickness: 1.2,
+    bevelThickness: 1,
     bevelSize: 0.8,
     bevelSegments: 3
   };
+  
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
   geometry.computeVertexNormals();
   geometry.rotateX(-Math.PI / 2);
   geometry.computeBoundingBox();
+  
   return geometry;
 }
 
-function createNewObject(type, centerX, centerZ, widthVal, depthVal, heightVal, cornerR = 15) {
-  const geom = buildExtrudedMesh(type, widthVal, depthVal, heightVal, cornerR);
+// ========== CREATE OBJECT ==========
+function createObject(type, centerX, centerZ, width, depth, height, radius = 15) {
+  const geometry = buildExtrudedGeometry(type, width, depth, height, radius);
   const material = new THREE.MeshStandardMaterial({
     color: 0x4a7ac8,
     metalness: 0.45,
     roughness: 0.35,
     emissive: 0x000000
   });
-  const mesh = new THREE.Mesh(geom, material);
+  
+  const mesh = new THREE.Mesh(geometry, material);
   mesh.position.set(centerX, 0, centerZ);
   mesh.castShadow = true;
   mesh.receiveShadow = true;
   mesh.userData = {
     id: nextId++,
     type: type,
-    width: widthVal,
-    depth: depthVal,
-    height: heightVal,
-    cornerR: cornerR,
-    baseColor: 0x4a7ac8
+    width: width,
+    depth: depth,
+    height: height,
+    cornerRadius: radius,
+    originalColor: 0x4a7ac8
   };
-  mesh.name = `${type.toUpperCase()}_${mesh.userData.id}`;
+  mesh.name = `${type}_${mesh.userData.id}`;
+  
   scene.add(mesh);
   objects.push(mesh);
   selectObject(mesh);
-  refreshObjectList();
-  updateUI();
+  updateObjectList();
+  setStatus(`Created: ${mesh.name}`);
   return mesh;
 }
 
+// ========== EXTRUDE SELECTED ==========
 function extrudeSelected(newHeight) {
-  if (!selectedObj) return;
-  const ud = selectedObj.userData;
-  const h = Math.max(2, newHeight);
-  const newGeo = buildExtrudedMesh(ud.type, ud.width, ud.depth, h, ud.cornerR);
-  const oldMat = selectedObj.material;
-  selectedObj.geometry.dispose();
-  selectedObj.geometry = newGeo;
-  ud.height = h;
-  updateUI();
-  setStatus(`Extruded to ${h} units`);
+  if (!selectedObject) {
+    setStatus('No object selected');
+    return;
+  }
+  
+  const ud = selectedObject.userData;
+  const newH = Math.max(2, newHeight);
+  const newGeo = buildExtrudedGeometry(ud.type, ud.width, ud.depth, newH, ud.cornerRadius);
+  
+  const oldMat = selectedObject.material;
+  selectedObject.geometry.dispose();
+  selectedObject.geometry = newGeo;
+  ud.height = newH;
+  
+  updatePropertyPanel();
+  setStatus(`Extruded to ${newH} units`);
 }
 
-function rebuildSelectedGeometry(newW, newD, newH, newR) {
-  if (!selectedObj) return;
-  const ud = selectedObj.userData;
-  const w = Math.max(8, newW);
-  const d = Math.max(8, newD);
-  const h = Math.max(2, newH);
-  const r = (ud.type === 'round') ? newR : ud.cornerR;
-  const newGeo = buildExtrudedMesh(ud.type, w, d, h, r);
-  const oldMat = selectedObj.material;
-  selectedObj.geometry.dispose();
-  selectedObj.geometry = newGeo;
-  ud.width = w;
-  ud.depth = d;
-  ud.height = h;
-  if (ud.type === 'round') ud.cornerR = r;
-  updateUI();
-  setStatus(`Dimensions updated: ${w}x${d}x${h}`);
+// ========== REBUILD DIMENSIONS ==========
+function rebuildDimensions(width, depth, height, radius) {
+  if (!selectedObject) return;
+  
+  const ud = selectedObject.userData;
+  const newW = Math.max(10, width);
+  const newD = Math.max(10, depth);
+  const newH = Math.max(2, height);
+  const newR = (ud.type === 'round') ? Math.max(2, radius) : ud.cornerRadius;
+  
+  const newGeo = buildExtrudedGeometry(ud.type, newW, newD, newH, newR);
+  selectedObject.geometry.dispose();
+  selectedObject.geometry = newGeo;
+  
+  ud.width = newW;
+  ud.depth = newD;
+  ud.height = newH;
+  if (ud.type === 'round') ud.cornerRadius = newR;
+  
+  updatePropertyPanel();
+  setStatus(`Dimensions updated: ${newW} x ${newD} x ${newH}`);
 }
 
+// ========== SELECTION ==========
 function selectObject(obj) {
-  if (selectedObj === obj) return;
-  if (selectedObj) {
-    if (selectedObj.material) selectedObj.material.emissiveIntensity = 0;
+  // Remove highlight from previous selection
+  if (selectedObject) {
+    if (selectedObject.material) {
+      selectedObject.material.emissiveIntensity = 0;
+    }
   }
-  selectedObj = obj;
+  
+  selectedObject = obj;
+  
   if (obj) {
-    transformCtrl.attach(obj);
-    obj.material.emissiveIntensity = 0.28;
+    // Highlight selected object
+    obj.material.emissiveIntensity = 0.35;
     obj.material.emissive = new THREE.Color(0x2266ff);
+    transformControls.attach(obj);
+    setTransformMode(currentTransformMode);
+    setStatus(`Selected: ${obj.name}`);
   } else {
-    transformCtrl.detach();
+    transformControls.detach();
+    setStatus('Selection cleared');
   }
-  refreshObjectList();
-  updateUI();
+  
+  updateObjectList();
+  updatePropertyPanel();
 }
 
+// ========== DELETE OBJECT ==========
 function deleteObject(obj) {
   if (!obj) return;
-  const idx = objects.indexOf(obj);
-  if (idx !== -1) objects.splice(idx, 1);
+  
+  const index = objects.indexOf(obj);
+  if (index !== -1) objects.splice(index, 1);
+  
   scene.remove(obj);
   if (obj.geometry) obj.geometry.dispose();
   if (obj.material) obj.material.dispose();
-  if (selectedObj === obj) selectObject(null);
-  refreshObjectList();
-  setStatus(`Deleted ${obj.name}`);
+  
+  if (selectedObject === obj) {
+    selectObject(null);
+  }
+  
+  updateObjectList();
+  setStatus(`Deleted: ${obj.name}`);
+}
+
+function deleteSelected() {
+  if (selectedObject) {
+    deleteObject(selectedObject);
+  }
+}
+
+function clearAll() {
+  objects.forEach(obj => {
+    scene.remove(obj);
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) obj.material.dispose();
+  });
+  objects = [];
+  selectObject(null);
+  updateObjectList();
+  setStatus('Cleared all objects');
 }
 
 function duplicateSelected() {
-  if (!selectedObj) return;
-  const orig = selectedObj;
+  if (!selectedObject) {
+    setStatus('No object selected');
+    return;
+  }
+  
+  const orig = selectedObject;
   const ud = orig.userData;
-  const newGeo = buildExtrudedMesh(ud.type, ud.width, ud.depth, ud.height, ud.cornerR);
+  const newGeo = buildExtrudedGeometry(ud.type, ud.width, ud.depth, ud.height, ud.cornerRadius);
   const newMat = new THREE.MeshStandardMaterial().copy(orig.material);
   const clone = new THREE.Mesh(newGeo, newMat);
+  
   clone.position.copy(orig.position);
-  clone.position.x += 45;
+  clone.position.x += 50;
   clone.castShadow = true;
   clone.userData = {
     ...ud,
     id: nextId++,
-    baseColor: ud.baseColor
+    originalColor: ud.originalColor
   };
-  clone.name = `${ud.type.toUpperCase()}_${clone.userData.id}`;
+  clone.name = `${ud.type}_${clone.userData.id}`;
+  
   scene.add(clone);
   objects.push(clone);
   selectObject(clone);
-  refreshObjectList();
+  updateObjectList();
   setStatus(`Duplicated: ${clone.name}`);
 }
 
-function refreshObjectList() {
-  const container = document.getElementById('obj-list');
-  const countSpan = document.getElementById('obj-count');
-  const siCount = document.getElementById('si-count');
-  countSpan.innerText = objects.length;
-  siCount.innerText = objects.length;
+// ========== UI UPDATE ==========
+function updateObjectList() {
+  const container = document.getElementById('object-list');
+  const countSpan = document.getElementById('object-count');
+  const statCount = document.getElementById('stat-count');
+  
+  countSpan.textContent = objects.length;
+  statCount.textContent = objects.length;
+  
   if (objects.length === 0) {
-    container.innerHTML = '<div class="empty-state">✨ No objects<br>Draw a shape on canvas</div>';
+    container.innerHTML = '<div class="empty-state">No objects<br>Draw a shape on the canvas</div>';
     return;
   }
+  
   container.innerHTML = '';
   objects.forEach(obj => {
     const div = document.createElement('div');
-    div.className = `oi ${selectedObj === obj ? 'sel' : ''}`;
-    const icon = obj.userData.type === 'rect' ? '▯' : (obj.userData.type === 'round' ? '◧' : '⬤');
+    div.className = `object-item ${selectedObject === obj ? 'selected' : ''}`;
+    const icon = obj.userData.type === 'rect' ? '□' : (obj.userData.type === 'round' ? '◧' : '●');
     div.innerHTML = `
-      <span class="oi-icon">${icon}</span>
-      <div class="oi-info">
-        <div class="oi-name">${obj.name}</div>
-        <div class="oi-dim">${obj.userData.width} x ${obj.userData.depth}  H:${obj.userData.height}</div>
+      <span class="object-icon">${icon}</span>
+      <div>
+        <div class="object-name">${obj.name}</div>
+        <div class="object-info">${obj.userData.width} x ${obj.userData.depth}  H:${obj.userData.height}</div>
       </div>
-      <button class="oi-del" data-id="${obj.userData.id}">✕</button>`;
+      <button class="delete-btn" data-id="${obj.userData.id}">✕</button>
+    `;
+    
     div.addEventListener('click', (e) => {
-      if (e.target.classList.contains('oi-del')) {
+      if (e.target.classList.contains('delete-btn')) {
         e.stopPropagation();
         deleteObject(obj);
       } else {
@@ -781,225 +957,315 @@ function refreshObjectList() {
   });
 }
 
-function updateUI() {
-  if (!selectedObj) {
-    document.getElementById('sel-info').innerHTML = 'No object selected';
-    document.getElementById('p-x').value = '';
-    document.getElementById('p-y').value = '';
-    document.getElementById('p-z').value = '';
-    document.getElementById('r-x').value = '';
-    document.getElementById('r-y').value = '';
-    document.getElementById('r-z').value = '';
-    document.getElementById('d-w').value = '';
-    document.getElementById('d-d').value = '';
-    document.getElementById('d-h').value = '';
-    document.getElementById('ext-sl').value = 40;
+function updatePropertyPanel() {
+  if (!selectedObject) {
+    document.getElementById('selection-info').innerHTML = 'No object selected';
+    document.getElementById('pos-x').value = '';
+    document.getElementById('pos-y').value = '';
+    document.getElementById('pos-z').value = '';
+    document.getElementById('rot-x').value = '';
+    document.getElementById('rot-y').value = '';
+    document.getElementById('rot-z').value = '';
+    document.getElementById('dim-w').value = '';
+    document.getElementById('dim-d').value = '';
+    document.getElementById('dim-h').value = '';
     return;
   }
-  const p = selectedObj.position;
-  const rot = selectedObj.rotation;
-  const ud = selectedObj.userData;
-  document.getElementById('sel-info').innerHTML = `<b>${selectedObj.name}</b><br>Type: ${ud.type} | W:${ud.width} D:${ud.depth} H:${ud.height}`;
-  document.getElementById('p-x').value = p.x.toFixed(1);
-  document.getElementById('p-y').value = p.y.toFixed(1);
-  document.getElementById('p-z').value = p.z.toFixed(1);
-  document.getElementById('r-x').value = (rot.x * 180 / Math.PI).toFixed(1);
-  document.getElementById('r-y').value = (rot.y * 180 / Math.PI).toFixed(1);
-  document.getElementById('r-z').value = (rot.z * 180 / Math.PI).toFixed(1);
-  document.getElementById('d-w').value = ud.width;
-  document.getElementById('d-d').value = ud.depth;
-  document.getElementById('d-h').value = ud.height;
+  
+  const pos = selectedObject.position;
+  const rot = selectedObject.rotation;
+  const ud = selectedObject.userData;
+  
+  document.getElementById('selection-info').innerHTML = `<b>${selectedObject.name}</b><br>Type: ${ud.type} | ${ud.width}×${ud.depth}×${ud.height}`;
+  document.getElementById('pos-x').value = pos.x.toFixed(1);
+  document.getElementById('pos-y').value = pos.y.toFixed(1);
+  document.getElementById('pos-z').value = pos.z.toFixed(1);
+  document.getElementById('rot-x').value = (rot.x * 180 / Math.PI).toFixed(0);
+  document.getElementById('rot-y').value = (rot.y * 180 / Math.PI).toFixed(0);
+  document.getElementById('rot-z').value = (rot.z * 180 / Math.PI).toFixed(0);
+  document.getElementById('dim-w').value = ud.width;
+  document.getElementById('dim-d').value = ud.depth;
+  document.getElementById('dim-h').value = ud.height;
+  
+  const radiusRow = document.getElementById('dim-radius-row');
   if (ud.type === 'round') {
-    document.getElementById('d-r-row').style.display = 'flex';
-    document.getElementById('d-r').value = ud.cornerR || 15;
+    radiusRow.style.display = 'flex';
+    document.getElementById('dim-r').value = ud.cornerRadius || 15;
   } else {
-    document.getElementById('d-r-row').style.display = 'none';
+    radiusRow.style.display = 'none';
   }
-  document.getElementById('ext-sl').value = ud.height;
-  document.getElementById('ext-sv').innerText = ud.height;
-  if (selectedObj.material) {
-    const colHex = '#' + selectedObj.material.color.getHexString();
-    document.getElementById('col-pick').value = colHex;
+  
+  if (selectedObject.material) {
+    const colorHex = '#' + selectedObject.material.color.getHexString();
+    document.getElementById('color-picker').value = colorHex;
   }
 }
 
-function setStatus(msg) {
-  document.getElementById('si-msg').innerText = msg;
+// ========== TRANSFORM MODE ==========
+function setTransformMode(mode) {
+  currentTransformMode = mode;
+  if (!selectedObject) return;
+  
+  if (mode === 'select') transformControls.setMode('translate');
+  else if (mode === 'translate') transformControls.setMode('translate');
+  else if (mode === 'rotate') transformControls.setMode('rotate');
+  else if (mode === 'scale') transformControls.setMode('scale');
+  
+  document.querySelectorAll('.transform-btn').forEach(btn => {
+    if (btn.dataset.mode === mode) btn.classList.add('active');
+    else btn.classList.remove('active');
+  });
 }
 
-// --- Drawing Interaction (Click + Drag on Ground) ---
-let drawingActive = false;
-let drawStartPoint = null;
-let previewDiv = null;
+// ========== DRAW TOOL ==========
+function setDrawTool(tool) {
+  currentDrawType = tool;
+  setTransformMode('select');
+  
+  document.querySelectorAll('#tool-rect, #tool-round, #tool-circle').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  if (tool === 'rect') document.getElementById('tool-rect').classList.add('active');
+  if (tool === 'round') document.getElementById('tool-round').classList.add('active');
+  if (tool === 'circle') document.getElementById('tool-circle').classList.add('active');
+  
+  const radiusControl = document.getElementById('radius-control');
+  radiusControl.style.display = tool === 'round' ? 'flex' : 'none';
+  
+  const toolName = tool === 'rect' ? 'Rectangle' : (tool === 'round' ? 'Rounded' : 'Circle');
+  document.getElementById('stat-tool').textContent = toolName;
+  setStatus(`${toolName} mode — click and drag on canvas to draw`);
+}
 
-function getGroundPointFromEvent(e) {
+// ========== DRAWING HANDLERS ==========
+const previewDiv = document.getElementById('draw-preview');
+
+renderer.domElement.addEventListener('mousedown', (e) => {
+  if (e.button !== 0) return;
+  if (transformControls.dragging) return;
+  
+  isDrawing = true;
+  drawStartPoint = getGroundPointFromMouse(e);
+  
+  if (drawStartPoint) {
+    orbitControls.enabled = false;
+    previewDiv.style.display = 'block';
+    previewDiv.style.left = `${e.clientX}px`;
+    previewDiv.style.top = `${e.clientY}px`;
+    previewDiv.style.width = '0px';
+    previewDiv.style.height = '0px';
+  }
+});
+
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if (!isDrawing || !drawStartPoint) return;
+  
+  const currentPoint = getGroundPointFromMouse(e);
+  if (!currentPoint) return;
+  
+  const width = Math.abs(currentPoint.x - drawStartPoint.x);
+  const depth = Math.abs(currentPoint.z - drawStartPoint.z);
+  
+  if (width > 5) document.getElementById('draw-width').value = Math.max(20, width);
+  if (depth > 5) document.getElementById('draw-depth').value = Math.max(20, depth);
+  
+  // Update preview rectangle position
+  const rect = renderer.domElement.getBoundingClientRect();
+  previewDiv.style.left = `${Math.min(e.clientX, e.clientX - (currentPoint.x - drawStartPoint.x))}px`;
+  previewDiv.style.top = `${Math.min(e.clientY, e.clientY - (currentPoint.z - drawStartPoint.z))}px`;
+  previewDiv.style.width = `${Math.abs(currentPoint.x - drawStartPoint.x) * (rect.width / 800)}px`;
+  previewDiv.style.height = `${Math.abs(currentPoint.z - drawStartPoint.z) * (rect.height / 600)}px`;
+});
+
+renderer.domElement.addEventListener('mouseup', (e) => {
+  if (!isDrawing || !drawStartPoint) {
+    isDrawing = false;
+    return;
+  }
+  
+  const endPoint = getGroundPointFromMouse(e);
+  if (endPoint) {
+    let width = Math.abs(endPoint.x - drawStartPoint.x);
+    let depth = Math.abs(endPoint.z - drawStartPoint.z);
+    
+    if (width < 20) width = parseFloat(document.getElementById('draw-width').value) || 80;
+    if (depth < 20) depth = parseFloat(document.getElementById('draw-depth').value) || 80;
+    
+    const centerX = (drawStartPoint.x + endPoint.x) / 2;
+    const centerZ = (drawStartPoint.z + endPoint.z) / 2;
+    const height = parseFloat(document.getElementById('draw-height').value) || 40;
+    const radius = parseFloat(document.getElementById('draw-radius').value) || 15;
+    
+    createObject(currentDrawType, centerX, centerZ, width, depth, height, radius);
+  }
+  
+  isDrawing = false;
+  previewDiv.style.display = 'none';
+  orbitControls.enabled = true;
+  drawStartPoint = null;
+});
+
+renderer.domElement.addEventListener('click', (e) => {
+  if (isDrawing) return;
+  if (transformControls.dragging) return;
+  
+  // Raycast for selection
   const rect = renderer.domElement.getBoundingClientRect();
   const mouse = new THREE.Vector2(
     ((e.clientX - rect.left) / rect.width) * 2 - 1,
     -((e.clientY - rect.top) / rect.height) * 2 + 1
   );
+  
   const raycaster = new THREE.Raycaster();
   raycaster.setFromCamera(mouse, camera);
-  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
-  const targetPoint = new THREE.Vector3();
-  if (raycaster.ray.intersectPlane(plane, targetPoint)) {
-    return { x: Math.round(targetPoint.x / 5) * 5, z: Math.round(targetPoint.z / 5) * 5 };
-  }
-  return null;
-}
-
-renderer.domElement.addEventListener('mousedown', (e) => {
-  if (e.button !== 0) return;
-  if (transformCtrl.dragging) return;
-  const drawModeActive = (currentDrawType === 'rect' || currentDrawType === 'round' || currentDrawType === 'circle');
-  if (drawModeActive) {
-    drawingActive = true;
-    drawStartPoint = getGroundPointFromEvent(e);
-    if (drawStartPoint) {
-      orbit.enabled = false;
-      // Visual preview element
-      if (!previewDiv) {
-        previewDiv = document.createElement('div');
-        previewDiv.style.position = 'absolute';
-        previewDiv.style.border = '2px solid #0A84FF';
-        previewDiv.style.backgroundColor = 'rgba(10,132,255,0.12)';
-        previewDiv.style.pointerEvents = 'none';
-        previewDiv.style.zIndex = '100';
-        document.getElementById('vp').appendChild(previewDiv);
-      }
-      previewDiv.style.display = 'block';
-      previewDiv.style.left = `${e.clientX}px`;
-      previewDiv.style.top = `${e.clientY}px`;
-      previewDiv.style.width = '0px';
-      previewDiv.style.height = '0px';
-    }
+  const intersects = raycaster.intersectObjects(objects);
+  
+  if (intersects.length > 0) {
+    selectObject(intersects[0].object);
+  } else {
+    selectObject(null);
   }
 });
 
-renderer.domElement.addEventListener('mousemove', (e) => {
-  if (drawingActive && drawStartPoint && previewDiv) {
-    const current = getGroundPointFromEvent(e);
-    if (current) {
-      const dx = current.x - drawStartPoint.x;
-      const dz = current.z - drawStartPoint.z;
-      const w = Math.abs(dx);
-      const d = Math.abs(dz);
-      if (w > 5) document.getElementById('dh-w').value = Math.max(20, w);
-      if (d > 5) document.getElementById('dh-d').value = Math.max(20, d);
-      const rect = renderer.domElement.getBoundingClientRect();
-      const startScreen = new THREE.Vector3(drawStartPoint.x, 0, drawStartPoint.z);
-      const endScreen = new THREE.Vector3(current.x, 0, current.z);
-      const projStart = startScreen.project(camera);
-      const projEnd = endScreen.project(camera);
-      const sx = (projStart.x * 0.5 + 0.5) * rect.width;
-      const sy = (-projStart.y * 0.5 + 0.5) * rect.height;
-      const ex = (projEnd.x * 0.5 + 0.5) * rect.width;
-      const ey = (-projEnd.y * 0.5 + 0.5) * rect.height;
-      const left = Math.min(sx, ex);
-      const top = Math.min(sy, ey);
-      previewDiv.style.left = `${left}px`;
-      previewDiv.style.top = `${top}px`;
-      previewDiv.style.width = `${Math.abs(ex - sx)}px`;
-      previewDiv.style.height = `${Math.abs(ey - sy)}px`;
-    }
+renderer.domElement.addEventListener('contextmenu', (e) => e.preventDefault());
+
+// ========== KEYBOARD SHORTCUTS ==========
+window.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  
+  switch(e.key.toLowerCase()) {
+    case 'q': setDrawTool('rect'); break;
+    case 'w': setDrawTool('round'); break;
+    case 'e': setDrawTool('circle'); break;
+    case '1': setTransformMode('select'); break;
+    case '2': setTransformMode('translate'); break;
+    case '3': setTransformMode('rotate'); break;
+    case '4': setTransformMode('scale'); break;
+    case 'delete': deleteSelected(); break;
+    case 'escape': selectObject(null); break;
+    case 'd': duplicateSelected(); break;
+    case 'f': if(selectedObject) { orbitControls.target.copy(selectedObject.position); orbitControls.update(); } break;
   }
 });
 
-renderer.domElement.addEventListener('mouseup', (e) => {
-  if (drawingActive && drawStartPoint) {
-    const endPoint = getGroundPointFromEvent(e);
-    if (endPoint && (Math.abs(endPoint.x - drawStartPoint.x) > 8 || Math.abs(endPoint.z - drawStartPoint.z) > 8)) {
-      let w = Math.abs(endPoint.x - drawStartPoint.x);
-      let d = Math.abs(endPoint.z - drawStartPoint.z);
-      if (w < 20) w = parseFloat(document.getElementById('dh-w').value) || 80;
-      if (d < 20) d = parseFloat(document.getElementById('dh-d').value) || 60;
-      const centerX = (drawStartPoint.x + endPoint.x) / 2;
-      const centerZ = (drawStartPoint.z + endPoint.z) / 2;
-      const extrHeight = parseFloat(document.getElementById('dh-h').value) || 40;
-      const radiusVal = parseFloat(document.getElementById('dh-r').value) || 15;
-      createNewObject(currentDrawType, centerX, centerZ, w, d, extrHeight, radiusVal);
-    }
-    drawingActive = false;
-    if (previewDiv) previewDiv.style.display = 'none';
-    orbit.enabled = true;
-    drawStartPoint = null;
-  }
+// ========== EVENT LISTENERS ==========
+document.getElementById('tool-rect').onclick = () => setDrawTool('rect');
+document.getElementById('tool-round').onclick = () => setDrawTool('round');
+document.getElementById('tool-circle').onclick = () => setDrawTool('circle');
+document.getElementById('tool-select').onclick = () => setTransformMode('select');
+document.getElementById('tool-move').onclick = () => setTransformMode('translate');
+document.getElementById('tool-rotate').onclick = () => setTransformMode('rotate');
+document.getElementById('tool-scale').onclick = () => setTransformMode('scale');
+document.getElementById('tool-duplicate').onclick = () => duplicateSelected();
+document.getElementById('tool-delete').onclick = () => deleteSelected();
+document.getElementById('tool-clear').onclick = () => clearAll();
+
+document.querySelectorAll('.transform-btn').forEach(btn => {
+  btn.onclick = () => setTransformMode(btn.dataset.mode);
 });
 
-// --- Toolbar & Mode Switching ---
-function setDrawType(type) {
-  currentDrawType = type;
-  document.querySelectorAll('#tb-rect, #tb-round, #tb-circle').forEach(btn => btn.classList.remove('active'));
-  if (type === 'rect') document.getElementById('tb-rect').classList.add('active');
-  if (type === 'round') document.getElementById('tb-round').classList.add('active');
-  if (type === 'circle') document.getElementById('tb-circle').classList.add('active');
-  document.getElementById('dh-r-wrap').style.display = type === 'round' ? 'flex' : 'none';
-  document.getElementById('si-tool').innerText = type === 'rect' ? 'Rectangle' : (type === 'round' ? 'Rounded' : 'Circle');
-  setStatus(`${document.getElementById('si-tool').innerText} mode — drag on canvas`);
-}
+document.getElementById('apply-extrude').onclick = () => {
+  const height = parseFloat(document.getElementById('draw-height').value);
+  extrudeSelected(height);
+};
 
-function setTransformMode(mode) {
-  if (!selectedObj) return;
-  if (mode === 'move') transformCtrl.setMode('translate');
-  else if (mode === 'rot') transformCtrl.setMode('rotate');
-  else if (mode === 'scale') transformCtrl.setMode('scale');
-  else transformCtrl.setMode('translate');
-  document.querySelectorAll('.thbtn').forEach(btn => btn.classList.remove('active'));
-  if (mode === 'move') document.getElementById('th-move').classList.add('active');
-  else if (mode === 'rot') document.getElementById('th-rot').classList.add('active');
-  else if (mode === 'scale') document.getElementById('th-scale').classList.add('active');
-  else document.getElementById('th-sel').classList.add('active');
-}
+document.getElementById('apply-position').onclick = () => {
+  if (selectedObject) {
+    selectedObject.position.set(
+      parseFloat(document.getElementById('pos-x').value) || 0,
+      parseFloat(document.getElementById('pos-y').value) || 0,
+      parseFloat(document.getElementById('pos-z').value) || 0
+    );
+    updatePropertyPanel();
+    setStatus('Position updated');
+  }
+};
 
-// Event Bindings
-document.getElementById('tb-rect').onclick = () => setDrawType('rect');
-document.getElementById('tb-round').onclick = () => setDrawType('round');
-document.getElementById('tb-circle').onclick = () => setDrawType('circle');
-document.getElementById('tb-sel').onclick = () => setTransformMode('select');
-document.getElementById('tb-move').onclick = () => setTransformMode('move');
-document.getElementById('tb-rot').onclick = () => setTransformMode('rot');
-document.getElementById('tb-scale').onclick = () => setTransformMode('scale');
-document.getElementById('th-sel').onclick = () => setTransformMode('select');
-document.getElementById('th-move').onclick = () => setTransformMode('move');
-document.getElementById('th-rot').onclick = () => setTransformMode('rot');
-document.getElementById('th-scale').onclick = () => setTransformMode('scale');
-document.getElementById('tb-del').onclick = () => deleteObject(selectedObj);
-document.getElementById('tb-dup').onclick = () => duplicateSelected();
-document.getElementById('op-dup').onclick = () => duplicateSelected();
-document.getElementById('op-del').onclick = () => deleteObject(selectedObj);
-document.getElementById('op-snap').onclick = () => { if(selectedObj){ selectedObj.position.y = 0; updateUI(); setStatus("Snapped to ground"); } };
-document.getElementById('ap-pos').onclick = () => { if(selectedObj){ selectedObj.position.set(parseFloat(document.getElementById('p-x').value)||0, parseFloat(document.getElementById('p-y').value)||0, parseFloat(document.getElementById('p-z').value)||0); updateUI(); } };
-document.getElementById('ap-rot').onclick = () => { if(selectedObj){ selectedObj.rotation.set( (parseFloat(document.getElementById('r-x').value)||0)*Math.PI/180, (parseFloat(document.getElementById('r-y').value)||0)*Math.PI/180, (parseFloat(document.getElementById('r-z').value)||0)*Math.PI/180 ); updateUI(); } };
-document.getElementById('ap-dim').onclick = () => { if(selectedObj){ rebuildSelectedGeometry( parseFloat(document.getElementById('d-w').value)||100, parseFloat(document.getElementById('d-d').value)||80, parseFloat(document.getElementById('d-h').value)||40, parseFloat(document.getElementById('d-r').value)||15 ); } };
-document.getElementById('ap-ext').onclick = () => { if(selectedObj){ extrudeSelected(parseFloat(document.getElementById('ext-sl').value)); } };
-document.getElementById('dh-ext').onclick = () => { if(selectedObj){ extrudeSelected(parseFloat(document.getElementById('dh-h').value)); } };
-document.getElementById('ext-sl').oninput = (e) => { document.getElementById('ext-sv').innerText = e.target.value; };
-document.getElementById('ap-mat').onclick = () => { if(selectedObj){ const col = document.getElementById('col-pick').value; selectedObj.material.color.set(col); selectedObj.userData.baseColor = parseInt(col.slice(1),16); updateUI(); setStatus("Material updated"); } };
+document.getElementById('apply-rotation').onclick = () => {
+  if (selectedObject) {
+    selectedObject.rotation.set(
+      (parseFloat(document.getElementById('rot-x').value) || 0) * Math.PI / 180,
+      (parseFloat(document.getElementById('rot-y').value) || 0) * Math.PI / 180,
+      (parseFloat(document.getElementById('rot-z').value) || 0) * Math.PI / 180
+    );
+    updatePropertyPanel();
+    setStatus('Rotation updated');
+  }
+};
 
-// Create initial demo objects
-createNewObject('rect', -110, 70, 90, 70, 42);
-createNewObject('round', 95, -60, 110, 95, 55, 18);
-createNewObject('circle', 20, 140, 75, 75, 38);
-selectObject(null);
-setDrawType('rect');
-setTransformMode('select');
+document.getElementById('apply-dimensions').onclick = () => {
+  if (selectedObject) {
+    rebuildDimensions(
+      parseFloat(document.getElementById('dim-w').value) || 80,
+      parseFloat(document.getElementById('dim-d').value) || 80,
+      parseFloat(document.getElementById('dim-h').value) || 40,
+      parseFloat(document.getElementById('dim-r').value) || 15
+    );
+  }
+};
 
-// Animation loop
-function animate() {
-  requestAnimationFrame(animate);
-  orbit.update();
-  renderer.render(scene, camera);
-}
-animate();
+document.getElementById('apply-color').onclick = () => {
+  if (selectedObject) {
+    const color = document.getElementById('color-picker').value;
+    selectedObject.material.color.set(color);
+    selectedObject.userData.originalColor = parseInt(color.slice(1), 16);
+    setStatus('Color updated');
+  }
+};
 
+document.getElementById('op-duplicate').onclick = () => duplicateSelected();
+document.getElementById('op-snap-ground').onclick = () => {
+  if (selectedObject) {
+    selectedObject.position.y = 0;
+    updatePropertyPanel();
+    setStatus('Snapped to ground');
+  }
+};
+document.getElementById('op-center').onclick = () => {
+  if (selectedObject) {
+    selectedObject.position.x = 0;
+    selectedObject.position.z = 0;
+    updatePropertyPanel();
+    setStatus('Centered on grid');
+  }
+};
+
+// ========== RESIZE HANDLER ==========
 window.addEventListener('resize', () => {
-  const w = vp.clientWidth, h = vp.clientHeight;
-  renderer.setSize(w, h);
-  camera.aspect = w / h;
+  const width = viewport.clientWidth;
+  const height = viewport.clientHeight;
+  renderer.setSize(width, height);
+  camera.aspect = width / height;
   camera.updateProjectionMatrix();
 });
-setStatus("AetherCAD Ready — Click & Drag to draw shapes | Click object to select | Gizmo for transform");
-refreshObjectList();
+
+// ========== ANIMATION LOOP ==========
+function animate() {
+  requestAnimationFrame(animate);
+  orbitControls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// ========== INITIAL DEMO OBJECTS ==========
+createObject('rect', -100, 80, 90, 70, 45);
+createObject('round', 100, -70, 100, 85, 50, 18);
+createObject('circle', 0, 130, 70, 70, 35);
+selectObject(null);
+setDrawTool('rect');
+
+setStatus('AetherCAD ready — Click and drag to draw | Click objects to select | Mouse drag to rotate camera');
+
+// Initial resize
+setTimeout(() => {
+  const width = viewport.clientWidth;
+  const height = viewport.clientHeight;
+  renderer.setSize(width, height);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+}, 100);
 </script>
 </body>
 </html>
