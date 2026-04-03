@@ -1,0 +1,94 @@
+{% extends "admin_panel/base_admin.html" %}
+{% block title %}Users — NexaFlow Admin{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">Nexa<span>Flow</span></div>
+      <div class="s-badge">Admin Panel</div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Overview</div>
+      <a href="{% url 'admin_panel:dashboard' %}"><span class="nav-icon">📊</span> Dashboard</a>
+      <a href="{% url 'admin_panel:users' %}" class="active"><span class="nav-icon">👥</span> Users</a>
+      <a href="{% url 'admin_panel:services' %}"><span class="nav-icon">⚡</span> Services</a>
+      <div class="s-nav-label">Logs</div>
+      <a href="{% url 'admin_panel:webhooks' %}"><span class="nav-icon">🔔</span> Webhook Logs</a>
+      <a href="/django-admin/"><span class="nav-icon">⚙️</span> Django Admin</a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:logout' %}"><span class="nav-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">Users</span>
+      <span style="font-size:.8rem;color:var(--muted)">{{ users.count }} total</span>
+    </div>
+
+    <div class="page-content">
+      <div class="stat-card">
+        <!-- Filters -->
+        <form method="get" class="filter-row">
+          <input type="text" name="q" value="{{ query }}" placeholder="Search email or username…"
+                 class="input-field" style="flex:1;min-width:200px">
+          <select name="plan" class="input-field">
+            <option value="">All plans</option>
+            {% for val, label in plan_choices %}
+            <option value="{{ val }}" {% if plan_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <select name="status" class="input-field">
+            <option value="">All statuses</option>
+            {% for val, label in status_choices %}
+            <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary" style="padding:9px 18px">Filter</button>
+          <a href="{% url 'admin_panel:users' %}" class="btn btn-outline" style="padding:9px 14px">Clear</a>
+        </form>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Plan</th>
+                <th>Status</th>
+                <th>Gumroad ID</th>
+                <th>Joined</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for u in users %}
+              <tr>
+                <td>{{ u.email }}</td>
+                <td style="color:var(--muted)">{{ u.username }}</td>
+                <td>
+                  <span style="background:rgba(123,97,255,.12);border:1px solid rgba(123,97,255,.25);color:#A78BFA;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:100px">
+                    {{ u.get_plan_display }}
+                  </span>
+                </td>
+                <td><span class="badge badge-{{ u.status }}">{{ u.get_status_display }}</span></td>
+                <td style="color:var(--muted);font-size:.78rem">{{ u.gumroad_sale_id|default:"—"|truncatechars:18 }}</td>
+                <td style="color:var(--muted)">{{ u.created_at|date:"d M Y" }}</td>
+                <td>
+                  <a href="{% url 'admin_panel:user_detail' u.id %}" style="color:var(--accent);font-size:.82rem;font-weight:600">
+                    Edit →
+                  </a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:40px">No users found.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

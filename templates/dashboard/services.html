@@ -1,0 +1,67 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Services — NexaFlow{% endblock %}
+
+{% block content %}
+<div class="layout">
+  <aside class="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">Nexa<span>Flow</span></div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-nav-label">Main</div>
+      <a href="{% url 'dashboard:home' %}"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a href="{% url 'services:list' %}" class="active"><span class="nav-icon">⚡</span> Services</a>
+      <div class="s-nav-label">Account</div>
+      <a href="{% url 'accounts:profile' %}"><span class="nav-icon">👤</span> Profile</a>
+      <a href="{% url 'accounts:logout' %}"><span class="nav-icon">🚪</span> Logout</a>
+    </nav>
+    <div class="s-user">
+      <div class="s-user-inner">
+        <div class="s-avatar">{{ request.user.username|first|upper }}</div>
+        <div>
+          <div class="s-user-name">{{ request.user.username }}</div>
+          <div class="s-user-plan">{{ request.user.get_plan_display }} Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title">My Services</span>
+      <span style="font-size:.8rem;color:#94A3B8">{{ services|length }} available</span>
+    </div>
+
+    <div class="page-content">
+      {% if services %}
+      <div class="svc-grid">
+        {% for svc in services %}
+        <div class="svc-card" {% if svc.url %}onclick="window.open('{{ svc.url }}','_blank')" style="cursor:pointer"{% endif %}>
+          <div class="svc-icon">{{ svc.icon }}</div>
+          <div class="svc-name">{{ svc.name }}</div>
+          <div class="svc-desc">{{ svc.description }}</div>
+          {% if svc.category %}
+          <span class="svc-cat">{{ svc.category.name }}</span>
+          {% endif %}
+          {% if svc.url %}
+          <div style="margin-top:12px">
+            <a href="{{ svc.url }}" target="_blank" 
+               style="display:inline-flex;align-items:center;gap:6px;background:#EEF2FF;color:#4F46E5;padding:6px 12px;border-radius:6px;font-size:.78rem;font-weight:700">
+              Open →
+            </a>
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div style="background:#fff;border:1px solid #E2E8F0;border-radius:16px;padding:60px;text-align:center">
+        <div style="font-size:3rem;margin-bottom:16px">⚡</div>
+        <h3 style="font-family:var(--font-head);font-size:1.2rem;font-weight:700;color:#1A2332;margin-bottom:8px">No services available</h3>
+        <p style="color:#94A3B8;font-size:.9rem">Your services will appear here once your subscription is activated.</p>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+{% endblock %}
