@@ -3,33 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>AetherCAD — 2D Design Studio</title>
+<title>AetherCAD — Fusion 360 Style Design Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg: #0F0F0F;
-  --bg2: #161616;
-  --bg3: #1E1E1E;
-  --bg4: #2C2C2C;
-  --panel: #141414;
-  --border: #2A2A2A;
-  --border2: #3A3A3A;
+  --bg: #0C0C0C;
+  --bg2: #1A1A1A;
+  --bg3: #252525;
+  --bg4: #333333;
+  --panel: #151515;
+  --border: #2C2C2C;
+  --border2: #3D3D3D;
   --accent: #0A84FF;
   --accent2: #409CFF;
-  --accent3: #5E9CFF;
   --orange: #FF9F0A;
   --green: #32D74B;
   --red: #FF453A;
-  --text: #ECECEC;
+  --text: #E5E5E5;
   --text2: #98989D;
   --text3: #636366;
   --white: #FFFFFF;
-  --header-h: 40px;
-  --toolbar-h: 72px;
+  --header-h: 38px;
+  --toolbar-h: 88px;
   --statusbar-h: 28px;
-  --left-w: 260px;
-  --right-w: 280px;
+  --left-w: 280px;
+  --right-w: 300px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   color: var(--text);
@@ -46,17 +45,17 @@ input{font-family:'JetBrains Mono',monospace;}
 /* Menu Bar */
 #menubar{
   height:var(--header-h);
-  background:rgba(22,22,22,0.98);
+  background:rgba(26,26,26,0.98);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
-  padding:0 16px;
-  gap:4px;
+  padding:0 12px;
+  gap:2px;
   flex-shrink:0;
 }
 .app-logo{
-  font-size:15px;font-weight:600;
+  font-size:14px;font-weight:600;
   padding:0 16px 0 4px;
   margin-right:8px;
   border-right:1px solid var(--border);
@@ -67,32 +66,33 @@ input{font-family:'JetBrains Mono',monospace;}
 }
 .app-logo span{background:linear-gradient(135deg,#0A84FF,#5E9CFF);-webkit-background-clip:text;background-clip:text;color:transparent;}
 .menu-item{
-  padding:6px 12px;border-radius:6px;
-  font-size:13px;font-weight:500;color:var(--text2);
+  padding:5px 12px;border-radius:6px;
+  font-size:12px;font-weight:500;color:var(--text2);
   transition:0.1s;
 }
 .menu-item:hover{background:var(--bg4);color:var(--white);}
 #menubar-right{margin-left:auto;display:flex;align-items:center;gap:12px;}
 .mb-badge{
-  font-size:11px;color:var(--text2);
-  padding:4px 10px;border-radius:6px;
+  font-size:10px;color:var(--text2);
+  padding:3px 10px;border-radius:6px;
   background:var(--bg3);border:1px solid var(--border);
 }
 
-/* Main Toolbar */
+/* Toolbar */
 #main-toolbar{
   height:var(--toolbar-h);
-  background:rgba(22,22,22,0.96);
+  background:rgba(26,26,26,0.96);
   border-bottom:1px solid var(--border);
   display:flex;
   align-items:center;
-  padding:0 24px;
-  gap:16px;
+  padding:0 20px;
+  gap:20px;
   flex-shrink:0;
+  overflow-x:auto;
 }
 .tool-group{
   display:flex;
-  gap:8px;
+  gap:6px;
   padding:0 12px;
   border-right:1px solid var(--border);
 }
@@ -102,27 +102,27 @@ input{font-family:'JetBrains Mono',monospace;}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  gap:6px;
-  padding:8px 20px;
+  gap:5px;
+  padding:6px 16px;
   background:var(--bg3);
   border:1px solid var(--border);
   border-radius:10px;
   color:var(--text);
-  font-size:12px;
+  font-size:11px;
   font-weight:500;
-  min-width:80px;
+  min-width:70px;
   height:56px;
   transition:0.1s;
 }
 .tool-btn:hover{background:var(--bg4);border-color:var(--border2);transform:translateY(-1px);}
-.tool-btn.active{background:rgba(10,132,255,0.15);border-color:var(--accent);color:var(--accent2);}
-.tool-icon{font-size:22px;}
-.tool-label{font-size:11px;}
+.tool-btn.active{background:rgba(10,132,255,0.2);border-color:var(--accent);color:var(--accent2);}
+.tool-icon{font-size:20px;}
+.tool-label{font-size:10px;}
 
 /* Main Area */
 #main{display:flex;flex:1;overflow:hidden;}
 
-/* Left Panel - Layers/Objects */
+/* Left Panel */
 #left-panel{
   width:var(--left-w);
   background:var(--panel);
@@ -135,7 +135,7 @@ input{font-family:'JetBrains Mono',monospace;}
   padding:12px 16px;
   border-bottom:1px solid var(--border);
   font-weight:600;
-  font-size:13px;
+  font-size:12px;
   display:flex;
   align-items:center;
   gap:8px;
@@ -159,21 +159,21 @@ input{font-family:'JetBrains Mono',monospace;}
 }
 .object-item:hover{background:var(--bg4);border-color:var(--border2);}
 .object-item.selected{background:rgba(10,132,255,0.2);border-color:var(--accent);}
-.object-icon{font-size:18px;}
+.object-icon{font-size:16px;}
 .object-info{flex:1;}
-.object-name{font-size:12px;font-weight:500;}
-.object-type{font-size:10px;color:var(--text3);}
+.object-name{font-size:11px;font-weight:500;}
+.object-type{font-size:9px;color:var(--text3);}
 .object-delete{
   opacity:0;
-  padding:4px 8px;
-  border-radius:6px;
+  padding:3px 7px;
+  border-radius:5px;
   color:var(--red);
-  font-size:14px;
+  font-size:12px;
 }
 .object-item:hover .object-delete{opacity:1;}
 .object-delete:hover{background:rgba(255,69,58,0.2);}
 
-/* Canvas Area */
+/* Canvas 3D */
 #canvas-area{
   flex:1;
   position:relative;
@@ -184,39 +184,38 @@ input{font-family:'JetBrains Mono',monospace;}
   display:block;
   width:100%;
   height:100%;
-  cursor:crosshair;
 }
 .canvas-corner{
   position:absolute;
-  font-size:10px;
-  color:rgba(255,255,255,0.3);
+  font-size:9px;
+  color:rgba(255,255,255,0.25);
   pointer-events:none;
   font-family:'JetBrains Mono',monospace;
 }
-#corner-tl{top:14px;left:16px;}
-#corner-tr{top:14px;right:16px;}
-#corner-bl{bottom:42px;left:16px;}
+#corner-tl{top:12px;left:16px;}
+#corner-tr{top:12px;right:16px;}
+#corner-bl{bottom:38px;left:16px;}
 
 /* Drawing HUD */
 #drawing-hud{
   position:absolute;
-  bottom:20px;
+  bottom:16px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(22,22,22,0.95);
+  background:rgba(26,26,26,0.95);
   backdrop-filter:blur(12px);
   border:1px solid var(--border2);
   border-radius:12px;
   display:flex;
   padding:8px 16px;
-  gap:20px;
+  gap:16px;
   z-index:20;
 }
 .hud-item{
   display:flex;
   align-items:center;
   gap:8px;
-  font-size:12px;
+  font-size:11px;
 }
 .hud-item label{color:var(--text2);}
 .hud-item input{
@@ -228,30 +227,47 @@ input{font-family:'JetBrains Mono',monospace;}
   width:70px;
 }
 .hud-item input:focus{outline:none;border-color:var(--accent);}
-#apply-transform{
+.hud-btn{
   background:var(--accent);
-  border:none;
   padding:4px 16px;
   border-radius:6px;
   color:white;
   font-weight:500;
+  font-size:11px;
 }
 
-/* Right Panel - Properties */
+/* Curve Drawing Status */
+#curve-status{
+  position:absolute;
+  top:50px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(10,132,255,0.9);
+  backdrop-filter:blur(8px);
+  padding:6px 16px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:500;
+  color:white;
+  z-index:20;
+  pointer-events:none;
+}
+
+/* Right Panel */
 #right-panel{
   width:var(--right-w);
   background:var(--panel);
   border-left:1px solid var(--border);
   display:flex;
   flex-direction:column;
-  overflow:hidden;
+  overflow-y:auto;
 }
 .prop-section{
   border-bottom:1px solid var(--border);
   padding:12px 16px;
 }
 .prop-section-title{
-  font-size:11px;
+  font-size:10px;
   font-weight:600;
   color:var(--text2);
   text-transform:uppercase;
@@ -265,18 +281,18 @@ input{font-family:'JetBrains Mono',monospace;}
   margin-bottom:10px;
 }
 .prop-row label{
-  width:60px;
+  width:55px;
   color:var(--text2);
-  font-size:12px;
+  font-size:11px;
 }
 .prop-row input{
   flex:1;
   background:var(--bg3);
   border:1px solid var(--border);
   border-radius:6px;
-  padding:6px 8px;
+  padding:5px 8px;
   color:var(--text);
-  font-size:12px;
+  font-size:11px;
 }
 .prop-row input:focus{outline:none;border-color:var(--accent);}
 .prop-btn{
@@ -286,7 +302,7 @@ input{font-family:'JetBrains Mono',monospace;}
   border-radius:8px;
   padding:8px;
   color:var(--text);
-  font-size:12px;
+  font-size:11px;
   font-weight:500;
   margin-top:8px;
   transition:0.1s;
@@ -295,26 +311,21 @@ input{font-family:'JetBrains Mono',monospace;}
 .prop-btn.primary{background:var(--accent);border-color:var(--accent);color:white;}
 .prop-btn.danger{background:rgba(255,69,58,0.1);border-color:var(--red);color:var(--red);}
 .prop-btn.danger:hover{background:var(--red);color:white;}
-.color-preview{
-  width:40px;
-  height:32px;
-  border-radius:6px;
-  border:1px solid var(--border);
-}
+.color-preview{width:36px;height:28px;border-radius:6px;border:1px solid var(--border);}
 
 /* Status Bar */
 #statusbar{
   height:var(--statusbar-h);
-  background:rgba(22,22,22,0.95);
+  background:rgba(26,26,26,0.95);
   border-top:1px solid var(--border);
   display:flex;
   align-items:center;
   padding:0 16px;
-  gap:24px;
+  gap:20px;
   flex-shrink:0;
-  font-size:11px;
+  font-size:10px;
 }
-.status-item{color:var(--text3);display:flex;align-items:center;gap:6px;}
+.status-item{color:var(--text3);display:flex;align-items:center;gap:5px;}
 .status-item b{color:var(--text2);}
 #status-coords{margin-left:auto;font-family:'JetBrains Mono',monospace;}
 
@@ -325,116 +336,70 @@ input{font-family:'JetBrains Mono',monospace;}
 <div id="wrapper">
 <div id="menubar">
   <div class="app-logo">Aether<span>CAD</span></div>
-  <button class="menu-item">File</button>
-  <button class="menu-item">Edit</button>
-  <button class="menu-item">View</button>
+  <button class="menu-item" id="menu-file">File</button>
+  <button class="menu-item" id="menu-edit">Edit</button>
+  <button class="menu-item" id="menu-view">View</button>
   <div id="menubar-right">
-    <div class="mb-badge">2D DESIGN WORKSPACE</div>
+    <div class="mb-badge">FUSION 360 STYLE</div>
     <div class="mb-badge" style="color:var(--green);">● READY</div>
   </div>
 </div>
 
 <div id="main-toolbar">
   <div class="tool-group">
-    <button class="tool-btn" id="tool-rectangle">
-      <span class="tool-icon">⬛</span>
-      <span class="tool-label">Rectangle</span>
-    </button>
-    <button class="tool-btn" id="tool-curve-rect">
-      <span class="tool-icon">⭔</span>
-      <span class="tool-label">Curve Rect</span>
-    </button>
-    <button class="tool-btn" id="tool-circle">
-      <span class="tool-icon">●</span>
-      <span class="tool-label">Circle</span>
-    </button>
+    <button class="tool-btn" id="tool-rectangle"><span class="tool-icon">⬛</span><span class="tool-label">Rectangle</span></button>
+    <button class="tool-btn" id="tool-curve-rect"><span class="tool-icon">⭔</span><span class="tool-label">Rounded Rect</span></button>
+    <button class="tool-btn" id="tool-circle"><span class="tool-icon">●</span><span class="tool-label">Circle</span></button>
+    <button class="tool-btn" id="tool-polygon"><span class="tool-icon">🔷</span><span class="tool-label">Curve/Polygon</span></button>
   </div>
   <div class="tool-group">
-    <button class="tool-btn" id="tool-select">
-      <span class="tool-icon">🖱</span>
-      <span class="tool-label">Select</span>
-    </button>
+    <button class="tool-btn" id="tool-select"><span class="tool-icon">🖱</span><span class="tool-label">Select</span></button>
+    <button class="tool-btn" id="tool-extrude"><span class="tool-icon">📤</span><span class="tool-label">Extrude</span></button>
   </div>
   <div class="tool-group">
-    <button class="tool-btn" id="action-delete">
-      <span class="tool-icon">🗑</span>
-      <span class="tool-label">Delete</span>
-    </button>
-    <button class="tool-btn" id="action-clear">
-      <span class="tool-icon">✕</span>
-      <span class="tool-label">Clear All</span>
-    </button>
+    <button class="tool-btn" id="action-delete"><span class="tool-icon">🗑</span><span class="tool-label">Delete</span></button>
+    <button class="tool-btn" id="action-clear"><span class="tool-icon">✕</span><span class="tool-label">Clear All</span></button>
   </div>
 </div>
 
 <div id="main">
   <div id="left-panel">
-    <div class="panel-header">
-      <span>📋</span> Objects
-      <span style="flex:1"></span>
-      <span id="object-count" style="color:var(--text3);">0</span>
-    </div>
+    <div class="panel-header"><span>📦</span> Bodies <span style="flex:1"></span><span id="object-count">0</span></div>
     <div id="objects-list"></div>
   </div>
 
   <div id="canvas-area">
     <canvas id="draw-canvas"></canvas>
-    <div class="canvas-corner" id="corner-tl">AetherCAD · 2D Studio</div>
-    <div class="canvas-corner" id="corner-tr">Grid: 20px</div>
-    <div class="canvas-corner" id="corner-bl">Click to draw · Drag to move · Select to edit</div>
-    
+    <div class="canvas-corner" id="corner-tl">AetherCAD · 3D Design Studio</div>
+    <div class="canvas-corner" id="corner-tr">Isometric View</div>
+    <div class="canvas-corner" id="corner-bl">Click to draw · Select to edit · Extrude to 3D</div>
+    <div id="curve-status" style="display:none;">✏️ Click points to create shape — double-click or press Enter to close</div>
     <div id="drawing-hud">
-      <div class="hud-item">
-        <label>Width:</label>
-        <input type="number" id="hud-w" step="1" value="100">
-      </div>
-      <div class="hud-item">
-        <label>Height:</label>
-        <input type="number" id="hud-h" step="1" value="100">
-      </div>
-      <div class="hud-item" id="curve-radius-group">
-        <label>Radius:</label>
-        <input type="number" id="hud-r" step="5" value="20">
-      </div>
-      <button id="apply-transform">Apply Size</button>
+      <div class="hud-item"><label>W:</label><input type="number" id="hud-w" step="5" value="100"></div>
+      <div class="hud-item"><label>H:</label><input type="number" id="hud-h" step="5" value="100"></div>
+      <div class="hud-item" id="radius-group"><label>R:</label><input type="number" id="hud-r" step="5" value="20"></div>
+      <div class="hud-item"><label>Extrude H:</label><input type="number" id="extrude-height" step="10" value="50"></div>
+      <button class="hud-btn" id="apply-extrude">Extrude Selected</button>
     </div>
   </div>
 
   <div id="right-panel">
-    <div class="prop-section">
-      <div class="prop-section-title">📐 Selected Object</div>
-      <div id="selected-info" style="color:var(--text3); font-size:12px;">No object selected</div>
-    </div>
-    <div class="prop-section">
-      <div class="prop-section-title">📍 Position</div>
+    <div class="prop-section"><div class="prop-section-title">📐 Selected</div><div id="selected-info" style="color:var(--text3); font-size:11px;">None</div></div>
+    <div class="prop-section"><div class="prop-section-title">📍 Transform</div>
       <div class="prop-row"><label>X:</label><input type="number" id="prop-x" step="1"></div>
       <div class="prop-row"><label>Y:</label><input type="number" id="prop-y" step="1"></div>
+      <div class="prop-row"><label>Z:</label><input type="number" id="prop-z" step="1" value="0"></div>
       <button class="prop-btn" id="apply-position">Apply Position</button>
     </div>
-    <div class="prop-section">
-      <div class="prop-section-title">📏 Size</div>
-      <div class="prop-row"><label>Width:</label><input type="number" id="prop-w" step="1"></div>
-      <div class="prop-row"><label>Height:</label><input type="number" id="prop-h" step="1"></div>
-      <div class="prop-row" id="prop-radius-row"><label>Radius:</label><input type="number" id="prop-r" step="1"></div>
+    <div class="prop-section"><div class="prop-section-title">📏 Size</div>
+      <div class="prop-row"><label>W:</label><input type="number" id="prop-w" step="1"></div>
+      <div class="prop-row"><label>H:</label><input type="number" id="prop-h" step="1"></div>
+      <div class="prop-row" id="prop-radius-row"><label>R:</label><input type="number" id="prop-r" step="1"></div>
       <button class="prop-btn" id="apply-size">Apply Size</button>
     </div>
-    <div class="prop-section">
-      <div class="prop-section-title">🎨 Style</div>
-      <div class="prop-row">
-        <label>Fill:</label>
-        <input type="color" id="prop-fill" value="#4a7ac8">
-        <div class="color-preview" id="fill-preview" style="background:#4a7ac8;"></div>
-      </div>
-      <div class="prop-row">
-        <label>Stroke:</label>
-        <input type="color" id="prop-stroke" value="#ffffff">
-        <div class="color-preview" id="stroke-preview" style="background:#ffffff;"></div>
-      </div>
-      <div class="prop-row">
-        <label>Stroke W:</label>
-        <input type="number" id="prop-stroke-width" step="1" value="2" min="1" max="10">
-      </div>
-      <button class="prop-btn" id="apply-style">Apply Style</button>
+    <div class="prop-section"><div class="prop-section-title">🎨 Style</div>
+      <div class="prop-row"><label>Fill:</label><input type="color" id="prop-fill" value="#4a7ac8"><div class="color-preview" id="fill-preview" style="background:#4a7ac8;"></div></div>
+      <button class="prop-btn" id="apply-style">Apply Color</button>
     </div>
     <div class="prop-section">
       <button class="prop-btn danger" id="delete-selected">Delete Selected</button>
@@ -444,215 +409,239 @@ input{font-family:'JetBrains Mono',monospace;}
 </div>
 
 <div id="statusbar">
-  <div class="status-item" id="status-message">Ready — Select a shape to draw</div>
+  <div class="status-item" id="status-message">Ready — Select a shape tool</div>
   <div class="status-item"><b>Objects:</b> <span id="status-count">0</span></div>
   <div class="status-item"><b>Tool:</b> <span id="status-tool">Rectangle</span></div>
-  <div class="status-item" id="status-coords"><b>Cursor:</b> 0, 0</div>
+  <div class="status-item" id="status-coords"><b>Pos:</b> 0, 0, 0</div>
 </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
+  // --- Three.js Setup ---
   const canvas = document.getElementById('draw-canvas');
-  const ctx = canvas.getContext('2d');
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0A0A0A);
+  scene.fog = new THREE.FogExp2(0x0A0A0A, 0.003);
   
-  let objects = [];
+  const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.set(15, 12, 18);
+  camera.lookAt(0, 0, 0);
+  
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  
+  function resize() {
+    const w = canvas.parentElement.clientWidth;
+    const h = canvas.parentElement.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0x404060);
+  scene.add(ambientLight);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  dirLight.position.set(5, 10, 7);
+  scene.add(dirLight);
+  const fillLight = new THREE.PointLight(0x4466cc, 0.5);
+  fillLight.position.set(-3, 5, 4);
+  scene.add(fillLight);
+  const backLight = new THREE.PointLight(0xffaa66, 0.4);
+  backLight.position.set(0, 3, -8);
+  scene.add(backLight);
+  
+  // Grid helper
+  const gridHelper = new THREE.GridHelper(40, 40, 0x444444, 0x222222);
+  gridHelper.position.y = -0.5;
+  scene.add(gridHelper);
+  
+  // Axes helper
+  const axesHelper = new THREE.AxesHelper(8);
+  scene.add(axesHelper);
+  
+  // Data
+  let objects = []; // 3D meshes
   let selectedIndex = -1;
-  let currentTool = 'rectangle'; // rectangle, curve-rect, circle, select
-  let isDragging = false;
-  let dragStart = { x: 0, y: 0 };
-  let dragObject = false;
-  let dragOffset = { x: 0, y: 0 };
+  let currentTool = 'rectangle';
+  let isDrawing = false;
+  let drawStart = { x: 0, y: 0 };
+  let polygonPoints = [];
+  let isDrawingPolygon = false;
   let objectCounter = 0;
   
-  // Grid settings
-  const GRID_SIZE = 20;
-  let panX = 0, panY = 0;
-  let scale = 1;
+  // Camera controls
   let isPanning = false;
   let panStart = { x: 0, y: 0 };
+  let cameraTarget = new THREE.Vector3(0, 0, 0);
   
-  // Resize canvas
-  function resizeCanvas() {
-    const container = document.getElementById('canvas-area');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-    render();
+  // Mouse raycasting
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+  
+  function screenToWorldPlane(screenX, screenY) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((screenX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((screenY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    const point = new THREE.Vector3();
+    raycaster.ray.intersectPlane(plane, point);
+    return { x: Math.round(point.x / 5) * 5, z: Math.round(point.z / 5) * 5 };
   }
   
-  // Snap to grid
-  function snapToGrid(val) {
-    return Math.round(val / GRID_SIZE) * GRID_SIZE;
-  }
-  
-  // Convert screen to world coordinates
-  function screenToWorld(screenX, screenY) {
-    return {
-      x: (screenX - panX) / scale,
-      y: (screenY - panY) / scale
-    };
-  }
-  
-  function worldToScreen(worldX, worldY) {
-    return {
-      x: worldX * scale + panX,
-      y: worldY * scale + panY
-    };
-  }
-  
-  // Draw a rectangle with optional rounded corners
-  function drawShape(ctx, obj, isSelected = false) {
-    ctx.save();
-    ctx.translate(obj.x, obj.y);
-    
-    ctx.beginPath();
-    if (obj.type === 'circle') {
-      ctx.ellipse(0, 0, obj.width/2, obj.height/2, 0, 0, Math.PI * 2);
-    } else if (obj.type === 'curve-rect') {
-      const radius = obj.radius || 20;
-      ctx.moveTo(radius, 0);
-      ctx.lineTo(obj.width - radius, 0);
-      ctx.quadraticCurveTo(obj.width, 0, obj.width, radius);
-      ctx.lineTo(obj.width, obj.height - radius);
-      ctx.quadraticCurveTo(obj.width, obj.height, obj.width - radius, obj.height);
-      ctx.lineTo(radius, obj.height);
-      ctx.quadraticCurveTo(0, obj.height, 0, obj.height - radius);
-      ctx.lineTo(0, radius);
-      ctx.quadraticCurveTo(0, 0, radius, 0);
+  function createShape(type, x, z, w, h, radius = 20) {
+    let shape;
+    if (type === 'circle') {
+      const curve = new THREE.EllipseCurve(0, 0, w/2, h/2, 0, 2 * Math.PI, false, 0);
+      const points = curve.getPoints(50);
+      shape = new THREE.Shape(points);
+    } else if (type === 'curve-rect') {
+      shape = new THREE.Shape();
+      const r = Math.min(radius, w/2, h/2);
+      shape.moveTo(r, 0);
+      shape.lineTo(w - r, 0);
+      shape.quadraticCurveTo(w, 0, w, r);
+      shape.lineTo(w, h - r);
+      shape.quadraticCurveTo(w, h, w - r, h);
+      shape.lineTo(r, h);
+      shape.quadraticCurveTo(0, h, 0, h - r);
+      shape.lineTo(0, r);
+      shape.quadraticCurveTo(0, 0, r, 0);
     } else {
-      ctx.rect(0, 0, obj.width, obj.height);
+      shape = new THREE.Shape();
+      shape.moveTo(0, 0);
+      shape.lineTo(w, 0);
+      shape.lineTo(w, h);
+      shape.lineTo(0, h);
+      shape.lineTo(0, 0);
     }
     
-    ctx.fillStyle = obj.fillColor;
-    ctx.fill();
-    ctx.strokeStyle = obj.strokeColor;
-    ctx.lineWidth = obj.strokeWidth;
-    ctx.stroke();
+    const extrudeSettings = { steps: 1, depth: 10, bevelEnabled: false };
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.computeVertexNormals();
+    geometry.center();
     
-    if (isSelected) {
-      ctx.strokeStyle = '#0A84FF';
-      ctx.lineWidth = 3;
-      ctx.setLineDash([5, 5]);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      
-      // Draw resize handles
-      ctx.fillStyle = '#0A84FF';
-      const handles = [
-        { x: 0, y: 0 }, { x: obj.width, y: 0 },
-        { x: 0, y: obj.height }, { x: obj.width, y: obj.height }
-      ];
-      handles.forEach(h => {
-        ctx.fillRect(h.x - 4, h.y - 4, 8, 8);
-      });
-    }
-    ctx.restore();
+    const material = new THREE.MeshStandardMaterial({ color: 0x4a7ac8, metalness: 0.4, roughness: 0.3 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(x, 0, z);
+    mesh.userData = { type: type, width: w, height: h, radius: radius, extrudeDepth: 10, originalShape: shape };
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    return mesh;
   }
   
-  function render() {
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw grid
-    ctx.save();
-    ctx.translate(panX, panY);
-    ctx.scale(scale, scale);
-    
-    ctx.strokeStyle = '#2A2A2A';
-    ctx.lineWidth = 1 / scale;
-    const startX = Math.floor(-panX / scale / GRID_SIZE) * GRID_SIZE;
-    const startY = Math.floor(-panY / scale / GRID_SIZE) * GRID_SIZE;
-    const endX = startX + canvas.width / scale + GRID_SIZE;
-    const endY = startY + canvas.height / scale + GRID_SIZE;
-    
-    for (let x = startX; x < endX; x += GRID_SIZE) {
-      ctx.beginPath();
-      ctx.moveTo(x, startY);
-      ctx.lineTo(x, endY);
-      ctx.stroke();
-    }
-    for (let y = startY; y < endY; y += GRID_SIZE) {
-      ctx.beginPath();
-      ctx.moveTo(startX, y);
-      ctx.lineTo(endX, y);
-      ctx.stroke();
-    }
-    
-    // Draw objects
-    objects.forEach((obj, idx) => {
-      drawShape(ctx, obj, idx === selectedIndex);
-    });
-    ctx.restore();
-    
-    // Draw preview for drawing
-    if (isDragging && !dragObject && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
-      const startWorld = screenToWorld(dragStart.x, dragStart.y);
-      const currentWorld = screenToWorld(window.lastMouseX || dragStart.x, window.lastMouseY || dragStart.y);
-      const w = currentWorld.x - startWorld.x;
-      const h = currentWorld.y - startWorld.y;
-      ctx.save();
-      ctx.globalAlpha = 0.5;
-      ctx.beginPath();
-      if (currentTool === 'circle') {
-        const radius = Math.abs(w) / 2;
-        const centerX = startWorld.x + w/2;
-        const centerY = startWorld.y + h/2;
-        const screenCenter = worldToScreen(centerX, centerY);
-        const screenRadius = radius * scale;
-        ctx.ellipse(screenCenter.x, screenCenter.y, screenRadius, screenRadius, 0, 0, Math.PI * 2);
-      } else if (currentTool === 'curve-rect') {
-        const radius = Math.min(Math.abs(w), Math.abs(h)) * 0.2;
-        const x = Math.min(startWorld.x, currentWorld.x);
-        const y = Math.min(startWorld.y, currentWorld.y);
-        const width = Math.abs(w);
-        const height = Math.abs(h);
-        const screenX = x * scale + panX;
-        const screenY = y * scale + panY;
-        const screenW = width * scale;
-        const screenH = height * scale;
-        const screenR = radius * scale;
-        ctx.moveTo(screenX + screenR, screenY);
-        ctx.lineTo(screenX + screenW - screenR, screenY);
-        ctx.quadraticCurveTo(screenX + screenW, screenY, screenX + screenW, screenY + screenR);
-        ctx.lineTo(screenX + screenW, screenY + screenH - screenR);
-        ctx.quadraticCurveTo(screenX + screenW, screenY + screenH, screenX + screenW - screenR, screenY + screenH);
-        ctx.lineTo(screenX + screenR, screenY + screenH);
-        ctx.quadraticCurveTo(screenX, screenY + screenH, screenX, screenY + screenH - screenR);
-        ctx.lineTo(screenX, screenY + screenR);
-        ctx.quadraticCurveTo(screenX, screenY, screenX + screenR, screenY);
-      } else {
-        const x = Math.min(startWorld.x, currentWorld.x);
-        const y = Math.min(startWorld.y, currentWorld.y);
-        const width = Math.abs(w);
-        const height = Math.abs(h);
-        ctx.fillRect(x * scale + panX, y * scale + panY, width * scale, height * scale);
-      }
-      ctx.fillStyle = 'rgba(10,132,255,0.3)';
-      ctx.fill();
-      ctx.strokeStyle = '#0A84FF';
-      ctx.stroke();
-      ctx.restore();
+  function extrudeSelected() {
+    if (selectedIndex >= 0 && objects[selectedIndex]) {
+      const obj = objects[selectedIndex];
+      const depth = parseInt(document.getElementById('extrude-height').value) || 50;
+      const newGeo = new THREE.ExtrudeGeometry(obj.userData.originalShape, { steps: 1, depth: depth, bevelEnabled: false });
+      newGeo.computeVertexNormals();
+      newGeo.center();
+      obj.geometry.dispose();
+      obj.geometry = newGeo;
+      obj.userData.extrudeDepth = depth;
+      obj.position.y = depth / 2;
+      updateUI();
+      render();
+      setStatus(`Extruded to ${depth}mm`);
+    } else {
+      setStatus('Select an object first');
     }
   }
   
-  function addObject(type, x, y, w, h, radius = 20) {
-    const obj = {
-      id: ++objectCounter,
-      type: type,
-      x: snapToGrid(x),
-      y: snapToGrid(y),
-      width: Math.max(20, snapToGrid(w)),
-      height: Math.max(20, snapToGrid(h)),
-      radius: type === 'curve-rect' ? radius : 0,
-      fillColor: '#4a7ac8',
-      strokeColor: '#ffffff',
-      strokeWidth: 2
-    };
-    objects.push(obj);
+  function addObject(type, x, z, w, h, radius = 20) {
+    const mesh = createShape(type, x, z, w, h, radius);
+    mesh.userData.id = ++objectCounter;
+    mesh.name = `${type}_${objectCounter}`;
+    scene.add(mesh);
+    objects.push(mesh);
     selectedIndex = objects.length - 1;
     updateUI();
     render();
-    setStatus(`Created ${type === 'curve-rect' ? 'Curve Rectangle' : type}`);
+    setStatus(`Created ${type === 'curve-rect' ? 'Rounded Rectangle' : type}`);
+  }
+  
+  function addPolygon(points) {
+    if (points.length < 3) return;
+    const shape = new THREE.Shape();
+    shape.moveTo(points[0].x, points[0].z);
+    for (let i = 1; i < points.length; i++) {
+      shape.lineTo(points[i].x, points[i].z);
+    }
+    shape.closePath();
+    const extrudeSettings = { steps: 1, depth: 10, bevelEnabled: false };
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.computeVertexNormals();
+    geometry.center();
+    const material = new THREE.MeshStandardMaterial({ color: 0x4a7ac8, metalness: 0.4, roughness: 0.3 });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.userData = { type: 'polygon', points: points, originalShape: shape, extrudeDepth: 10 };
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    scene.add(mesh);
+    objects.push(mesh);
+    selectedIndex = objects.length - 1;
+    updateUI();
+    render();
+    setStatus(`Created polygon with ${points.length} points`);
+  }
+  
+  function deleteObject(idx) {
+    if (idx >= 0 && objects[idx]) {
+      scene.remove(objects[idx]);
+      objects[idx].geometry.dispose();
+      objects[idx].material.dispose();
+      objects.splice(idx, 1);
+      if (selectedIndex >= objects.length) selectedIndex = objects.length - 1;
+      updateUI();
+      render();
+      setStatus('Object deleted');
+    }
+  }
+  
+  function clearAll() {
+    objects.forEach(obj => {
+      scene.remove(obj);
+      obj.geometry.dispose();
+      obj.material.dispose();
+    });
+    objects = [];
+    selectedIndex = -1;
+    updateUI();
+    render();
+    setStatus('All objects cleared');
+  }
+  
+  function selectObject(idx) {
+    if (selectedIndex >= 0 && objects[selectedIndex]) {
+      objects[selectedIndex].material.emissiveIntensity = 0;
+    }
+    selectedIndex = idx;
+    if (idx >= 0 && objects[idx]) {
+      objects[idx].material.emissive = new THREE.Color(0x0A84FF);
+      objects[idx].material.emissiveIntensity = 0.3;
+      const obj = objects[idx];
+      document.getElementById('selected-info').innerHTML = `${obj.userData.type} #${obj.userData.id}<br>Size: ${obj.userData.width || 'custom'} × ${obj.userData.height || 'custom'}`;
+      document.getElementById('prop-x').value = obj.position.x;
+      document.getElementById('prop-y').value = obj.position.y;
+      document.getElementById('prop-z').value = obj.position.z;
+      document.getElementById('prop-w').value = obj.userData.width || 100;
+      document.getElementById('prop-h').value = obj.userData.height || 100;
+      if (obj.userData.radius) {
+        document.getElementById('prop-radius-row').style.display = 'flex';
+        document.getElementById('prop-r').value = obj.userData.radius;
+      } else {
+        document.getElementById('prop-radius-row').style.display = 'none';
+      }
+    } else {
+      document.getElementById('selected-info').innerHTML = 'None';
+    }
+    updateUI();
+    render();
   }
   
   function updateUI() {
@@ -662,11 +651,8 @@ input{font-family:'JetBrains Mono',monospace;}
       const div = document.createElement('div');
       div.className = 'object-item' + (idx === selectedIndex ? ' selected' : '');
       div.innerHTML = `
-        <div class="object-icon">${obj.type === 'circle' ? '●' : (obj.type === 'curve-rect' ? '⭔' : '⬛')}</div>
-        <div class="object-info">
-          <div class="object-name">${obj.type === 'curve-rect' ? 'Curve Rect' : obj.type} ${obj.id}</div>
-          <div class="object-type">${obj.width} × ${obj.height}</div>
-        </div>
+        <div class="object-icon">${obj.userData.type === 'circle' ? '●' : (obj.userData.type === 'curve-rect' ? '⭔' : (obj.userData.type === 'polygon' ? '🔷' : '⬛'))}</div>
+        <div class="object-info"><div class="object-name">${obj.userData.type} ${obj.userData.id}</div><div class="object-type">3D Extruded</div></div>
         <button class="object-delete" data-idx="${idx}">✕</button>
       `;
       div.addEventListener('click', (e) => {
@@ -682,66 +668,7 @@ input{font-family:'JetBrains Mono',monospace;}
     document.getElementById('object-count').innerText = objects.length;
     document.getElementById('status-count').innerText = objects.length;
     document.getElementById('status-tool').innerText = 
-      currentTool === 'rectangle' ? 'Rectangle' : (currentTool === 'curve-rect' ? 'Curve Rect' : (currentTool === 'circle' ? 'Circle' : 'Select'));
-    
-    if (selectedIndex >= 0 && objects[selectedIndex]) {
-      const obj = objects[selectedIndex];
-      document.getElementById('selected-info').innerHTML = `${obj.type} #${obj.id}<br>Size: ${obj.width}×${obj.height}`;
-      document.getElementById('prop-x').value = obj.x;
-      document.getElementById('prop-y').value = obj.y;
-      document.getElementById('prop-w').value = obj.width;
-      document.getElementById('prop-h').value = obj.height;
-      document.getElementById('prop-fill').value = obj.fillColor;
-      document.getElementById('prop-stroke').value = obj.strokeColor;
-      document.getElementById('prop-stroke-width').value = obj.strokeWidth;
-      document.getElementById('fill-preview').style.background = obj.fillColor;
-      document.getElementById('stroke-preview').style.background = obj.strokeColor;
-      if (obj.type === 'curve-rect') {
-        document.getElementById('prop-radius-row').style.display = 'flex';
-        document.getElementById('prop-r').value = obj.radius || 20;
-      } else {
-        document.getElementById('prop-radius-row').style.display = 'none';
-      }
-    } else {
-      document.getElementById('selected-info').innerHTML = 'No object selected';
-      document.getElementById('prop-x').value = '';
-      document.getElementById('prop-y').value = '';
-      document.getElementById('prop-w').value = '';
-      document.getElementById('prop-h').value = '';
-    }
-    
-    // Update HUD visibility
-    const curveGroup = document.getElementById('curve-radius-group');
-    if (currentTool === 'curve-rect') {
-      curveGroup.style.display = 'flex';
-    } else {
-      curveGroup.style.display = 'none';
-    }
-  }
-  
-  function selectObject(idx) {
-    selectedIndex = idx;
-    updateUI();
-    render();
-    if (idx >= 0) setStatus(`Selected ${objects[idx].type} #${objects[idx].id}`);
-    else setStatus('Deselected');
-  }
-  
-  function deleteObject(idx) {
-    objects.splice(idx, 1);
-    if (selectedIndex >= objects.length) selectedIndex = objects.length - 1;
-    if (objects.length === 0) selectedIndex = -1;
-    updateUI();
-    render();
-    setStatus('Object deleted');
-  }
-  
-  function clearAll() {
-    objects = [];
-    selectedIndex = -1;
-    updateUI();
-    render();
-    setStatus('All objects cleared');
+      currentTool === 'rectangle' ? 'Rectangle' : (currentTool === 'curve-rect' ? 'Rounded Rect' : (currentTool === 'circle' ? 'Circle' : (currentTool === 'polygon' ? 'Polygon' : 'Select')));
   }
   
   function setStatus(msg) {
@@ -753,237 +680,190 @@ input{font-family:'JetBrains Mono',monospace;}
     }, 2000);
   }
   
-  // Mouse handlers
-  function getMousePos(e) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-      x: (e.clientX - rect.left) * (canvas.width / rect.width),
-      y: (e.clientY - rect.top) * (canvas.height / rect.height)
-    };
+  function render() {
+    renderer.render(scene, camera);
   }
   
-  canvas.addEventListener('mousedown', (e) => {
-    const pos = getMousePos(e);
-    window.lastMouseX = pos.x;
-    window.lastMouseY = pos.y;
+  // Mouse events for drawing and selection
+  let lastMousePos = { x: 0, y: 0 };
+  
+  renderer.domElement.addEventListener('mousedown', (e) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    lastMousePos = { x: mouseX, y: mouseY };
     
     if (e.button === 1 || e.shiftKey) {
       isPanning = true;
-      panStart = { x: pos.x - panX, y: pos.y - panY };
+      panStart = { x: mouseX, y: mouseY };
+      return;
+    }
+    
+    if (currentTool === 'polygon' && isDrawingPolygon) {
+      const world = screenToWorldPlane(e.clientX, e.clientY);
+      polygonPoints.push({ x: world.x, z: world.z });
+      setStatus(`Point ${polygonPoints.length} added — double-click to finish`);
+      render();
       return;
     }
     
     if (currentTool === 'select') {
-      // Check if clicking on an object
-      const worldPos = screenToWorld(pos.x, pos.y);
-      let hitIndex = -1;
-      for (let i = objects.length - 1; i >= 0; i--) {
-        const obj = objects[i];
-        if (worldPos.x >= obj.x && worldPos.x <= obj.x + obj.width &&
-            worldPos.y >= obj.y && worldPos.y <= obj.y + obj.height) {
-          hitIndex = i;
-          break;
-        }
-      }
-      if (hitIndex >= 0) {
-        selectObject(hitIndex);
-        dragObject = true;
-        dragOffset = {
-          x: worldPos.x - objects[hitIndex].x,
-          y: worldPos.y - objects[hitIndex].y
-        };
+      const world = screenToWorldPlane(e.clientX, e.clientY);
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      const intersects = raycaster.intersectObjects(objects);
+      if (intersects.length > 0) {
+        const idx = objects.indexOf(intersects[0].object);
+        selectObject(idx);
       } else {
         selectObject(-1);
       }
-      render();
     } else if (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle') {
-      isDragging = true;
-      dragStart = { x: pos.x, y: pos.y };
-      render();
+      isDrawing = true;
+      drawStart = screenToWorldPlane(e.clientX, e.clientY);
     }
   });
   
-  canvas.addEventListener('mousemove', (e) => {
-    const pos = getMousePos(e);
-    window.lastMouseX = pos.x;
-    window.lastMouseY = pos.y;
-    const worldPos = screenToWorld(pos.x, pos.y);
-    document.getElementById('status-coords').innerHTML = `<b>Cursor:</b> ${Math.round(worldPos.x)}, ${Math.round(worldPos.y)}`;
+  renderer.domElement.addEventListener('mousemove', (e) => {
+    const world = screenToWorldPlane(e.clientX, e.clientY);
+    document.getElementById('status-coords').innerHTML = `<b>Pos:</b> ${world.x}, 0, ${world.z}`;
     
     if (isPanning) {
-      panX = pos.x - panStart.x;
-      panY = pos.y - panStart.y;
-      render();
-      return;
-    }
-    
-    if (dragObject && selectedIndex >= 0) {
-      const obj = objects[selectedIndex];
-      obj.x = snapToGrid(worldPos.x - dragOffset.x);
-      obj.y = snapToGrid(worldPos.y - dragOffset.y);
-      render();
-      updateUI();
-    } else if (isDragging && !dragObject) {
+      const dx = (e.clientX - renderer.domElement.getBoundingClientRect().left) - panStart.x;
+      const dy = (e.clientY - renderer.domElement.getBoundingClientRect().top) - panStart.y;
+      camera.position.x -= dx * 0.03;
+      camera.position.y += dy * 0.03;
+      camera.lookAt(cameraTarget);
+      panStart = { x: e.clientX - renderer.domElement.getBoundingClientRect().left, y: e.clientY - renderer.domElement.getBoundingClientRect().top };
       render();
     }
   });
   
-  canvas.addEventListener('mouseup', (e) => {
+  renderer.domElement.addEventListener('mouseup', (e) => {
     if (isPanning) {
       isPanning = false;
       return;
     }
     
-    if (isDragging && !dragObject && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
-      const endPos = getMousePos(e);
-      const startWorld = screenToWorld(dragStart.x, dragStart.y);
-      const endWorld = screenToWorld(endPos.x, endPos.y);
-      const w = Math.abs(endWorld.x - startWorld.x);
-      const h = Math.abs(endWorld.y - startWorld.y);
-      const x = Math.min(startWorld.x, endWorld.x);
-      const y = Math.min(startWorld.y, endWorld.y);
-      
+    if (isDrawing && (currentTool === 'rectangle' || currentTool === 'curve-rect' || currentTool === 'circle')) {
+      const end = screenToWorldPlane(e.clientX, e.clientY);
+      const w = Math.abs(end.x - drawStart.x);
+      const h = Math.abs(end.z - drawStart.z);
+      const x = Math.min(drawStart.x, end.x);
+      const z = Math.min(drawStart.z, end.z);
       if (w > 10 && h > 10) {
         const radius = parseInt(document.getElementById('hud-r').value) || 20;
-        addObject(currentTool, x, y, w, h, radius);
+        addObject(currentTool, x + w/2, z + h/2, w, h, radius);
       }
+      isDrawing = false;
     }
-    
-    isDragging = false;
-    dragObject = false;
-    render();
   });
   
-  canvas.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    scale = Math.min(3, Math.max(0.5, scale * delta));
-    render();
+  renderer.domElement.addEventListener('dblclick', (e) => {
+    if (currentTool === 'polygon' && polygonPoints.length >= 3) {
+      addPolygon(polygonPoints);
+      polygonPoints = [];
+      isDrawingPolygon = false;
+      document.getElementById('curve-status').style.display = 'none';
+      setStatus('Polygon created!');
+    }
+  });
+  
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && currentTool === 'polygon' && polygonPoints.length >= 3) {
+      addPolygon(polygonPoints);
+      polygonPoints = [];
+      isDrawingPolygon = false;
+      document.getElementById('curve-status').style.display = 'none';
+      setStatus('Polygon closed');
+    }
+    if (e.key === 'Escape' && isDrawingPolygon) {
+      polygonPoints = [];
+      isDrawingPolygon = false;
+      document.getElementById('curve-status').style.display = 'none';
+      setStatus('Polygon drawing cancelled');
+    }
+    if (e.key === 'Delete' && selectedIndex >= 0) deleteObject(selectedIndex);
   });
   
   // Tool buttons
-  document.getElementById('tool-rectangle').addEventListener('click', () => {
-    currentTool = 'rectangle';
-    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tool-rectangle').classList.add('active');
-    setStatus('Tool: Rectangle — click and drag to draw');
-    updateUI();
-  });
-  document.getElementById('tool-curve-rect').addEventListener('click', () => {
-    currentTool = 'curve-rect';
-    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tool-curve-rect').classList.add('active');
-    setStatus('Tool: Curve Rectangle — click and drag to draw rounded rectangles');
-    updateUI();
-  });
-  document.getElementById('tool-circle').addEventListener('click', () => {
-    currentTool = 'circle';
-    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tool-circle').classList.add('active');
-    setStatus('Tool: Circle — click and drag to draw ellipses');
-    updateUI();
-  });
-  document.getElementById('tool-select').addEventListener('click', () => {
-    currentTool = 'select';
-    document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('tool-select').classList.add('active');
-    setStatus('Tool: Select — click objects to select, drag to move');
-    updateUI();
-  });
-  
-  document.getElementById('action-delete').addEventListener('click', () => {
-    if (selectedIndex >= 0) deleteObject(selectedIndex);
-    else setStatus('No object selected');
-  });
-  document.getElementById('action-clear').addEventListener('click', clearAll);
-  document.getElementById('delete-selected').addEventListener('click', () => {
-    if (selectedIndex >= 0) deleteObject(selectedIndex);
-    else setStatus('No object selected');
-  });
-  document.getElementById('duplicate-object').addEventListener('click', () => {
+  document.getElementById('tool-rectangle').onclick = () => { currentTool = 'rectangle'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-rectangle').classList.add('active'); setStatus('Tool: Rectangle'); updateUI(); };
+  document.getElementById('tool-curve-rect').onclick = () => { currentTool = 'curve-rect'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-curve-rect').classList.add('active'); setStatus('Tool: Rounded Rectangle'); updateUI(); };
+  document.getElementById('tool-circle').onclick = () => { currentTool = 'circle'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-circle').classList.add('active'); setStatus('Tool: Circle'); updateUI(); };
+  document.getElementById('tool-polygon').onclick = () => { currentTool = 'polygon'; isDrawingPolygon = true; polygonPoints = []; document.getElementById('curve-status').style.display = 'block'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-polygon').classList.add('active'); setStatus('Tool: Polygon — click points, double-click to finish'); updateUI(); };
+  document.getElementById('tool-select').onclick = () => { currentTool = 'select'; isDrawingPolygon = false; document.getElementById('curve-status').style.display = 'none'; document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active')); document.getElementById('tool-select').classList.add('active'); setStatus('Tool: Select'); updateUI(); };
+  document.getElementById('tool-extrude').onclick = () => extrudeSelected();
+  document.getElementById('apply-extrude').onclick = () => extrudeSelected();
+  document.getElementById('action-delete').onclick = () => { if(selectedIndex>=0) deleteObject(selectedIndex); else setStatus('No object selected'); };
+  document.getElementById('action-clear').onclick = clearAll;
+  document.getElementById('delete-selected').onclick = () => { if(selectedIndex>=0) deleteObject(selectedIndex); else setStatus('No object selected'); };
+  document.getElementById('duplicate-object').onclick = () => {
     if (selectedIndex >= 0) {
       const original = objects[selectedIndex];
-      const newObj = JSON.parse(JSON.stringify(original));
-      newObj.id = ++objectCounter;
-      newObj.x += 30;
-      newObj.y += 30;
-      objects.push(newObj);
-      selectedIndex = objects.length - 1;
-      updateUI();
-      render();
-      setStatus(`Duplicated ${original.type}`);
-    } else setStatus('No object selected');
-  });
+      const newMesh = createShape(original.userData.type, original.position.x + 30, original.position.z + 30, original.userData.width, original.userData.height, original.userData.radius);
+      newMesh.userData.id = ++objectCounter;
+      newMesh.userData.extrudeDepth = original.userData.extrudeDepth;
+      newMesh.position.y = original.position.y;
+      scene.add(newMesh);
+      objects.push(newMesh);
+      selectObject(objects.length - 1);
+      setStatus('Duplicated');
+    }
+  };
   
-  // Property updates
-  document.getElementById('apply-position').addEventListener('click', () => {
+  // Property buttons
+  document.getElementById('apply-position').onclick = () => {
     if (selectedIndex >= 0) {
-      objects[selectedIndex].x = snapToGrid(parseInt(document.getElementById('prop-x').value) || 0);
-      objects[selectedIndex].y = snapToGrid(parseInt(document.getElementById('prop-y').value) || 0);
-      updateUI();
+      objects[selectedIndex].position.x = parseInt(document.getElementById('prop-x').value) || 0;
+      objects[selectedIndex].position.y = parseInt(document.getElementById('prop-y').value) || 0;
+      objects[selectedIndex].position.z = parseInt(document.getElementById('prop-z').value) || 0;
       render();
       setStatus('Position updated');
     }
-  });
-  document.getElementById('apply-size').addEventListener('click', () => {
+  };
+  document.getElementById('apply-size').onclick = () => {
     if (selectedIndex >= 0) {
-      objects[selectedIndex].width = Math.max(20, parseInt(document.getElementById('prop-w').value) || 50);
-      objects[selectedIndex].height = Math.max(20, parseInt(document.getElementById('prop-h').value) || 50);
-      if (objects[selectedIndex].type === 'curve-rect') {
-        objects[selectedIndex].radius = parseInt(document.getElementById('prop-r').value) || 20;
-      }
-      updateUI();
-      render();
-      setStatus('Size updated');
+      setStatus('Recreate shape with new size (delete and redraw for complex shapes)');
     }
-  });
-  document.getElementById('apply-style').addEventListener('click', () => {
+  };
+  document.getElementById('apply-style').onclick = () => {
     if (selectedIndex >= 0) {
-      objects[selectedIndex].fillColor = document.getElementById('prop-fill').value;
-      objects[selectedIndex].strokeColor = document.getElementById('prop-stroke').value;
-      objects[selectedIndex].strokeWidth = parseInt(document.getElementById('prop-stroke-width').value) || 2;
-      document.getElementById('fill-preview').style.background = objects[selectedIndex].fillColor;
-      document.getElementById('stroke-preview').style.background = objects[selectedIndex].strokeColor;
-      updateUI();
+      const color = document.getElementById('prop-fill').value;
+      objects[selectedIndex].material.color.set(color);
       render();
-      setStatus('Style applied');
+      setStatus('Color applied');
     }
-  });
-  document.getElementById('apply-transform').addEventListener('click', () => {
-    if (selectedIndex >= 0) {
-      objects[selectedIndex].width = Math.max(20, parseInt(document.getElementById('hud-w').value) || 100);
-      objects[selectedIndex].height = Math.max(20, parseInt(document.getElementById('hud-h').value) || 100);
-      if (objects[selectedIndex].type === 'curve-rect') {
-        objects[selectedIndex].radius = parseInt(document.getElementById('hud-r').value) || 20;
-      }
-      updateUI();
-      render();
-      setStatus('Size applied');
-    } else {
-      setStatus('Select an object first');
-    }
-  });
+  };
   
-  // Color preview
+  // Menu items
+  document.getElementById('menu-file').onclick = () => setStatus('File menu — Save/Export coming soon');
+  document.getElementById('menu-edit').onclick = () => setStatus('Edit — Undo/Redo coming soon');
+  document.getElementById('menu-view').onclick = () => {
+    camera.position.set(15, 12, 18);
+    camera.lookAt(0, 0, 0);
+    render();
+    setStatus('View reset');
+  };
+  
   document.getElementById('prop-fill').addEventListener('input', (e) => {
     document.getElementById('fill-preview').style.background = e.target.value;
   });
-  document.getElementById('prop-stroke').addEventListener('input', (e) => {
-    document.getElementById('stroke-preview').style.background = e.target.value;
-  });
   
-  // Add some demo objects
-  addObject('rectangle', 100, 100, 120, 80);
-  addObject('curve-rect', 300, 150, 140, 100, 25);
-  addObject('circle', 550, 120, 90, 90);
-  selectObject(-1);
+  // Demo objects
+  setTimeout(() => {
+    addObject('rectangle', -40, -30, 80, 60);
+    addObject('circle', 50, -20, 60, 60);
+    addObject('curve-rect', -20, 40, 90, 70, 25);
+    selectObject(-1);
+    setStatus('Welcome to AetherCAD — Fusion 360 style 2D/3D design');
+  }, 100);
   
-  // Initial setup
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  document.getElementById('tool-rectangle').classList.add('active');
-  
-  render();
+  function animate() {
+    requestAnimationFrame(animate);
+    render();
+  }
+  animate();
 })();
 </script>
 </body>
