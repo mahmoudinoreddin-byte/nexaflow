@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from django.shortcuts import render
 
 # Define upload directory relative to your Django project
 UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'static', 'uploads', 'sketch_fabric')
@@ -178,3 +179,10 @@ def get_upload_folder_info(request):
         'exists': os.path.exists(UPLOAD_FOLDER),
         'files_count': len([f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.json')]) if os.path.exists(UPLOAD_FOLDER) else 0
     })
+
+
+
+
+def sketch_fabric_view(request):
+    """Render the sketch fabric tool"""
+    return render(request, 'tools/sketch-fabric.html')
