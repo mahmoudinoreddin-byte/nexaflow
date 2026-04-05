@@ -21,6 +21,8 @@ urlpatterns = [
     path('tools/sketch-fabric/list/', sketch_fabric.list_drawings, name='sketch_fabric_list'),
     path('tools/sketch-fabric/delete/<str:filename>/', sketch_fabric.delete_drawing, name='sketch_fabric_delete'),
     path('tools/sketch-fabric/info/', sketch_fabric.get_upload_folder_info, name='sketch_fabric_info'),
+
+    path('tools/sketch-fabric/', sketch_fabric.sketch_fabric_view, name='sketch_fabric'),
 ]
 
 if settings.DEBUG:
