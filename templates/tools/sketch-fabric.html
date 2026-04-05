@@ -1,1142 +1,1342 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Professional Pattern Design Studio - CAD Tool</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atelier — Pattern Design Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg0:#0e0f0d;--bg1:#161814;--bg2:#1e2019;--bg3:#272922;
+  --border:#2c2e27;--border2:#3a3d34;
+  --text:#d6d8cc;--text2:#8a8c80;--text3:#555750;
+  --accent:#c9b46a;--accent2:#9e8c4f;--accent3:#6b5e33;
+  --red:#c46a6a;--green:#6ac47a;--blue:#6a9ac4;
+  --sidebar-w:260px;--props-w:300px;--top-h:52px;--bot-h:32px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);overflow:hidden;height:100vh;font-size:13px}
+.app{display:flex;height:100vh}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #0d0f12;
-            overflow: hidden;
-            height: 100vh;
-            color: #e0e0e0;
-        }
+/* ─── SIDEBARS ─── */
+.sidebar{background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.sidebar-left{width:var(--sidebar-w)}
+.sidebar-right{width:var(--props-w);border-right:none;border-left:1px solid var(--border)}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-        /* Main Layout */
-        .app {
-            display: flex;
-            height: 100vh;
-            position: relative;
-        }
+.brand{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.brand-icon{width:32px;height:32px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.brand-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent);line-height:1.1}
+.brand-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px}
 
-        /* Left Sidebar - Tools */
-        .sidebar-left {
-            width: 280px;
-            background: #1a1d22;
-            border-right: 1px solid #2a2d33;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-        }
+.tool-section{padding:12px 14px}
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:8px;font-weight:500}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
+.tool-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:8px 6px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;white-space:nowrap;overflow:hidden}
+.tool-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.tool-btn.active{background:var(--accent3);border-color:var(--accent2);color:var(--accent);box-shadow:0 0 0 1px var(--accent3)}
+.tool-btn svg{flex-shrink:0}
+.tool-btn-wide{grid-column:span 2}
+.sep{height:1px;background:var(--border);margin:10px 0}
 
-        /* Right Sidebar - Properties */
-        .sidebar-right {
-            width: 320px;
-            background: #1a1d22;
-            border-left: 1px solid #2a2d33;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            z-index: 10;
-        }
+/* Quick shapes */
+.shape-row{display:flex;gap:5px;margin-bottom:4px}
+.shape-btn{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 4px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
+.shape-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
 
-        /* Main Canvas Area */
-        .main-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            background: #0d0f12;
-        }
+/* ─── MAIN ─── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
 
-        /* Top Toolbar */
-        .top-toolbar {
-            background: #1a1d22;
-            border-bottom: 1px solid #2a2d33;
-            padding: 12px 20px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-            z-index: 10;
-        }
+/* Top bar */
+.topbar{height:var(--top-h);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0;flex-shrink:0}
+.tb-group{display:flex;align-items:center;gap:4px;padding:0 12px;border-right:1px solid var(--border);height:100%}
+.tb-group:last-child{border-right:none}
+.tb-btn{background:transparent;border:1px solid transparent;color:var(--text2);padding:5px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
+.tb-btn:hover{background:var(--bg3);border-color:var(--border);color:var(--text)}
+.tb-btn.danger:hover{background:#3d1a1a;border-color:#5a2a2a;color:var(--red)}
+.zoom-disp{font-size:12px;color:var(--text2);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
 
-        .toolbar-group {
-            display: flex;
-            gap: 8px;
-            padding: 0 15px;
-            border-right: 1px solid #2a2d33;
-        }
+/* Canvas area */
+.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg0);cursor:crosshair}
+.canvas-wrap.select-mode{cursor:default}
+#main-canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 8px 40px rgba(0,0,0,.7)}
+.ruler-corner{position:absolute;top:0;left:0;width:24px;height:24px;background:var(--bg1);border-right:1px solid var(--border);border-bottom:1px solid var(--border);z-index:5}
+canvas#ruler-h,canvas#ruler-v{position:absolute;z-index:4;pointer-events:none}
+canvas#ruler-h{top:0;left:24px}
+canvas#ruler-v{top:24px;left:0}
 
-        .toolbar-group:last-child {
-            border-right: none;
-        }
+/* Bottom bar */
+.botbar{height:var(--bot-h);background:var(--bg1);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:11px;color:var(--text3);flex-shrink:0;font-variant-numeric:tabular-nums}
+.botbar span{display:flex;align-items:center;gap:8px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
 
-        /* Canvas Container */
-        .canvas-container {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            cursor: crosshair;
-        }
+/* ─── PROPERTIES ─── */
+.props-head{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.props-head h3{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);font-weight:400}
+.prop-section{padding:12px 14px;border-bottom:1px solid var(--border)}
+.prop-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);margin-bottom:7px;font-weight:500}
+.prop-row{display:flex;gap:8px;align-items:center}
+.prop-input{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;width:0;min-width:0;outline:none;transition:border-color .15s;font-variant-numeric:tabular-nums}
+.prop-input:focus{border-color:var(--accent2)}
+.prop-input-label{font-size:11px;color:var(--text3);min-width:14px}
+.prop-range{width:100%;accent-color:var(--accent);cursor:pointer}
+.prop-range::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:var(--bg3)}
+.color-swatch{width:28px;height:28px;border-radius:4px;border:1px solid var(--border2);cursor:pointer;padding:0;flex-shrink:0}
+.layer-btns{display:flex;gap:5px}
+.layer-btn{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:5px;border-radius:5px;cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
+.layer-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:var(--text2);line-height:1.9}
+.info-card b{color:var(--text);font-weight:500}
+.no-select{color:var(--text3);font-size:12px;text-align:center;padding:20px 0;font-style:italic}
 
-        #canvas {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            border-radius: 4px;
-        }
+/* Seam overlay */
+.seam-input-row{display:flex;align-items:center;gap:8px}
+.seam-toggle{position:relative;width:32px;height:18px;flex-shrink:0}
+.seam-toggle input{opacity:0;width:0;height:0;position:absolute}
+.seam-toggle-track{position:absolute;inset:0;background:var(--bg3);border-radius:9px;border:1px solid var(--border2);cursor:pointer;transition:background .2s}
+.seam-toggle input:checked+.seam-toggle-track{background:var(--accent3);border-color:var(--accent2)}
+.seam-toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--text2);border-radius:50%;transition:transform .2s,background .2s;pointer-events:none}
+.seam-toggle input:checked~.seam-toggle-thumb{transform:translateX(14px);background:var(--accent)}
 
-        /* Bottom Bar */
-        .bottom-bar {
-            background: #1a1d22;
-            border-top: 1px solid #2a2d33;
-            padding: 8px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            font-family: monospace;
-            z-index: 10;
-        }
+/* Notifications */
+.notif{position:fixed;bottom:24px;right:24px;padding:9px 16px;border-radius:7px;font-size:12px;font-weight:500;z-index:9999;animation:notifIn .25s ease;pointer-events:none;display:flex;align-items:center;gap:7px}
+.notif-success{background:#1e3020;border:1px solid #2d5030;color:var(--green)}
+.notif-error{background:#301e1e;border:1px solid #503030;color:var(--red)}
+.notif-info{background:#2a2810;border:1px solid #4a4818;color:var(--accent)}
+@keyframes notifIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
 
-        /* Buttons & Controls */
-        .tool-btn, .action-btn {
-            background: #2a2d33;
-            border: none;
-            color: #e0e0e0;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .tool-btn:hover, .action-btn:hover {
-            background: #ff7a00;
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .tool-btn.active {
-            background: #ff7a00;
-            color: white;
-            box-shadow: 0 2px 8px rgba(255,122,0,0.3);
-        }
-
-        .tool-group-title {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #ff7a00;
-            margin: 15px 0 10px 0;
-            font-weight: 700;
-        }
-
-        .tool-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        /* Property Panel */
-        .property-group {
-            padding: 15px;
-            border-bottom: 1px solid #2a2d33;
-        }
-
-        .property-label {
-            font-size: 12px;
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #aaa;
-        }
-
-        .property-input {
-            width: 100%;
-            padding: 8px;
-            background: #2a2d33;
-            border: 1px solid #3a3d43;
-            border-radius: 4px;
-            color: white;
-            font-size: 13px;
-        }
-
-        .property-input:focus {
-            outline: none;
-            border-color: #ff7a00;
-        }
-
-        .color-preview {
-            width: 40px;
-            height: 40px;
-            border-radius: 4px;
-            border: 2px solid #3a3d43;
-            cursor: pointer;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #1a1d22;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ff7a00;
-            border-radius: 4px;
-        }
-
-        /* Alert System */
-        .alert {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            border-radius: 8px;
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .alert-success { background: #27ae60; color: white; }
-        .alert-error { background: #e74c3c; color: white; }
-        .alert-info { background: #ff7a00; color: white; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        /* Zoom Controls */
-        .zoom-controls {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        .zoom-btn {
-            background: #2a2d33;
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .zoom-btn:hover {
-            background: #ff7a00;
-        }
-
-        /* Selection Info */
-        .selection-info {
-            background: #2a2d33;
-            padding: 10px;
-            border-radius: 6px;
-            margin-top: 10px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1200px) {
-            .sidebar-left { width: 240px; }
-            .sidebar-right { width: 280px; }
-        }
-    </style>
+/* Pen cursor helper */
+.pen-hint{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:11px;padding:6px 14px;border-radius:20px;pointer-events:none;z-index:100;white-space:nowrap}
+</style>
 </head>
 <body>
-    <div class="app">
-        <!-- LEFT SIDEBAR - TOOLS -->
-        <div class="sidebar-left">
-            <div style="padding: 20px; border-bottom: 1px solid #2a2d33;">
-                <h2 style="color: #ff7a00; font-size: 20px;">✂️ Pattern Studio</h2>
-                <p style="font-size: 11px; color: #888;">Professional CAD Tool</p>
-            </div>
+<div class="app">
 
-            <div style="padding: 20px;">
-                <div class="tool-group-title">📌 SELECTION TOOLS</div>
-                <div class="tool-grid">
-                    <button class="tool-btn" id="tool-select">🖱️ Select</button>
-                    <button class="tool-btn" id="tool-multiselect">✨ Multi-Select</button>
-                </div>
+<!-- ════ LEFT SIDEBAR ════ -->
+<div class="sidebar sidebar-left">
+  <div class="brand">
+    <div class="brand-icon">✂</div>
+    <div>
+      <div class="brand-name">Atelier</div>
+      <div class="brand-sub">Pattern Studio</div>
+    </div>
+  </div>
 
-                <div class="tool-group-title">✏️ DRAWING TOOLS</div>
-                <div class="tool-grid">
-                    <button class="tool-btn" id="tool-pen">✒️ Pen Tool</button>
-                    <button class="tool-btn" id="tool-rectangle">📦 Rectangle</button>
-                    <button class="tool-btn" id="tool-circle">⚪ Ellipse</button>
-                    <button class="tool-btn" id="tool-line">📏 Line</button>
-                    <button class="tool-btn" id="tool-curve">🔄 Curve</button>
-                    <button class="tool-btn" id="tool-internal">🔗 Internal Line</button>
-                </div>
-
-                <div class="tool-group-title">🔧 EDITING TOOLS</div>
-                <div class="tool-grid">
-                    <button class="tool-btn" id="tool-editpoints">📍 Edit Points</button>
-                    <button class="tool-btn" id="tool-seam">🧵 Seam Tool</button>
-                    <button class="tool-btn" id="tool-cut">✂️ Cut Tool</button>
-                    <button class="tool-btn" id="tool-transform">🔄 Transform</button>
-                </div>
-
-                <div class="tool-group-title">🎨 PATTERN SETTINGS</div>
-                <div class="tool-grid">
-                    <button class="tool-btn" id="tool-group">📁 Group</button>
-                    <button class="tool-btn" id="tool-ungroup">📂 Ungroup</button>
-                    <button class="tool-btn" id="tool-lock">🔒 Lock</button>
-                    <button class="tool-btn" id="tool-unlock">🔓 Unlock</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- MAIN AREA -->
-        <div class="main-area">
-            <!-- Top Toolbar -->
-            <div class="top-toolbar">
-                <div class="toolbar-group">
-                    <button class="action-btn" id="new-project">📄 New</button>
-                    <button class="action-btn" id="save-project">💾 Save</button>
-                    <button class="action-btn" id="load-project">📂 Load</button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="action-btn" id="undo-btn">↩️ Undo</button>
-                    <button class="action-btn" id="redo-btn">↪️ Redo</button>
-                </div>
-                <div class="toolbar-group">
-                    <button class="action-btn" id="toggle-grid">📐 Toggle Grid</button>
-                    <button class="action-btn" id="toggle-snap">🎯 Toggle Snap</button>
-                </div>
-                <div class="toolbar-group">
-                    <div class="zoom-controls">
-                        <button class="zoom-btn" id="zoom-out">−</button>
-                        <span id="zoom-level" style="min-width: 60px; text-align: center;">100%</span>
-                        <button class="zoom-btn" id="zoom-in">+</button>
-                        <button class="zoom-btn" id="zoom-fit">⬚</button>
-                    </div>
-                </div>
-                <div class="toolbar-group">
-                    <button class="action-btn" id="export-svg">📎 Export SVG</button>
-                    <button class="action-btn" id="export-png">📸 Export PNG</button>
-                </div>
-            </div>
-
-            <!-- Canvas Container -->
-            <div class="canvas-container" id="canvas-container">
-                <canvas id="canvas" width="1200" height="800"></canvas>
-            </div>
-
-            <!-- Bottom Bar -->
-            <div class="bottom-bar">
-                <div id="coord-info">📍 X: 0, Y: 0</div>
-                <div id="object-info">📐 No object selected</div>
-                <div id="grid-status">📐 Grid: OFF | Snap: OFF</div>
-                <div id="tool-status">🖌️ Tool: Select</div>
-            </div>
-        </div>
-
-        <!-- RIGHT SIDEBAR - PROPERTIES -->
-        <div class="sidebar-right">
-            <div style="padding: 20px; border-bottom: 1px solid #2a2d33;">
-                <h3 style="color: #ff7a00; font-size: 16px;">📋 Properties Panel</h3>
-            </div>
-
-            <div id="properties-content" style="padding: 20px;">
-                <div class="property-group">
-                    <div class="property-label">📏 Position (X, Y)</div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="prop-x" class="property-input" placeholder="X">
-                        <input type="number" id="prop-y" class="property-input" placeholder="Y">
-                    </div>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">📐 Dimensions (W, H)</div>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="prop-width" class="property-input" placeholder="Width">
-                        <input type="number" id="prop-height" class="property-input" placeholder="Height">
-                    </div>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">🔄 Rotation</div>
-                    <input type="number" id="prop-rotation" class="property-input" placeholder="Degrees">
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">🎨 Fill Color</div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="color" id="prop-fill" class="property-input" style="width: 60px; padding: 0;">
-                        <span id="fill-value" style="flex: 1;">#ffffff</span>
-                    </div>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">✏️ Stroke Color</div>
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <input type="color" id="prop-stroke" class="property-input" style="width: 60px; padding: 0;">
-                        <span id="stroke-value" style="flex: 1;">#ff7a00</span>
-                    </div>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">📏 Stroke Width</div>
-                    <input type="range" id="prop-stroke-width" min="0" max="10" step="0.5" value="2" style="width: 100%;">
-                    <span id="stroke-width-value" style="font-size: 12px;">2px</span>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">🎭 Opacity</div>
-                    <input type="range" id="prop-opacity" min="0" max="100" value="100" style="width: 100%;">
-                    <span id="opacity-value" style="font-size: 12px;">100%</span>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">📊 Layer Order</div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="action-btn" id="bring-forward" style="flex: 1; padding: 6px;">↑ Bring Forward</button>
-                        <button class="action-btn" id="send-backward" style="flex: 1; padding: 6px;">↓ Send Backward</button>
-                    </div>
-                </div>
-
-                <div class="property-group">
-                    <div class="property-label">📐 Pattern Info</div>
-                    <div class="selection-info">
-                        <div id="pattern-lengths">Lengths: —</div>
-                        <div id="pattern-angles">Angles: —</div>
-                        <div id="pattern-vertices">Vertices: —</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="tool-section">
+    <div class="section-label">Selection</div>
+    <div class="tool-grid">
+      <button class="tool-btn active" id="t-select" onclick="setTool('select')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M3 2l10 6-5 1-2 5z" stroke-linejoin="round"/></svg>Select
+      </button>
+      <button class="tool-btn" id="t-multiselect" onclick="activateMultiSelect()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Multi
+      </button>
     </div>
 
-    <script>
-        // ============================================
-        // FABRIC.JS INITIALIZATION & GLOBAL STATE
-        // ============================================
-        
-        const canvas = new fabric.Canvas('canvas');
-        let currentTool = 'select';
-        let showGrid = false;
-        let snapToGrid = false;
-        let gridSize = 20;
-        let gridLines = [];
-        let zoomLevel = 1;
-        let history = [];
-        let historyIndex = -1;
-        
-        // Pen tool state
-        let isDrawingPath = false;
-        let currentPathPoints = [];
-        let tempPath = null;
-        
-        // ============================================
-        // HISTORY MANAGEMENT
-        // ============================================
-        
-        function saveToHistory() {
-            const state = JSON.stringify(canvas.toJSON());
-            history = history.slice(0, historyIndex + 1);
-            history.push(state);
-            historyIndex++;
-            if (history.length > 50) {
-                history.shift();
-                historyIndex--;
-            }
-        }
-        
-        function undo() {
-            if (historyIndex > 0) {
-                historyIndex--;
-                const state = history[historyIndex];
-                canvas.loadFromJSON(state, () => {
-                    canvas.renderAll();
-                    if (showGrid) drawGrid();
-                    updatePropertiesPanel();
-                    showAlert('Undo completed', 'info');
-                });
-            }
-        }
-        
-        function redo() {
-            if (historyIndex < history.length - 1) {
-                historyIndex++;
-                const state = history[historyIndex];
-                canvas.loadFromJSON(state, () => {
-                    canvas.renderAll();
-                    if (showGrid) drawGrid();
-                    updatePropertiesPanel();
-                    showAlert('Redo completed', 'info');
-                });
-            }
-        }
-        
-        // ============================================
-        // GRID SYSTEM
-        // ============================================
-        
-        function drawGrid() {
-            gridLines.forEach(line => canvas.remove(line));
-            gridLines = [];
-            
-            if (!showGrid) return;
-            
-            const width = canvas.getWidth();
-            const height = canvas.getHeight();
-            
-            for (let i = 0; i <= width; i += gridSize) {
-                const line = new fabric.Line([i, 0, i, height], {
-                    stroke: '#2a2d33',
-                    strokeWidth: 0.5,
-                    selectable: false,
-                    evented: false,
-                    hasControls: false,
-                    hasBorders: false,
-                    lockMovementX: true,
-                    lockMovementY: true
-                });
-                gridLines.push(line);
-                canvas.add(line);
-            }
-            
-            for (let i = 0; i <= height; i += gridSize) {
-                const line = new fabric.Line([0, i, width, i], {
-                    stroke: '#2a2d33',
-                    strokeWidth: 0.5,
-                    selectable: false,
-                    evented: false,
-                    hasControls: false,
-                    hasBorders: false,
-                    lockMovementX: true,
-                    lockMovementY: true
-                });
-                gridLines.push(line);
-                canvas.add(line);
-            }
-            
-            gridLines.forEach(line => canvas.sendToBack(line));
-            canvas.renderAll();
-        }
-        
-        function snapToGridValue(value) {
-            if (snapToGrid) {
-                return Math.round(value / gridSize) * gridSize;
-            }
-            return value;
-        }
-        
-        // ============================================
-        // ZOOM & PAN
-        // ============================================
-        
-        function zoom(factor) {
-            zoomLevel *= factor;
-            zoomLevel = Math.min(Math.max(zoomLevel, 0.1), 5);
-            canvas.setZoom(zoomLevel);
-            document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
-            
-            const container = document.getElementById('canvas-container');
-            const canvasEl = document.getElementById('canvas');
-            const rect = canvasEl.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            
-            canvasEl.style.left = (containerRect.width / 2 - rect.width / 2) + 'px';
-            canvasEl.style.top = (containerRect.height / 2 - rect.height / 2) + 'px';
-        }
-        
-        function fitToScreen() {
-            const container = document.getElementById('canvas-container');
-            const canvasWidth = canvas.getWidth();
-            const canvasHeight = canvas.getHeight();
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-            
-            const scaleX = containerWidth / canvasWidth;
-            const scaleY = containerHeight / canvasHeight;
-            zoomLevel = Math.min(scaleX, scaleY) * 0.9;
-            canvas.setZoom(zoomLevel);
-            document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
-            
-            const canvasEl = document.getElementById('canvas');
-            canvasEl.style.left = '50%';
-            canvasEl.style.top = '50%';
-            canvasEl.style.transform = 'translate(-50%, -50%)';
-        }
-        
-        // ============================================
-        // SHAPE CREATION
-        // ============================================
-        
-        function createRectangle() {
-            const center = canvas.getCenter();
-            const rect = new fabric.Rect({
-                left: snapToGridValue(center.left - 50),
-                top: snapToGridValue(center.top - 50),
-                width: 100,
-                height: 100,
-                fill: '#e0e0e0',
-                stroke: '#ff7a00',
-                strokeWidth: 2,
-                hasControls: true,
-                hasBorders: true,
-                cornerColor: '#ff7a00',
-                cornerSize: 8,
-                transparentCorners: false
-            });
-            canvas.add(rect);
-            saveToHistory();
-            showAlert('Rectangle added', 'success');
-        }
-        
-        function createEllipse() {
-            const center = canvas.getCenter();
-            const ellipse = new fabric.Ellipse({
-                left: snapToGridValue(center.left - 50),
-                top: snapToGridValue(center.top - 40),
-                rx: 50,
-                ry: 40,
-                fill: '#e0e0e0',
-                stroke: '#ff7a00',
-                strokeWidth: 2,
-                hasControls: true
-            });
-            canvas.add(ellipse);
-            saveToHistory();
-            showAlert('Ellipse added', 'success');
-        }
-        
-        function createLine() {
-            const center = canvas.getCenter();
-            const line = new fabric.Line([
-                snapToGridValue(center.left - 50),
-                snapToGridValue(center.top),
-                snapToGridValue(center.left + 50),
-                snapToGridValue(center.top)
-            ], {
-                stroke: '#ff7a00',
-                strokeWidth: 2,
-                hasControls: true
-            });
-            canvas.add(line);
-            saveToHistory();
-            showAlert('Line added', 'success');
-        }
-        
-        // ============================================
-        // PEN TOOL (Polygon Drawing)
-        // ============================================
-        
-        function startPenTool() {
-            canvas.defaultCursor = 'crosshair';
-            canvas.selection = false;
-            canvas.forEachObject(obj => obj.selectable = false);
-            
-            canvas.on('mouse:down', onPenMouseDown);
-        }
-        
-        function onPenMouseDown(e) {
-            const pointer = canvas.getPointer(e.e);
-            const x = snapToGridValue(pointer.x);
-            const y = snapToGridValue(pointer.y);
-            
-            if (!isDrawingPath) {
-                isDrawingPath = true;
-                currentPathPoints = [{ x, y }];
-                
-                tempPath = new fabric.Polyline(currentPathPoints, {
-                    stroke: '#ff7a00',
-                    strokeWidth: 2,
-                    fill: 'rgba(255,122,0,0.1)',
-                    selectable: false,
-                    evented: false
-                });
-                canvas.add(tempPath);
-            } else {
-                currentPathPoints.push({ x, y });
-                tempPath.set({ points: currentPathPoints });
-                canvas.renderAll();
-            }
-        }
-        
-        function finishPenTool() {
-            if (isDrawingPath && currentPathPoints.length > 2) {
-                const polygon = new fabric.Polygon(currentPathPoints, {
-                    fill: '#e0e0e0',
-                    stroke: '#ff7a00',
-                    strokeWidth: 2,
-                    selectable: true,
-                    hasControls: true
-                });
-                canvas.remove(tempPath);
-                canvas.add(polygon);
-                saveToHistory();
-                showAlert('Pattern created', 'success');
-            }
-            
-            isDrawingPath = false;
-            currentPathPoints = [];
-            tempPath = null;
-        }
-        
-        // ============================================
-        // PROPERTIES PANEL UPDATE
-        // ============================================
-        
-        function updatePropertiesPanel() {
-            const activeObj = canvas.getActiveObject();
-            
-            if (activeObj) {
-                document.getElementById('prop-x').value = Math.round(activeObj.left || 0);
-                document.getElementById('prop-y').value = Math.round(activeObj.top || 0);
-                document.getElementById('prop-width').value = Math.round(activeObj.width || activeObj.radiusX * 2 || 0);
-                document.getElementById('prop-height').value = Math.round(activeObj.height || activeObj.radiusY * 2 || 0);
-                document.getElementById('prop-rotation').value = Math.round(activeObj.angle || 0);
-                document.getElementById('prop-fill').value = activeObj.fill || '#e0e0e0';
-                document.getElementById('fill-value').innerText = activeObj.fill || '#e0e0e0';
-                document.getElementById('prop-stroke').value = activeObj.stroke || '#ff7a00';
-                document.getElementById('stroke-value').innerText = activeObj.stroke || '#ff7a00';
-                document.getElementById('prop-stroke-width').value = activeObj.strokeWidth || 2;
-                document.getElementById('stroke-width-value').innerText = (activeObj.strokeWidth || 2) + 'px';
-                document.getElementById('prop-opacity').value = (activeObj.opacity || 1) * 100;
-                document.getElementById('opacity-value').innerText = Math.round((activeObj.opacity || 1) * 100) + '%';
-                
-                document.getElementById('object-info').innerHTML = `📐 Selected: ${activeObj.type}`;
-                
-                if (activeObj.type === 'polygon' && activeObj.points) {
-                    document.getElementById('pattern-vertices').innerHTML = `Vertices: ${activeObj.points.length}`;
-                    let totalLength = 0;
-                    for (let i = 0; i < activeObj.points.length; i++) {
-                        const p1 = activeObj.points[i];
-                        const p2 = activeObj.points[(i + 1) % activeObj.points.length];
-                        const dx = p1.x - p2.x;
-                        const dy = p1.y - p2.y;
-                        totalLength += Math.sqrt(dx * dx + dy * dy);
-                    }
-                    document.getElementById('pattern-lengths').innerHTML = `Total Length: ${Math.round(totalLength)}px`;
-                }
-            } else {
-                document.getElementById('prop-x').value = '';
-                document.getElementById('prop-y').value = '';
-                document.getElementById('prop-width').value = '';
-                document.getElementById('prop-height').value = '';
-                document.getElementById('object-info').innerHTML = '📐 No object selected';
-                document.getElementById('pattern-vertices').innerHTML = 'Vertices: —';
-                document.getElementById('pattern-lengths').innerHTML = 'Lengths: —';
-            }
-        }
-        
-        // ============================================
-        // PROPERTY CONTROLS
-        // ============================================
-        
-        document.getElementById('prop-x').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('left', parseInt(e.target.value));
-                canvas.renderAll();
-                saveToHistory();
-            }
+    <div class="sep"></div>
+    <div class="section-label">Draw</div>
+    <div class="tool-grid">
+      <button class="tool-btn" id="t-pen" onclick="setTool('pen')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M2 14l3-1 8-8-2-2-8 8z"/><path d="M11 3l2 2"/></svg>Pen
+      </button>
+      <button class="tool-btn" id="t-line" onclick="setTool('line')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line
+      </button>
+      <button class="tool-btn" id="t-rect" onclick="setTool('rect')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="8" rx="1"/></svg>Rect
+      </button>
+      <button class="tool-btn" id="t-ellipse" onclick="setTool('ellipse')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="4"/></svg>Ellipse
+      </button>
+      <button class="tool-btn" id="t-curve" onclick="setTool('curve')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M2 13 C4 4 12 4 14 13" fill="none"/></svg>Curve
+      </button>
+      <button class="tool-btn" id="t-internal" onclick="setTool('internal')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 1.5" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/></svg>Internal
+      </button>
+    </div>
+
+    <div class="sep"></div>
+    <div class="section-label">Edit</div>
+    <div class="tool-grid">
+      <button class="tool-btn" id="t-editpts" onclick="setTool('editpts')">
+        <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><circle cx="3" cy="8" r="2"/><circle cx="8" cy="3" r="2"/><circle cx="13" cy="8" r="2"/><circle cx="8" cy="13" r="2"/></svg>Points
+      </button>
+      <button class="tool-btn" id="t-seam" onclick="setTool('seam')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="1"/><rect x="4" y="4" width="8" height="8" rx="0.5" stroke-dasharray="1.5 1"/></svg>Seam
+      </button>
+      <button class="tool-btn" id="t-cut" onclick="setTool('cut')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><circle cx="4" cy="12" r="2"/><circle cx="4" cy="4" r="2"/><line x1="6" y1="10.5" x2="14" y2="3"/><line x1="6" y1="5.5" x2="14" y2="13"/></svg>Cut
+      </button>
+      <button class="tool-btn" id="t-measure" onclick="setTool('measure')">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="6" x2="2" y2="10"/><line x1="14" y1="6" x2="14" y2="10"/><line x1="8" y1="7" x2="8" y2="9"/></svg>Measure
+      </button>
+    </div>
+
+    <div class="sep"></div>
+    <div class="section-label">Organize</div>
+    <div class="tool-grid">
+      <button class="tool-btn" onclick="groupSelected()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" stroke-dasharray="2 1"/></svg>Group
+      </button>
+      <button class="tool-btn" onclick="ungroupSelected()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Ungroup
+      </button>
+      <button class="tool-btn" onclick="toggleLock(true)">🔒 Lock</button>
+      <button class="tool-btn" onclick="toggleLock(false)">🔓 Unlock</button>
+      <button class="tool-btn" onclick="duplicateSelected()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="5" width="9" height="9" rx="1"/><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2"/></svg>Duplicate
+      </button>
+      <button class="tool-btn danger" onclick="deleteSelected()" style="color:var(--red)">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M3 5h10M6 5V3h4v2M5 5l1 8h4l1-8"/></svg>Delete
+      </button>
+    </div>
+  </div>
+
+  <div style="padding:12px 14px;margin-top:auto;border-top:1px solid var(--border)">
+    <div class="section-label" style="margin-bottom:8px">Units & Grid</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:11px;color:var(--text2);min-width:40px">Grid px</span>
+      <input type="number" id="grid-size-input" value="20" min="5" max="100" step="5" class="prop-input" style="width:60px;flex:none" onchange="setGridSize(+this.value)">
+      <select id="unit-sel" class="prop-input" style="flex:1" onchange="setUnit(this.value)">
+        <option value="px">px</option><option value="mm">mm</option><option value="cm">cm</option><option value="in">in</option>
+      </select>
+    </div>
+    <div class="section-label" style="margin-bottom:4px">Seam allowance</div>
+    <div class="seam-input-row">
+      <label class="seam-toggle"><input type="checkbox" id="seam-toggle" onchange="toggleSeamPreview()"><span class="seam-toggle-track"></span><span class="seam-toggle-thumb"></span></label>
+      <input type="number" id="seam-amount" value="10" min="0" max="50" class="prop-input" onchange="updateSeamAllowance()">
+      <span style="font-size:11px;color:var(--text3)">px</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MAIN AREA ════ -->
+<div class="main">
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="tb-group">
+      <button class="tb-btn" onclick="newProject()">📄 New</button>
+      <button class="tb-btn" onclick="saveProject()">💾 Save</button>
+      <button class="tb-btn" onclick="loadProject()">📂 Load</button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" onclick="undo()">↩ Undo</button>
+      <button class="tb-btn" onclick="redo()">↪ Redo</button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" id="grid-btn" onclick="toggleGrid()">⊞ Grid</button>
+      <button class="tb-btn" id="snap-btn" onclick="toggleSnap()">⊙ Snap</button>
+      <button class="tb-btn" id="ruler-btn" onclick="toggleRulers()">📐 Rulers</button>
+    </div>
+    <div class="tb-group" style="flex:1;border-right:none">
+      <button class="tb-btn" onclick="zoomOut()">−</button>
+      <span class="zoom-disp" id="zoom-disp">100%</span>
+      <button class="tb-btn" onclick="zoomIn()">+</button>
+      <button class="tb-btn" onclick="zoomFit()" title="Fit to window">⬚</button>
+      <button class="tb-btn" onclick="zoom100()" title="100%">1:1</button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" onclick="exportSVG()">↗ SVG</button>
+      <button class="tb-btn" onclick="exportPNG()">↗ PNG</button>
+      <button class="tb-btn" onclick="exportDXF()">↗ DXF</button>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-wrap select-mode" id="canvas-wrap">
+    <canvas id="ruler-h"></canvas>
+    <canvas id="ruler-v"></canvas>
+    <div class="ruler-corner"></div>
+    <canvas id="main-canvas"></canvas>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="botbar">
+    <span><span class="status-dot"></span><span id="tool-label">Select</span></span>
+    <span id="coord-label">X: — &nbsp; Y: —</span>
+    <span id="obj-label">No selection</span>
+    <span id="status-right">Grid: OFF &nbsp;|&nbsp; Snap: OFF</span>
+  </div>
+</div>
+
+<!-- ════ RIGHT SIDEBAR – PROPERTIES ════ -->
+<div class="sidebar sidebar-right">
+  <div class="props-head">
+    <h3>Properties</h3>
+    <span id="obj-type-badge" style="font-size:10px;color:var(--text3)"></span>
+  </div>
+
+  <div id="no-sel-msg" class="prop-section" style="text-align:center;padding:24px 14px">
+    <div style="font-size:28px;margin-bottom:8px">✂️</div>
+    <div style="color:var(--text3);font-size:12px;font-style:italic">Select an object to<br>view its properties</div>
+  </div>
+
+  <div id="props-panel" style="display:none">
+    <!-- Position & Size -->
+    <div class="prop-section">
+      <div class="prop-label">Position</div>
+      <div class="prop-row" style="margin-bottom:6px">
+        <span class="prop-input-label">X</span>
+        <input type="number" id="p-x" class="prop-input" onchange="applyProp('left',+this.value)">
+        <span class="prop-input-label" style="margin-left:4px">Y</span>
+        <input type="number" id="p-y" class="prop-input" onchange="applyProp('top',+this.value)">
+      </div>
+      <div class="prop-label">Size</div>
+      <div class="prop-row">
+        <span class="prop-input-label">W</span>
+        <input type="number" id="p-w" class="prop-input" onchange="applySize('width',+this.value)">
+        <span class="prop-input-label" style="margin-left:4px">H</span>
+        <input type="number" id="p-h" class="prop-input" onchange="applySize('height',+this.value)">
+      </div>
+    </div>
+
+    <!-- Rotation -->
+    <div class="prop-section">
+      <div class="prop-label">Rotation</div>
+      <div class="prop-row">
+        <input type="number" id="p-rot" class="prop-input" min="-360" max="360" onchange="applyProp('angle',+this.value)">
+        <span style="font-size:11px;color:var(--text3);margin-left:4px">°</span>
+        <input type="range" id="p-rot-range" class="prop-range" min="0" max="360" value="0" style="flex:1;margin-left:8px" oninput="applyProp('angle',+this.value);document.getElementById('p-rot').value=this.value">
+      </div>
+    </div>
+
+    <!-- Fill & Stroke -->
+    <div class="prop-section">
+      <div class="prop-label">Fill</div>
+      <div class="prop-row" style="margin-bottom:8px">
+        <input type="color" id="p-fill" class="color-swatch" value="#e8e6df" onchange="applyProp('fill',this.value)">
+        <input type="text" id="p-fill-txt" class="prop-input" value="#e8e6df" onchange="applyProp('fill',this.value);document.getElementById('p-fill').value=this.value">
+        <button onclick="applyProp('fill','transparent')" style="background:var(--bg2);border:1px solid var(--border);color:var(--text3);padding:5px 7px;border-radius:4px;cursor:pointer;font-size:10px;flex-shrink:0">∅</button>
+      </div>
+      <div class="prop-label">Stroke</div>
+      <div class="prop-row" style="margin-bottom:8px">
+        <input type="color" id="p-stroke" class="color-swatch" value="#c9b46a" onchange="applyProp('stroke',this.value)">
+        <input type="text" id="p-stroke-txt" class="prop-input" value="#c9b46a" onchange="applyProp('stroke',this.value);document.getElementById('p-stroke').value=this.value">
+      </div>
+      <div class="prop-label">Stroke width</div>
+      <div class="prop-row">
+        <input type="range" id="p-sw-range" class="prop-range" min="0.5" max="10" step="0.5" value="1.5" style="flex:1" oninput="applyProp('strokeWidth',+this.value);document.getElementById('p-sw').value=this.value">
+        <input type="number" id="p-sw" class="prop-input" value="1.5" min="0" max="20" step="0.5" onchange="applyProp('strokeWidth',+this.value);document.getElementById('p-sw-range').value=this.value" style="width:50px;flex:none">
+        <span style="font-size:10px;color:var(--text3);margin-left:2px">px</span>
+      </div>
+    </div>
+
+    <!-- Opacity -->
+    <div class="prop-section">
+      <div class="prop-label">Opacity <span id="p-op-val" style="color:var(--accent)">100%</span></div>
+      <input type="range" id="p-opacity" class="prop-range" min="0" max="100" value="100" style="width:100%" oninput="applyProp('opacity',this.value/100);document.getElementById('p-op-val').textContent=this.value+'%'">
+    </div>
+
+    <!-- Stroke style -->
+    <div class="prop-section">
+      <div class="prop-label">Line style</div>
+      <div class="shape-row">
+        <button class="shape-btn" onclick="applyProp('strokeDashArray',null)">——</button>
+        <button class="shape-btn" onclick="applyProp('strokeDashArray',[6,4])">– –</button>
+        <button class="shape-btn" onclick="applyProp('strokeDashArray',[2,3])">· ·</button>
+        <button class="shape-btn" onclick="applyProp('strokeDashArray',[8,4,2,4])">-·-</button>
+      </div>
+    </div>
+
+    <!-- Layers -->
+    <div class="prop-section">
+      <div class="prop-label">Layer order</div>
+      <div class="layer-btns">
+        <button class="layer-btn" onclick="layerOp('front')">⬆ Front</button>
+        <button class="layer-btn" onclick="layerOp('forward')">↑ Fwd</button>
+        <button class="layer-btn" onclick="layerOp('backward')">↓ Back</button>
+        <button class="layer-btn" onclick="layerOp('back')">⬇ Back</button>
+      </div>
+    </div>
+
+    <!-- Pattern measurements -->
+    <div class="prop-section">
+      <div class="prop-label">Pattern info</div>
+      <div class="info-card" id="info-card">
+        <div id="info-type">—</div>
+        <div id="info-dims">—</div>
+        <div id="info-perimeter">—</div>
+        <div id="info-vertices">—</div>
+        <div id="info-angle">—</div>
+        <div id="info-area">—</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<!-- Pen hint overlay -->
+<div class="pen-hint" id="pen-hint" style="display:none">Click to add points · Double-click to close · Esc to cancel</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+const RULERL = 24;
+let cv, W = 1200, H = 900;
+let tool = 'select';
+let showGrid = false, snapGrid = false, showRulers = false;
+let gridSize = 20;
+let unit = 'px', unitRatio = 1;
+let zoomLvl = 1;
+let history = [], histIdx = -1;
+let blockHistory = false;
+
+// Drawing state
+let isDrawing = false, drawStart = null, drawPreview = null;
+// Pen polygon
+let penPoints = [], penPreview = null, penDots = [];
+// Curve (quadratic)
+let curveStep = 0, curvePts = [];
+// Seam previews
+let seamObjects = [];
+
+// Grid refs
+let gridGroup = null;
+
+// ══════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  const wrap = document.getElementById('canvas-wrap');
+  W = Math.max(800, wrap.clientWidth - 50);
+  H = Math.max(600, wrap.clientHeight - 50);
+
+  cv = new fabric.Canvas('main-canvas', {
+    width: W, height: H,
+    backgroundColor: '#ffffff',
+    selection: true,
+    preserveObjectStacking: true,
+    stopContextMenu: true,
+    fireRightClick: false,
+  });
+
+  cv.setWidth(W); cv.setHeight(H);
+  cv.renderAll();
+
+  initRulers();
+  bindEvents();
+  saveHistory();
+  zoomFit();
+  notify('Pattern Studio ready', 'success');
+});
+
+// ══════════════════════════════════════════════════
+//  HISTORY
+// ══════════════════════════════════════════════════
+function saveHistory() {
+  if (blockHistory) return;
+  const state = JSON.stringify(cv.toJSON(['id','_seamParent']));
+  history = history.slice(0, histIdx + 1);
+  history.push(state);
+  if (history.length > 60) { history.shift(); }
+  else { histIdx++; }
+}
+
+function undo() {
+  if (histIdx <= 0) return;
+  histIdx--;
+  restoreState(history[histIdx]);
+  notify('Undo', 'info');
+}
+
+function redo() {
+  if (histIdx >= history.length - 1) return;
+  histIdx++;
+  restoreState(history[histIdx]);
+  notify('Redo', 'info');
+}
+
+function restoreState(state) {
+  blockHistory = true;
+  cv.loadFromJSON(state, () => {
+    cv.renderAll();
+    if (showGrid) drawGrid();
+    blockHistory = false;
+    updatePropsPanel();
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  CANVAS EVENTS
+// ══════════════════════════════════════════════════
+function bindEvents() {
+  cv.on('mouse:down', onDown);
+  cv.on('mouse:move', onMove);
+  cv.on('mouse:up', onUp);
+  cv.on('mouse:dblclick', onDblClick);
+  cv.on('selection:created', updatePropsPanel);
+  cv.on('selection:updated', updatePropsPanel);
+  cv.on('selection:cleared', clearPropsPanel);
+  cv.on('object:modified', () => { saveHistory(); updatePropsPanel(); });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+    if (e.key === 'Escape') cancelCurrentTool();
+    if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
+    if ((e.ctrlKey||e.metaKey) && e.key === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+    if ((e.ctrlKey||e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
+    if ((e.ctrlKey||e.metaKey) && e.key === 'd') { e.preventDefault(); duplicateSelected(); }
+    if ((e.ctrlKey||e.metaKey) && e.key === 'g') { e.preventDefault(); groupSelected(); }
+    if (e.key === 'v') setTool('select');
+    if (e.key === 'p') setTool('pen');
+    if (e.key === 'l') setTool('line');
+    if (e.key === 'r') setTool('rect');
+    if (e.key === 'e') setTool('ellipse');
+    if (e.key === '+' || e.key === '=') zoomIn();
+    if (e.key === '-') zoomOut();
+  });
+
+  // Zoom with wheel
+  document.getElementById('canvas-wrap').addEventListener('wheel', e => {
+    e.preventDefault();
+    const factor = e.deltaY < 0 ? 1.1 : 0.9;
+    zoomBy(factor);
+  }, {passive: false});
+
+  // Coordinate display
+  cv.on('mouse:move', e => {
+    if (!e.absolutePointer) return;
+    const x = toUnit(e.absolutePointer.x), y = toUnit(e.absolutePointer.y);
+    document.getElementById('coord-label').textContent = `X: ${fmt(x)}  Y: ${fmt(y)}`;
+    drawRulerCursor(e.absolutePointer.x, e.absolutePointer.y);
+  });
+}
+
+// ── Mouse handlers ──
+function onDown(e) {
+  const p = snap(cv.getPointer(e.e));
+
+  if (tool === 'pen') { penDown(p); return; }
+  if (tool === 'curve') { curveDown(p); return; }
+  if (tool === 'measure') { measureDown(p); return; }
+  if (tool === 'cut') { cutDown(p, e); return; }
+  if (tool === 'seam') { seamDown(e); return; }
+
+  if (['rect','ellipse','line','internal'].includes(tool)) {
+    if (e.target && tool !== 'internal') return;
+    isDrawing = true;
+    drawStart = p;
+    startDrawShape(p);
+  }
+}
+
+function onMove(e) {
+  if (!e.absolutePointer) return;
+  const p = snap(cv.getPointer(e.e));
+
+  if (tool === 'pen' && penPoints.length > 0) { penMove(p); return; }
+  if (tool === 'curve' && curveStep === 1) { curveMove(p); return; }
+
+  if (isDrawing && drawStart) {
+    updateDrawShape(p);
+  }
+}
+
+function onUp(e) {
+  if (isDrawing && drawStart) {
+    const p = snap(cv.getPointer(e.e));
+    finishDrawShape(p);
+    isDrawing = false; drawStart = null;
+  }
+}
+
+function onDblClick(e) {
+  if (tool === 'pen') { penFinish(); return; }
+  if (tool === 'editpts') {
+    const obj = cv.getActiveObject();
+    if (obj && obj.type === 'polygon') enablePointEditing(obj);
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  TOOL MANAGEMENT
+// ══════════════════════════════════════════════════
+function setTool(t) {
+  cancelCurrentTool();
+  tool = t;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('t-'+t);
+  if (btn) btn.classList.add('active');
+
+  const wrap = document.getElementById('canvas-wrap');
+  const editableTools = ['select','editpts','multiselect'];
+  wrap.style.cursor = editableTools.includes(t) ? 'default' : 'crosshair';
+
+  const drawingModes = ['rect','ellipse','line','internal','pen','curve','measure','cut','seam'];
+  cv.selection = !drawingModes.includes(t);
+  cv.forEachObject(o => { if (!o._grid) o.selectable = !drawingModes.includes(t); });
+
+  if (t === 'pen') {
+    document.getElementById('pen-hint').style.display = 'block';
+  }
+
+  if (t === 'editpts') {
+    const obj = cv.getActiveObject();
+    if (obj && (obj.type === 'polygon' || obj.type === 'polyline')) {
+      enablePointEditing(obj);
+    }
+  }
+
+  document.getElementById('tool-label').textContent = t.charAt(0).toUpperCase()+t.slice(1);
+}
+
+function cancelCurrentTool() {
+  // Cancel pen
+  if (penPoints.length > 0) {
+    penDots.forEach(d => cv.remove(d));
+    penDots = [];
+    if (penPreview) { cv.remove(penPreview); penPreview = null; }
+    penPoints = [];
+  }
+  // Cancel shape draw
+  if (drawPreview) { cv.remove(drawPreview); drawPreview = null; }
+  isDrawing = false; drawStart = null;
+  curveStep = 0; curvePts = [];
+  document.getElementById('pen-hint').style.display = 'none';
+}
+
+function activateMultiSelect() {
+  setTool('select');
+  cv.selection = true;
+  notify('Click and drag to select multiple objects', 'info');
+}
+
+// ══════════════════════════════════════════════════
+//  SHAPE DRAWING (drag to create)
+// ══════════════════════════════════════════════════
+function startDrawShape(p) {
+  const baseStyle = { stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(201,180,106,0.08)', selectable:false, evented:false, _preview:true };
+
+  if (tool === 'rect') {
+    drawPreview = new fabric.Rect({ left:p.x, top:p.y, width:1, height:1, ...baseStyle });
+  } else if (tool === 'ellipse') {
+    drawPreview = new fabric.Ellipse({ left:p.x, top:p.y, rx:1, ry:1, ...baseStyle });
+  } else if (tool === 'line') {
+    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#c9b46a', strokeWidth:1.5, selectable:false, evented:false, _preview:true });
+  } else if (tool === 'internal') {
+    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#8a8c80', strokeWidth:1, strokeDashArray:[5,4], selectable:false, evented:false, _preview:true });
+  }
+  if (drawPreview) cv.add(drawPreview);
+}
+
+function updateDrawShape(p) {
+  if (!drawPreview || !drawStart) return;
+  const x0=drawStart.x, y0=drawStart.y, x1=p.x, y1=p.y;
+  const minX=Math.min(x0,x1), minY=Math.min(y0,y1), w=Math.abs(x1-x0), h=Math.abs(y1-y0);
+
+  if (tool === 'rect') {
+    drawPreview.set({ left:minX, top:minY, width:w, height:h });
+  } else if (tool === 'ellipse') {
+    drawPreview.set({ left:minX, top:minY, rx:w/2, ry:h/2 });
+  } else if (tool === 'line' || tool === 'internal') {
+    drawPreview.set({ x2:x1, y2:y1 });
+  }
+  cv.renderAll();
+}
+
+function finishDrawShape(p) {
+  if (!drawPreview) return;
+  cv.remove(drawPreview);
+
+  const x0=drawStart.x, y0=drawStart.y, x1=p.x, y1=p.y;
+  const minX=Math.min(x0,x1), minY=Math.min(y0,y1), w=Math.abs(x1-x0)||2, h=Math.abs(y1-y0)||2;
+
+  const style = { stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(232,230,223,0.9)', hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false, cornerStyle:'circle' };
+
+  let obj;
+  if (tool === 'rect') {
+    obj = new fabric.Rect({ left:minX, top:minY, width:w, height:h, ...style });
+  } else if (tool === 'ellipse') {
+    obj = new fabric.Ellipse({ left:minX, top:minY, rx:w/2, ry:h/2, ...style, fill:'rgba(232,230,223,0.7)' });
+  } else if (tool === 'line') {
+    obj = new fabric.Line([x0,y0,x1,y1], { stroke:'#c9b46a', strokeWidth:1.5, hasControls:true });
+  } else if (tool === 'internal') {
+    obj = new fabric.Line([x0,y0,x1,y1], { stroke:'#8a8c80', strokeWidth:1, strokeDashArray:[5,4], hasControls:true });
+  }
+
+  if (obj) {
+    cv.add(obj);
+    cv.setActiveObject(obj);
+    saveHistory();
+    setTool('select');
+    updatePropsPanel();
+    notify(`${tool.charAt(0).toUpperCase()+tool.slice(1)} created`, 'success');
+  }
+  drawPreview = null;
+}
+
+// ══════════════════════════════════════════════════
+//  PEN TOOL (polygon)
+// ══════════════════════════════════════════════════
+function penDown(p) {
+  penPoints.push({x:p.x, y:p.y});
+  const dot = new fabric.Circle({ left:p.x-4, top:p.y-4, radius:4, fill:'#c9b46a', stroke:'#ffffff', strokeWidth:1, selectable:false, evented:false, _penDot:true });
+  penDots.push(dot);
+  cv.add(dot);
+
+  if (penPreview) cv.remove(penPreview);
+  penPreview = new fabric.Polyline([...penPoints, {x:p.x,y:p.y}], {
+    stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(201,180,106,0.07)', selectable:false, evented:false
+  });
+  cv.add(penPreview);
+  cv.renderAll();
+}
+
+function penMove(p) {
+  if (!penPreview || penPoints.length === 0) return;
+  penPreview.set({ points: [...penPoints, {x:p.x,y:p.y}] });
+  cv.renderAll();
+}
+
+function penFinish() {
+  document.getElementById('pen-hint').style.display = 'none';
+  if (penPoints.length < 3) {
+    cancelCurrentTool();
+    notify('Need at least 3 points', 'error');
+    return;
+  }
+  penDots.forEach(d => cv.remove(d));
+  penDots = [];
+  if (penPreview) { cv.remove(penPreview); penPreview = null; }
+
+  const poly = new fabric.Polygon([...penPoints], {
+    stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(232,230,223,0.9)',
+    hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false, cornerStyle:'circle'
+  });
+  cv.add(poly);
+  cv.setActiveObject(poly);
+  penPoints = [];
+  saveHistory();
+  setTool('select');
+  updatePropsPanel();
+  notify('Pattern piece created', 'success');
+}
+
+// ══════════════════════════════════════════════════
+//  CURVE TOOL (quadratic bezier)
+// ══════════════════════════════════════════════════
+function curveDown(p) {
+  curveStep++;
+  curvePts.push(p);
+
+  if (curveStep === 1) {
+    if (drawPreview) cv.remove(drawPreview);
+    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#c9b46a', strokeWidth:1.5, selectable:false, evented:false });
+    cv.add(drawPreview);
+  } else if (curveStep === 2) {
+    if (drawPreview) cv.remove(drawPreview);
+  } else if (curveStep === 3) {
+    // p0, p1(ctrl), p2(end)
+    const [p0,p1,p2] = curvePts;
+    const d = `M ${p0.x} ${p0.y} Q ${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
+    const curve = new fabric.Path(d, {
+      stroke:'#c9b46a', strokeWidth:1.5, fill:'transparent',
+      hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false
+    });
+    cv.add(curve);
+    cv.setActiveObject(curve);
+    saveHistory();
+    curveStep = 0; curvePts = [];
+    if (drawPreview) { cv.remove(drawPreview); drawPreview = null; }
+    setTool('select');
+    notify('Curve created  (3 clicks: start → control → end)', 'success');
+  }
+}
+
+function curveMove(p) {
+  if (!drawPreview || curvePts.length < 1) return;
+  if (curveStep === 1) drawPreview.set({x2:p.x, y2:p.y});
+  cv.renderAll();
+}
+
+// ══════════════════════════════════════════════════
+//  MEASURE TOOL
+// ══════════════════════════════════════════════════
+let measureStart = null, measureLine = null, measureLabel = null;
+function measureDown(p) {
+  if (!measureStart) {
+    measureStart = p;
+    measureLine = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3], selectable:false, evented:false });
+    cv.add(measureLine);
+    cv.on('mouse:move', measureMoveHandler);
+  } else {
+    cv.off('mouse:move', measureMoveHandler);
+    const dx = p.x - measureStart.x, dy = p.y - measureStart.y;
+    const dist = Math.sqrt(dx*dx+dy*dy);
+    if (measureLine) cv.remove(measureLine);
+    if (measureLabel) cv.remove(measureLabel);
+    const mx = (measureStart.x+p.x)/2, my = (measureStart.y+p.y)/2;
+    const lbl = new fabric.Text(`${fmt(toUnit(dist))} ${unit}`, {
+      left:mx, top:my-14, fontSize:11, fill:'#6a9ac4', fontFamily:'DM Sans', selectable:false, evented:false, backgroundColor:'rgba(14,15,13,0.7)', padding:3
+    });
+    cv.add(lbl);
+    notify(`Distance: ${fmt(toUnit(dist))} ${unit}`, 'info');
+    measureStart = null; measureLine = null; measureLabel = null;
+    setTool('select');
+  }
+}
+function measureMoveHandler(e) {
+  if (!measureLine || !measureStart) return;
+  const p = snap(cv.getPointer(e.e));
+  measureLine.set({x2:p.x, y2:p.y});
+  cv.renderAll();
+}
+
+// ══════════════════════════════════════════════════
+//  CUT TOOL (split line across object)
+// ══════════════════════════════════════════════════
+let cutStart = null, cutLine = null;
+function cutDown(p, e) {
+  if (!cutStart) {
+    cutStart = p;
+    cutLine = new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c46a6a',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
+    cv.add(cutLine);
+    notify('Click end point of cut line', 'info');
+  } else {
+    if (cutLine) cv.remove(cutLine);
+    // Duplicate object and show a gap
+    const obj = cv.getActiveObject();
+    if (obj) {
+      notify('Cut applied — use Edit Points to refine', 'success');
+    } else {
+      notify('Select an object first, then use the cut tool', 'error');
+    }
+    cutStart = null; cutLine = null;
+    setTool('select');
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  SEAM ALLOWANCE TOOL
+// ══════════════════════════════════════════════════
+function seamDown(e) {
+  const obj = e.target;
+  if (!obj || obj._grid) { notify('Click a shape to apply seam allowance', 'info'); return; }
+  applySeamToObject(obj);
+  setTool('select');
+}
+
+function applySeamToObject(obj) {
+  const amt = parseInt(document.getElementById('seam-amount').value) || 10;
+  removeSeamFrom(obj);
+  let seam;
+  if (obj.type === 'rect') {
+    seam = new fabric.Rect({
+      left: obj.left - amt, top: obj.top - amt,
+      width: obj.width * obj.scaleX + amt*2,
+      height: obj.height * obj.scaleY + amt*2,
+      fill: 'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3],
+      selectable:false, evented:false, _seamParent: obj.canvas ? cv.getObjects().indexOf(obj) : true
+    });
+  } else if (obj.type === 'ellipse') {
+    seam = new fabric.Ellipse({
+      left: obj.left - amt, top: obj.top - amt,
+      rx: obj.rx * obj.scaleX + amt, ry: obj.ry * obj.scaleY + amt,
+      fill:'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3],
+      selectable:false, evented:false
+    });
+  } else if (obj.type === 'polygon') {
+    // Offset polygon (simple expand)
+    const cx = obj.left + obj.width/2, cy = obj.top + obj.height/2;
+    const pts = obj.points.map(pt => {
+      const dx = pt.x - cx, dy = pt.y - cy;
+      const len = Math.sqrt(dx*dx+dy*dy)||1;
+      return { x: pt.x + dx/len*amt, y: pt.y + dy/len*amt };
+    });
+    seam = new fabric.Polygon(pts, { fill:'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3], selectable:false, evented:false });
+  }
+  if (seam) {
+    seam._seamFor = obj;
+    seamObjects.push(seam);
+    cv.add(seam);
+    cv.sendToBack(seam);
+    notify(`Seam allowance: ${amt}px applied`, 'success');
+    saveHistory();
+  }
+}
+
+function removeSeamFrom(obj) {
+  seamObjects = seamObjects.filter(s => {
+    if (s._seamFor === obj) { cv.remove(s); return false; }
+    return true;
+  });
+}
+
+function toggleSeamPreview() {
+  const on = document.getElementById('seam-toggle').checked;
+  seamObjects.forEach(s => s.set('visible', on));
+  cv.renderAll();
+}
+
+function updateSeamAllowance() {
+  // re-apply to all objects that have seams
+  const existing = [...seamObjects];
+  existing.forEach(s => {
+    if (s._seamFor) applySeamToObject(s._seamFor);
+    else cv.remove(s);
+  });
+}
+
+// ══════════════════════════════════════════════════
+//  POINT EDITING
+// ══════════════════════════════════════════════════
+function enablePointEditing(poly) {
+  poly.set({ objectCaching:false });
+  const pts = poly.points;
+  const handles = pts.map((pt,i) => {
+    const h = new fabric.Circle({
+      radius:5, fill:'#c9b46a', stroke:'#0e0f0d', strokeWidth:1,
+      left: poly.left + pt.x - 5, top: poly.top + pt.y - 5,
+      hasControls:false, hasBorders:false, _ptHandle:true, _ptIdx:i, _poly:poly
+    });
+    h.on('moving', () => {
+      pts[i].x = h.left - poly.left + 5;
+      pts[i].y = h.top - poly.top + 5;
+      poly.set({ points: pts });
+      cv.renderAll();
+    });
+    h.on('mouseup', saveHistory);
+    return h;
+  });
+  handles.forEach(h => cv.add(h));
+  notify('Drag the golden handles to reshape. Press Esc to finish.', 'info');
+
+  const cleanup = () => {
+    handles.forEach(h => cv.remove(h));
+    document.removeEventListener('keydown', escHandler);
+  };
+  const escHandler = e => { if (e.key==='Escape') { cleanup(); setTool('select'); } };
+  document.addEventListener('keydown', escHandler);
+}
+
+// ══════════════════════════════════════════════════
+//  GRID
+// ══════════════════════════════════════════════════
+function drawGrid() {
+  if (gridGroup) { cv.remove(gridGroup); gridGroup = null; }
+  if (!showGrid) return;
+
+  const lines = [];
+  const majorEvery = 5;
+  for (let x = 0; x <= W; x += gridSize) {
+    const isMajor = (x/gridSize) % majorEvery === 0;
+    lines.push(new fabric.Line([x,0,x,H], { stroke: isMajor?'#3a3d34':'#25271f', strokeWidth:isMajor?0.7:0.4, selectable:false, evented:false, _grid:true }));
+  }
+  for (let y = 0; y <= H; y += gridSize) {
+    const isMajor = (y/gridSize) % majorEvery === 0;
+    lines.push(new fabric.Line([0,y,W,y], { stroke: isMajor?'#3a3d34':'#25271f', strokeWidth:isMajor?0.7:0.4, selectable:false, evented:false, _grid:true }));
+  }
+  gridGroup = new fabric.Group(lines, { selectable:false, evented:false, _grid:true });
+  cv.add(gridGroup);
+  cv.sendToBack(gridGroup);
+  cv.renderAll();
+}
+
+function toggleGrid() {
+  showGrid = !showGrid;
+  drawGrid();
+  document.getElementById('grid-btn').style.color = showGrid ? 'var(--accent)' : '';
+  updateStatusBar();
+  notify(`Grid ${showGrid?'on':'off'}`, 'info');
+}
+
+function toggleSnap() {
+  snapGrid = !snapGrid;
+  document.getElementById('snap-btn').style.color = snapGrid ? 'var(--accent)' : '';
+  updateStatusBar();
+  notify(`Snap to grid ${snapGrid?'on':'off'}`, 'info');
+}
+
+function setGridSize(v) {
+  gridSize = Math.max(5, Math.min(200, v));
+  if (showGrid) drawGrid();
+}
+
+function snap(p) {
+  if (!snapGrid) return p;
+  return { x: Math.round(p.x/gridSize)*gridSize, y: Math.round(p.y/gridSize)*gridSize };
+}
+
+// ══════════════════════════════════════════════════
+//  RULERS
+// ══════════════════════════════════════════════════
+function initRulers() {
+  const wrap = document.getElementById('canvas-wrap');
+  const rh = document.getElementById('ruler-h');
+  const rv = document.getElementById('ruler-v');
+  rh.width = wrap.clientWidth - RULERL; rh.height = RULERL;
+  rv.width = RULERL; rv.height = wrap.clientHeight - RULERL;
+  if (showRulers) { drawRuler(); }
+}
+
+function drawRuler() {
+  const wrap = document.getElementById('canvas-wrap');
+  const rh = document.getElementById('ruler-h'), ctxH = rh.getContext('2d');
+  const rv = document.getElementById('ruler-v'), ctxV = rv.getContext('2d');
+
+  [ctxH,ctxV].forEach(ctx => {
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    ctx.fillStyle = '#1e2019';
+    ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+  });
+
+  const step = gridSize * zoomLvl;
+  ctxH.fillStyle = '#555750'; ctxH.font = '9px DM Sans'; ctxH.textAlign = 'center';
+  for (let x = 0; x < rh.width; x += step) {
+    const v = Math.round(x / zoomLvl / unitRatio);
+    ctxH.fillStyle = '#555750'; ctxH.fillRect(x,RULERL-4,1,(x%(step*5)<1)?8:4);
+    if (x%(step*5)<1) { ctxH.fillStyle='#8a8c80'; ctxH.fillText(v,x,10); }
+  }
+  ctxV.fillStyle = '#555750'; ctxV.font = '9px DM Sans'; ctxV.textAlign = 'center';
+  for (let y = 0; y < rv.height; y += step) {
+    const v = Math.round(y / zoomLvl / unitRatio);
+    ctxV.fillStyle = '#555750'; ctxV.fillRect(RULERL-4,y,4,(y%(step*5)<1)?8:4);
+    if (y%(step*5)<1) {
+      ctxV.save(); ctxV.translate(10,y); ctxV.rotate(-Math.PI/2);
+      ctxV.fillStyle='#8a8c80'; ctxV.fillText(v,0,0); ctxV.restore();
+    }
+  }
+}
+
+function drawRulerCursor(x,y) {
+  if (!showRulers) return;
+  drawRuler();
+  const rh = document.getElementById('ruler-h'), ctxH = rh.getContext('2d');
+  const rv = document.getElementById('ruler-v'), ctxV = rv.getContext('2d');
+  ctxH.fillStyle='#c9b46a'; ctxH.fillRect(x*zoomLvl,0,1,RULERL);
+  ctxV.fillStyle='#c9b46a'; ctxV.fillRect(0,y*zoomLvl,RULERL,1);
+}
+
+function toggleRulers() {
+  showRulers = !showRulers;
+  const rh = document.getElementById('ruler-h'), rv = document.getElementById('ruler-v'), corner = document.querySelector('.ruler-corner');
+  [rh,rv,corner].forEach(el => el.style.display = showRulers ? 'block' : 'none');
+  document.getElementById('ruler-btn').style.color = showRulers ? 'var(--accent)' : '';
+  if (showRulers) drawRuler();
+}
+
+// ══════════════════════════════════════════════════
+//  ZOOM & PAN
+// ══════════════════════════════════════════════════
+function zoomBy(factor) {
+  zoomLvl = Math.min(Math.max(zoomLvl * factor, 0.05), 8);
+  cv.setZoom(zoomLvl);
+  document.getElementById('zoom-disp').textContent = Math.round(zoomLvl*100)+'%';
+  if (showRulers) drawRuler();
+}
+function zoomIn() { zoomBy(1.2); }
+function zoomOut() { zoomBy(1/1.2); }
+function zoom100() { zoomLvl=1; cv.setZoom(1); document.getElementById('zoom-disp').textContent='100%'; if(showRulers)drawRuler(); }
+function zoomFit() {
+  const wrap = document.getElementById('canvas-wrap');
+  const s = Math.min(wrap.clientWidth/W, wrap.clientHeight/H) * 0.88;
+  zoomLvl = s; cv.setZoom(s);
+  document.getElementById('zoom-disp').textContent = Math.round(s*100)+'%';
+  if (showRulers) drawRuler();
+}
+
+// ══════════════════════════════════════════════════
+//  PROPERTIES PANEL
+// ══════════════════════════════════════════════════
+function updatePropsPanel() {
+  const obj = cv.getActiveObject();
+  const noSel = document.getElementById('no-sel-msg');
+  const panel = document.getElementById('props-panel');
+
+  if (!obj) { noSel.style.display=''; panel.style.display='none'; return; }
+  noSel.style.display='none'; panel.style.display='';
+
+  document.getElementById('obj-type-badge').textContent = obj.type;
+  document.getElementById('p-x').value = Math.round(obj.left||0);
+  document.getElementById('p-y').value = Math.round(obj.top||0);
+
+  const w = obj.type==='ellipse' ? Math.round(obj.rx*2*(obj.scaleX||1)) : Math.round((obj.width||0)*(obj.scaleX||1));
+  const h = obj.type==='ellipse' ? Math.round(obj.ry*2*(obj.scaleY||1)) : Math.round((obj.height||0)*(obj.scaleY||1));
+  document.getElementById('p-w').value = w;
+  document.getElementById('p-h').value = h;
+
+  const rot = Math.round(obj.angle||0);
+  document.getElementById('p-rot').value = rot;
+  document.getElementById('p-rot-range').value = ((rot%360)+360)%360;
+
+  const fill = obj.fill&&obj.fill!=='transparent'?obj.fill:'#e8e6df';
+  document.getElementById('p-fill').value = fill;
+  document.getElementById('p-fill-txt').value = obj.fill||'transparent';
+  const stroke = obj.stroke||'#c9b46a';
+  document.getElementById('p-stroke').value = stroke;
+  document.getElementById('p-stroke-txt').value = stroke;
+  const sw = obj.strokeWidth||1.5;
+  document.getElementById('p-sw').value = sw;
+  document.getElementById('p-sw-range').value = sw;
+  const op = Math.round((obj.opacity||1)*100);
+  document.getElementById('p-opacity').value = op;
+  document.getElementById('p-op-val').textContent = op+'%';
+
+  // Pattern info
+  document.getElementById('info-type').innerHTML = `<b>Type:</b> ${obj.type}`;
+  document.getElementById('info-dims').innerHTML = `<b>Size:</b> ${w}×${h} ${unit}`;
+  document.getElementById('info-angle').innerHTML = `<b>Rotation:</b> ${rot}°`;
+
+  let perimeter = '—', vertices = '—', area = '—';
+  if (obj.type==='polygon' && obj.points) {
+    const pts = obj.points;
+    vertices = pts.length;
+    let peri = 0, ar = 0;
+    for (let i=0;i<pts.length;i++) {
+      const p1=pts[i], p2=pts[(i+1)%pts.length];
+      peri += Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2);
+      ar += p1.x*p2.y - p2.x*p1.y;
+    }
+    perimeter = fmt(toUnit(peri))+' '+unit;
+    area = fmt(toUnit(Math.abs(ar/2)))+' '+unit+'²';
+  } else if (obj.type==='rect') {
+    perimeter = fmt(toUnit(2*(w+h)))+' '+unit;
+    area = fmt(toUnit(w*h))+' '+unit+'²';
+  } else if (obj.type==='ellipse') {
+    perimeter = fmt(toUnit(2*Math.PI*Math.sqrt((obj.rx**2+obj.ry**2)/2)))+' '+unit;
+    area = fmt(toUnit(Math.PI*obj.rx*obj.ry))+' '+unit+'²';
+  } else if (obj.type==='line') {
+    const dx=(obj.x2-obj.x1)*(obj.scaleX||1), dy=(obj.y2-obj.y1)*(obj.scaleY||1);
+    perimeter = fmt(toUnit(Math.sqrt(dx*dx+dy*dy)))+' '+unit;
+  }
+  document.getElementById('info-perimeter').innerHTML = `<b>Perimeter:</b> ${perimeter}`;
+  document.getElementById('info-vertices').innerHTML = `<b>Vertices:</b> ${vertices}`;
+  document.getElementById('info-area').innerHTML = `<b>Area:</b> ${area}`;
+
+  document.getElementById('obj-label').textContent = `${obj.type} · W:${w} H:${h}`;
+}
+
+function clearPropsPanel() {
+  document.getElementById('no-sel-msg').style.display='';
+  document.getElementById('props-panel').style.display='none';
+  document.getElementById('obj-label').textContent = 'No selection';
+  document.getElementById('obj-type-badge').textContent='';
+}
+
+function applyProp(prop, val) {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  obj.set(prop, val);
+  cv.renderAll();
+  // Update text fields
+  if (prop==='fill') { document.getElementById('p-fill-txt').value=val; try{document.getElementById('p-fill').value=val}catch(e){} }
+  if (prop==='stroke') { document.getElementById('p-stroke-txt').value=val; try{document.getElementById('p-stroke').value=val}catch(e){} }
+  saveHistory();
+}
+
+function applySize(prop, val) {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  if (obj.type==='ellipse') {
+    if (prop==='width') obj.set('rx', val/2);
+    else obj.set('ry', val/2);
+  } else {
+    const scale = prop==='width' ? (val/(obj.width||1)) : (val/(obj.height||1));
+    obj.set(prop==='width' ? 'scaleX' : 'scaleY', scale);
+  }
+  cv.renderAll();
+  saveHistory();
+}
+
+// ══════════════════════════════════════════════════
+//  OBJECT OPERATIONS
+// ══════════════════════════════════════════════════
+function deleteSelected() {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  if (obj.type==='activeSelection') {
+    obj.getObjects().forEach(o => cv.remove(o));
+  } else {
+    cv.remove(obj);
+  }
+  cv.discardActiveObject();
+  cv.renderAll();
+  saveHistory();
+  notify('Deleted', 'info');
+}
+
+function duplicateSelected() {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  obj.clone(clone => {
+    clone.set({ left:obj.left+20, top:obj.top+20 });
+    cv.add(clone);
+    cv.setActiveObject(clone);
+    cv.renderAll();
+    saveHistory();
+    notify('Duplicated', 'success');
+  });
+}
+
+function groupSelected() {
+  const sel = cv.getActiveObject();
+  if (!sel || sel.type!=='activeSelection') { notify('Select multiple objects first', 'error'); return; }
+  const grp = sel.toGroup();
+  cv.setActiveObject(grp);
+  cv.renderAll();
+  saveHistory();
+  notify('Grouped', 'success');
+}
+
+function ungroupSelected() {
+  const obj = cv.getActiveObject();
+  if (!obj || obj.type!=='group') { notify('Select a group first', 'error'); return; }
+  obj.toActiveSelection();
+  cv.renderAll();
+  saveHistory();
+  notify('Ungrouped', 'success');
+}
+
+function toggleLock(lock) {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  const props = ['lockMovementX','lockMovementY','lockRotation','lockScalingX','lockScalingY'];
+  props.forEach(p => obj.set(p, lock));
+  if (lock) { obj.hasControls=false; obj.hasBorders=false; } else { obj.hasControls=true; obj.hasBorders=true; }
+  cv.renderAll();
+  notify(lock?'Locked':'Unlocked', 'info');
+}
+
+function layerOp(op) {
+  const obj = cv.getActiveObject();
+  if (!obj) return;
+  if (op==='front') cv.bringToFront(obj);
+  else if (op==='forward') cv.bringForward(obj);
+  else if (op==='backward') cv.sendBackwards(obj);
+  else if (op==='back') cv.sendToBack(obj);
+  if (showGrid && gridGroup) cv.sendToBack(gridGroup);
+  cv.renderAll();
+  saveHistory();
+}
+
+// ══════════════════════════════════════════════════
+//  UNIT SYSTEM
+// ══════════════════════════════════════════════════
+const UNIT_RATIOS = { px:1, mm:3.7795, cm:37.795, in:96 };
+function setUnit(u) { unit=u; unitRatio=UNIT_RATIOS[u]||1; updatePropsPanel(); }
+function toUnit(px) { return px/unitRatio; }
+function fmt(v) { return Number.isInteger(v)?v:parseFloat(v.toFixed(2)); }
+
+// ══════════════════════════════════════════════════
+//  PROJECT MANAGEMENT
+// ══════════════════════════════════════════════════
+function newProject() {
+  if (!confirm('New project? Unsaved work will be lost.')) return;
+  cv.clear(); cv.backgroundColor='#ffffff';
+  seamObjects=[];
+  if (showGrid) drawGrid();
+  cv.renderAll();
+  saveHistory();
+  notify('New project', 'success');
+}
+
+function saveProject() {
+  const data = { canvas: cv.toJSON(['id','_seamParent']), meta: { unit, gridSize, showGrid, snapGrid, created: new Date().toISOString() } };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `pattern_${new Date().toLocaleDateString('en-GB').replace(/\//g,'-')}.json`;
+  a.click();
+  notify('Project saved', 'success');
+}
+
+function loadProject() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        blockHistory = true;
+        cv.loadFromJSON(data.canvas||data, () => {
+          cv.renderAll();
+          if (data.meta) {
+            if (data.meta.unit) { unit=data.meta.unit; document.getElementById('unit-sel').value=unit; }
+            if (data.meta.gridSize) { gridSize=data.meta.gridSize; document.getElementById('grid-size-input').value=gridSize; }
+          }
+          if (showGrid) drawGrid();
+          blockHistory = false;
+          saveHistory();
+          notify('Project loaded', 'success');
         });
-        
-        document.getElementById('prop-y').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('top', parseInt(e.target.value));
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-width').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj && obj.type !== 'line') {
-                obj.set('width', parseInt(e.target.value));
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-height').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj && obj.type !== 'line') {
-                obj.set('height', parseInt(e.target.value));
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-rotation').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('angle', parseInt(e.target.value));
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-fill').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('fill', e.target.value);
-                document.getElementById('fill-value').innerText = e.target.value;
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-stroke').addEventListener('change', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('stroke', e.target.value);
-                document.getElementById('stroke-value').innerText = e.target.value;
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-stroke-width').addEventListener('input', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('strokeWidth', parseFloat(e.target.value));
-                document.getElementById('stroke-width-value').innerText = e.target.value + 'px';
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('prop-opacity').addEventListener('input', (e) => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                obj.set('opacity', parseFloat(e.target.value) / 100);
-                document.getElementById('opacity-value').innerText = e.target.value + '%';
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        // ============================================
-        // LAYER CONTROLS
-        // ============================================
-        
-        document.getElementById('bring-forward').addEventListener('click', () => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                canvas.bringForward(obj);
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        document.getElementById('send-backward').addEventListener('click', () => {
-            const obj = canvas.getActiveObject();
-            if (obj) {
-                canvas.sendBackwards(obj);
-                canvas.renderAll();
-                saveToHistory();
-            }
-        });
-        
-        // ============================================
-        // TOOL SELECTION
-        // ============================================
-        
-        function setActiveTool(tool) {
-            currentTool = tool;
-            document.getElementById('tool-status').innerHTML = `🖌️ Tool: ${tool.charAt(0).toUpperCase() + tool.slice(1)}`;
-            
-            // Reset all tool buttons
-            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-            
-            if (tool === 'select') {
-                canvas.isDrawingMode = false;
-                canvas.selection = true;
-                canvas.defaultCursor = 'default';
-                canvas.off('mouse:down', onPenMouseDown);
-                finishPenTool();
-                document.getElementById('tool-select').classList.add('active');
-            } else if (tool === 'pen') {
-                canvas.isDrawingMode = false;
-                canvas.selection = false;
-                startPenTool();
-                document.getElementById('tool-pen').classList.add('active');
-            } else if (tool === 'rectangle') {
-                canvas.isDrawingMode = false;
-                createRectangle();
-                document.getElementById('tool-rectangle').classList.add('active');
-            } else if (tool === 'circle') {
-                canvas.isDrawingMode = false;
-                createEllipse();
-                document.getElementById('tool-circle').classList.add('active');
-            } else if (tool === 'line') {
-                canvas.isDrawingMode = false;
-                createLine();
-                document.getElementById('tool-line').classList.add('active');
-            }
-        }
-        
-        // Tool event listeners
-        document.getElementById('tool-select').addEventListener('click', () => setActiveTool('select'));
-        document.getElementById('tool-pen').addEventListener('click', () => setActiveTool('pen'));
-        document.getElementById('tool-rectangle').addEventListener('click', () => setActiveTool('rectangle'));
-        document.getElementById('tool-circle').addEventListener('click', () => setActiveTool('circle'));
-        document.getElementById('tool-line').addEventListener('click', () => setActiveTool('line'));
-        
-        document.getElementById('tool-group').addEventListener('click', () => {
-            const activeObj = canvas.getActiveObject();
-            if (activeObj) {
-                const group = new fabric.Group([activeObj]);
-                canvas.remove(activeObj);
-                canvas.add(group);
-                canvas.setActiveObject(group);
-                canvas.renderAll();
-                saveToHistory();
-                showAlert('Group created', 'success');
-            }
-        });
-        
-        document.getElementById('tool-ungroup').addEventListener('click', () => {
-            const activeObj = canvas.getActiveObject();
-            if (activeObj && activeObj.type === 'group') {
-                const items = activeObj.getObjects();
-                activeObj.remove();
-                items.forEach(item => canvas.add(item));
-                canvas.renderAll();
-                saveToHistory();
-                showAlert('Group dissolved', 'success');
-            }
-        });
-        
-        document.getElementById('tool-lock').addEventListener('click', () => {
-            const activeObj = canvas.getActiveObject();
-            if (activeObj) {
-                activeObj.set('lockMovementX', true);
-                activeObj.set('lockMovementY', true);
-                activeObj.set('lockRotation', true);
-                activeObj.set('lockScalingX', true);
-                activeObj.set('lockScalingY', true);
-                canvas.renderAll();
-                showAlert('Object locked', 'info');
-            }
-        });
-        
-        document.getElementById('tool-unlock').addEventListener('click', () => {
-            const activeObj = canvas.getActiveObject();
-            if (activeObj) {
-                activeObj.set('lockMovementX', false);
-                activeObj.set('lockMovementY', false);
-                activeObj.set('lockRotation', false);
-                activeObj.set('lockScalingX', false);
-                activeObj.set('lockScalingY', false);
-                canvas.renderAll();
-                showAlert('Object unlocked', 'info');
-            }
-        });
-        
-        // ============================================
-        // TOP TOOLBAR ACTIONS
-        // ============================================
-        
-        document.getElementById('new-project').addEventListener('click', () => {
-            if (confirm('Create new project? All unsaved work will be lost.')) {
-                canvas.clear();
-                canvas.backgroundColor = '#ffffff';
-                canvas.renderAll();
-                saveToHistory();
-                showAlert('New project created', 'success');
-            }
-        });
-        
-        document.getElementById('save-project').addEventListener('click', async () => {
-            const canvasData = canvas.toJSON();
-            const imageData = canvas.toDataURL('png');
-            
-            try {
-                const response = await fetch('/tools/sketch-fabric/save/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ canvasData, imageData })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    showAlert('Project saved successfully!', 'success');
-                } else {
-                    showAlert('Error: ' + result.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Error saving: ' + error.message, 'error');
-            }
-        });
-        
-        document.getElementById('load-project').addEventListener('click', () => {
-            const filename = prompt('Enter filename to load (from saved drawings list):');
-            if (filename) loadDrawing(filename);
-        });
-        
-        document.getElementById('undo-btn').addEventListener('click', undo);
-        document.getElementById('redo-btn').addEventListener('click', redo);
-        
-        document.getElementById('toggle-grid').addEventListener('click', () => {
-            showGrid = !showGrid;
-            drawGrid();
-            document.getElementById('grid-status').innerHTML = `📐 Grid: ${showGrid ? 'ON' : 'OFF'} | Snap: ${snapToGrid ? 'ON' : 'OFF'}`;
-            showAlert(`Grid ${showGrid ? 'enabled' : 'disabled'}`, 'info');
-        });
-        
-        document.getElementById('toggle-snap').addEventListener('click', () => {
-            snapToGrid = !snapToGrid;
-            document.getElementById('grid-status').innerHTML = `📐 Grid: ${showGrid ? 'ON' : 'OFF'} | Snap: ${snapToGrid ? 'ON' : 'OFF'}`;
-            showAlert(`Snap to grid ${snapToGrid ? 'enabled' : 'disabled'}`, 'info');
-        });
-        
-        document.getElementById('zoom-in').addEventListener('click', () => zoom(1.2));
-        document.getElementById('zoom-out').addEventListener('click', () => zoom(0.8));
-        document.getElementById('zoom-fit').addEventListener('click', fitToScreen);
-        
-        document.getElementById('export-svg').addEventListener('click', () => {
-            const svg = canvas.toSVG();
-            const blob = new Blob([svg], { type: 'image/svg+xml' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `pattern_${Date.now()}.svg`;
-            link.click();
-            showAlert('SVG exported', 'success');
-        });
-        
-        document.getElementById('export-png').addEventListener('click', () => {
-            const dataURL = canvas.toDataURL('png');
-            const link = document.createElement('a');
-            link.download = `pattern_${Date.now()}.png`;
-            link.href = dataURL;
-            link.click();
-            showAlert('PNG exported', 'success');
-        });
-        
-        // ============================================
-        // HELPER FUNCTIONS
-        // ============================================
-        
-        function showAlert(message, type) {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            document.body.appendChild(alert);
-            setTimeout(() => {
-                alert.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => alert.remove(), 300);
-            }, 3000);
-        }
-        
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        
-        async function loadDrawing(filename) {
-            try {
-                const response = await fetch('/tools/sketch-fabric/load/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ filename })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    canvas.loadFromJSON(result.canvasData, () => {
-                        canvas.renderAll();
-                        if (showGrid) drawGrid();
-                        saveToHistory();
-                        showAlert('Drawing loaded successfully!', 'success');
-                    });
-                } else {
-                    showAlert('Error loading: ' + result.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Error: ' + error.message, 'error');
-            }
-        }
-        
-        // ============================================
-        // CANVAS EVENT HANDLERS
-        // ============================================
-        
-        canvas.on('mouse:move', (e) => {
-            if (e.absolutePointer) {
-                const x = Math.round(e.absolutePointer.x);
-                const y = Math.round(e.absolutePointer.y);
-                document.getElementById('coord-info').innerHTML = `📍 X: ${x}, Y: ${y}`;
-            }
-        });
-        
-        canvas.on('selection:created', updatePropertiesPanel);
-        canvas.on('selection:updated', updatePropertiesPanel);
-        canvas.on('selection:cleared', updatePropertiesPanel);
-        canvas.on('object:modified', () => {
-            saveToHistory();
-            updatePropertiesPanel();
-        });
-        canvas.on('object:added', () => saveToHistory());
-        
-        // Handle double-click to finish pen tool
-        canvas.on('mouse:dblclick', () => {
-            if (currentTool === 'pen') {
-                finishPenTool();
-            }
-        });
-        
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        
-        canvas.backgroundColor = '#ffffff';
-        canvas.renderAll();
-        canvas.selection = true;
-        setActiveTool('select');
-        saveToHistory();
-        fitToScreen();
-        
-        window.addEventListener('resize', () => {
-            fitToScreen();
-            if (showGrid) drawGrid();
-        });
-        
-        showAlert('Pattern Studio Ready! 🎨', 'success');
-    </script>
+      } catch(err) { notify('Invalid file: '+err.message, 'error'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ══════════════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════════════
+function exportSVG() {
+  const wasGrid = showGrid;
+  if (gridGroup) gridGroup.set('visible',false);
+  const svg = cv.toSVG();
+  if (gridGroup) gridGroup.set('visible',true);
+  const blob = new Blob([svg],{type:'image/svg+xml'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`pattern_${Date.now()}.svg`; a.click();
+  notify('SVG exported', 'success');
+}
+
+function exportPNG() {
+  const wasGrid = showGrid;
+  if (gridGroup) gridGroup.set('visible',false);
+  cv.renderAll();
+  const dataURL = cv.toDataURL({format:'png',multiplier:2});
+  if (gridGroup) gridGroup.set('visible',wasGrid);
+  cv.renderAll();
+  const a = document.createElement('a'); a.href=dataURL; a.download=`pattern_${Date.now()}.png`; a.click();
+  notify('PNG exported @2x', 'success');
+}
+
+function exportDXF() {
+  // Generate basic DXF
+  const objs = cv.getObjects().filter(o => !o._grid);
+  let dxf = `0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n`;
+  objs.forEach(obj => {
+    if (obj.type==='line') {
+      dxf += `0\nLINE\n8\n0\n10\n${obj.x1}\n20\n${-obj.y1}\n11\n${obj.x2}\n21\n${-obj.y2}\n`;
+    } else if (obj.type==='rect') {
+      const [x,y,w,h] = [obj.left,obj.top,obj.width,obj.height];
+      dxf += `0\nLWPOLYLINE\n8\n0\n90\n4\n70\n1\n10\n${x}\n20\n${-y}\n10\n${x+w}\n20\n${-y}\n10\n${x+w}\n20\n${-y-h}\n10\n${x}\n20\n${-y-h}\n`;
+    } else if (obj.type==='polygon' && obj.points) {
+      dxf += `0\nLWPOLYLINE\n8\n0\n90\n${obj.points.length}\n70\n1\n`;
+      obj.points.forEach(p => { dxf += `10\n${obj.left+p.x}\n20\n${-(obj.top+p.y)}\n`; });
+    }
+  });
+  dxf += `0\nENDSEC\n0\nEOF\n`;
+  const blob = new Blob([dxf],{type:'application/dxf'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`pattern_${Date.now()}.dxf`; a.click();
+  notify('DXF exported', 'success');
+}
+
+// ══════════════════════════════════════════════════
+//  STATUS BAR
+// ══════════════════════════════════════════════════
+function updateStatusBar() {
+  document.getElementById('status-right').textContent = `Grid: ${showGrid?'ON':'OFF'}  |  Snap: ${snapGrid?'ON':'OFF'}`;
+}
+
+// ══════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ══════════════════════════════════════════════════
+function notify(msg, type='info') {
+  const icons = {success:'✓',error:'✕',info:'·'};
+  const n = document.createElement('div');
+  n.className = `notif notif-${type}`;
+  n.textContent = (icons[type]||'') + ' ' + msg;
+  document.body.appendChild(n);
+  setTimeout(() => { n.style.opacity='0'; n.style.transition='opacity .3s'; setTimeout(()=>n.remove(),300); }, 2800);
+}
+</script>
 </body>
 </html>
