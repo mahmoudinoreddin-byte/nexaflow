@@ -20,12 +20,10 @@ html,body{height:100%;overflow:hidden}
 body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);font-size:12px;line-height:1.4}
 .app{display:flex;height:100vh;width:100vw}
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-/* ── SIDEBAR BASE ── */
 .sidebar{background:var(--bg1);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
 .sidebar-left{width:var(--sidebar-w);border-right:1px solid var(--border)}
 .sidebar-right{width:var(--props-w);border-left:1px solid var(--border)}
@@ -36,7 +34,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .brand-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--accent);line-height:1}
 .brand-sub{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.8px;margin-top:1px}
 
-/* ── TOOL SECTIONS ── */
 .ts{padding:8px 10px;border-bottom:1px solid var(--border)}
 .ts-label{font-size:9px;text-transform:uppercase;letter-spacing:1.8px;color:var(--text3);margin-bottom:6px;font-weight:600;padding:0 2px}
 .tg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
@@ -47,10 +44,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .tb.danger:hover{background:rgba(196,106,106,0.12);border-color:rgba(196,106,106,0.4);color:var(--red)}
 .tb svg{flex-shrink:0;width:12px;height:12px}
 
-/* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
 
-/* Topbar */
 .topbar{height:var(--top-h);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;flex-shrink:0;overflow:hidden}
 .tbg{display:flex;align-items:center;gap:3px;padding:0 10px;border-right:1px solid var(--border);height:100%;flex-shrink:0}
 .tbg:last-child{border-right:none;margin-left:auto}
@@ -59,17 +54,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .tbb.active-btn{color:var(--accent)}
 .zoom-d{font-size:11px;color:var(--text2);min-width:40px;text-align:center;font-variant-numeric:tabular-nums;font-weight:500}
 
-/* Canvas */
 .canvas-area{flex:1;position:relative;overflow:hidden;background:var(--bg0)}
 .canvas-area canvas{position:absolute}
 #c{position:absolute;top:0;left:0}
 
-/* Bottom bar */
 .botbar{height:var(--bot-h);background:var(--bg1);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10.5px;color:var(--text3);flex-shrink:0;font-variant-numeric:tabular-nums;gap:12px}
 .status-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
 .bb-seg{display:flex;align-items:center;gap:6px}
 
-/* ── PROPERTIES ── */
 .ph{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .ph h3{font-family:'DM Serif Display',serif;font-size:14px;color:var(--accent);font-weight:400}
 .ps{padding:10px 12px;border-bottom:1px solid var(--border)}
@@ -88,11 +80,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .btn-sm:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
 .no-sel{color:var(--text3);font-size:11px;text-align:center;padding:28px 14px;font-style:italic;line-height:1.7}
 
-/* Info card */
 .info-card{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:11px;color:var(--text2);line-height:2}
 .info-card b{color:var(--text);font-weight:500}
 
-/* Toggle */
 .tog{position:relative;width:30px;height:17px;flex-shrink:0}
 .tog input{opacity:0;width:0;height:0;position:absolute}
 .tog-track{position:absolute;inset:0;background:var(--bg3);border-radius:9px;border:1px solid var(--border2);cursor:pointer;transition:background .2s}
@@ -100,23 +90,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .tog-thumb{position:absolute;top:2px;left:2px;width:11px;height:11px;background:var(--text3);border-radius:50%;transition:transform .2s,background .2s;pointer-events:none}
 .tog input:checked~.tog-thumb{transform:translateX(13px);background:var(--accent)}
 
-/* Texture panel */
 .tex-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
 .tex-swatch{width:100%;aspect-ratio:1;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;transition:border-color .12s;overflow:hidden;position:relative}
 .tex-swatch.selected{border-color:var(--accent)}
 .tex-swatch canvas{width:100%;height:100%;display:block}
 
-/* ── NOTIFICATIONS ── */
 .notif{position:fixed;bottom:20px;right:20px;padding:7px 13px;border-radius:6px;font-size:11.5px;font-weight:500;z-index:9999;animation:nIn .2s ease;pointer-events:none;display:flex;align-items:center;gap:6px;max-width:260px}
 .notif-success{background:#192c1b;border:1px solid #274d2a;color:var(--green)}
 .notif-error{background:#2c1919;border:1px solid #4d2727;color:var(--red)}
 .notif-info{background:#26220e;border:1px solid #46400f;color:var(--accent)}
 @keyframes nIn{from{transform:translateX(16px);opacity:0}to{transform:none;opacity:1}}
 
-/* Pen hint */
 .pen-hint{position:fixed;bottom:42px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:10.5px;padding:5px 14px;border-radius:20px;pointer-events:none;z-index:100;white-space:nowrap}
 
-/* Panel tabs */
 .tab-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
 .tab{flex:1;padding:7px 0;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;font-weight:600}
 .tab:hover{color:var(--text2)}
@@ -124,13 +110,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-/* Texture preview on canvas objects */
 .ctx-menu{position:fixed;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;z-index:999;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.6);min-width:160px;display:none}
 .ctx-item{padding:7px 14px;font-size:11.5px;color:var(--text2);cursor:pointer;transition:background .1s;display:flex;align-items:center;gap:8px}
 .ctx-item:hover{background:var(--bg3);color:var(--text)}
 .ctx-sep{height:1px;background:var(--border);margin:3px 0}
 
-/* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:none;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
 .modal{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:24px;width:380px;max-width:90vw}
@@ -143,35 +127,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
 .modal-btn.secondary{background:var(--bg3);color:var(--text2)}
 .modal-btn.secondary:hover{color:var(--text)}
 
-/* Boolean ops buttons */
 .bool-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 .bool-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 4px;border-radius:5px;cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif;transition:all .12s;text-align:center;line-height:1.5}
 .bool-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
-
-/* Node editing handles */
-.node-handle{cursor:grab}
 </style>
 </head>
 <body>
 
-<!-- Context menu -->
 <div class="ctx-menu" id="ctx-menu">
-  <div class="ctx-item" onclick="ctxDuplicate()">⧉ Duplicate</div>
-  <div class="ctx-item" onclick="ctxClone2D()">🪡 Clone (Marvelous-style)</div>
+  <div class="ctx-item" onclick="window.ctxDuplicate()">⧉ Duplicate</div>
+  <div class="ctx-item" onclick="window.openCloneModal()">🪡 Clone</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="ctxGroup()">⬡ Group</div>
-  <div class="ctx-item" onclick="ctxUngroup()">⬡ Ungroup</div>
+  <div class="ctx-item" onclick="window.groupSelected()">⬡ Group</div>
+  <div class="ctx-item" onclick="window.ungroupSelected()">⬡ Ungroup</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="layerOp('front')">⬆ Bring to Front</div>
-  <div class="ctx-item" onclick="layerOp('back')">⬇ Send to Back</div>
+  <div class="ctx-item" onclick="window.layerOp('front')">⬆ Bring to Front</div>
+  <div class="ctx-item" onclick="window.layerOp('back')">⬇ Send to Back</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="ctxLock()">🔒 Lock / Unlock</div>
-  <div class="ctx-item" onclick="ctxApplySeam()">□ Apply Seam</div>
+  <div class="ctx-item" onclick="window.toggleLock(true)">🔒 Lock</div>
+  <div class="ctx-item" onclick="window.toggleLock(false)">🔓 Unlock</div>
+  <div class="ctx-item" onclick="window.applySeamSelected()">□ Apply Seam</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item danger" onclick="deleteSelected()" style="color:var(--red)">✕ Delete</div>
+  <div class="ctx-item" onclick="window.deleteSelected()" style="color:var(--red)">✕ Delete</div>
 </div>
 
-<!-- Clone modal -->
 <div class="modal-bg" id="clone-modal">
   <div class="modal">
     <h4>Clone Pattern Piece</h4>
@@ -187,15 +166,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
     <label style="font-size:11px;color:var(--text2);margin-bottom:4px;display:block">Offset Y</label>
     <input type="number" id="clone-dy" class="pi" style="width:100%" value="0" placeholder="px">
     <div class="modal-btns">
-      <button class="modal-btn secondary" onclick="closeModal('clone-modal')">Cancel</button>
-      <button class="modal-btn primary" onclick="doClone()">Clone ✂</button>
+      <button class="modal-btn secondary" onclick="window.closeModal('clone-modal')">Cancel</button>
+      <button class="modal-btn primary" onclick="window.doClone()">Clone ✂</button>
     </div>
   </div>
 </div>
 
 <div class="app">
 
-<!-- ═══ LEFT SIDEBAR ═══ -->
 <div class="sidebar sidebar-left">
   <div class="brand">
     <div class="brand-icon">✂</div>
@@ -206,103 +184,68 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
   </div>
 
   <div class="sidebar-scroll">
-
     <div class="ts">
       <div class="ts-label">Selection</div>
       <div class="tg">
-        <button class="tb active" id="t-select" onclick="setTool('select')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l10 6-5 1-2 5z" stroke-linejoin="round"/></svg>Select
-        </button>
-        <button class="tb" id="t-multi" onclick="setTool('multi')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Multi
-        </button>
+        <button class="tb active" id="t-select" onclick="setTool('select')">Select</button>
+        <button class="tb" id="t-multi" onclick="setTool('multi')">Multi</button>
       </div>
     </div>
 
     <div class="ts">
       <div class="ts-label">Draw</div>
       <div class="tg">
-        <button class="tb" id="t-pen" onclick="setTool('pen')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 14l3-1 8-8-2-2-8 8z"/><path d="M11 3l2 2"/></svg>Pen
-        </button>
-        <button class="tb" id="t-line" onclick="setTool('line')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line
-        </button>
-        <button class="tb" id="t-rect" onclick="setTool('rect')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1"/></svg>Rect
-        </button>
-        <button class="tb" id="t-ellipse" onclick="setTool('ellipse')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="8" cy="8" rx="6" ry="4"/></svg>Ellipse
-        </button>
-        <button class="tb" id="t-curve" onclick="setTool('curve')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 C4 4 12 4 14 13" fill="none"/></svg>Curve
-        </button>
-        <button class="tb" id="t-internal" onclick="setTool('internal')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 1.5"><line x1="2" y1="8" x2="14" y2="8"/></svg>Dart
-        </button>
+        <button class="tb" id="t-pen" onclick="setTool('pen')">Pen</button>
+        <button class="tb" id="t-line" onclick="setTool('line')">Line</button>
+        <button class="tb" id="t-rect" onclick="setTool('rect')">Rect</button>
+        <button class="tb" id="t-ellipse" onclick="setTool('ellipse')">Ellipse</button>
+        <button class="tb" id="t-curve" onclick="setTool('curve')">Curve</button>
+        <button class="tb" id="t-internal" onclick="setTool('internal')">Dart</button>
       </div>
     </div>
 
     <div class="ts">
       <div class="ts-label">Node Edit</div>
       <div class="tg">
-        <button class="tb" id="t-node" onclick="setTool('node')">
-          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="2.5"/><circle cx="8" cy="3" r="2.5"/><circle cx="13" cy="8" r="2.5"/><circle cx="8" cy="13" r="2.5"/></svg>Nodes
-        </button>
-        <button class="tb" id="t-measure" onclick="setTool('measure')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="6" x2="2" y2="10"/><line x1="14" y1="6" x2="14" y2="10"/></svg>Measure
-        </button>
-        <button class="tb" id="t-seam" onclick="setTool('seam')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><rect x="4.5" y="4.5" width="7" height="7" rx="0.5" stroke-dasharray="1.5 1"/></svg>Seam
-        </button>
-        <button class="tb" id="t-cut" onclick="setTool('cut')">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="12" r="2"/><circle cx="4" cy="4" r="2"/><line x1="6" y1="10.5" x2="14" y2="3"/><line x1="6" y1="5.5" x2="14" y2="13"/></svg>Cut
-        </button>
+        <button class="tb" id="t-node" onclick="setTool('node')">Nodes</button>
+        <button class="tb" id="t-measure" onclick="setTool('measure')">Measure</button>
+        <button class="tb" id="t-seam" onclick="setTool('seam')">Seam</button>
+        <button class="tb" id="t-cut" onclick="setTool('cut')">Cut</button>
       </div>
     </div>
 
     <div class="ts">
       <div class="ts-label">Boolean Ops</div>
       <div class="bool-grid">
-        <button class="bool-btn" onclick="boolOp('union')" title="Union: merge two shapes">⊕ Union</button>
-        <button class="bool-btn" onclick="boolOp('subtract')" title="Subtract: cut one from other">⊖ Subtract</button>
-        <button class="bool-btn" onclick="boolOp('intersect')" title="Intersect: keep overlap">⊗ Intersect</button>
-        <button class="bool-btn" onclick="boolOp('exclude')" title="Exclude: remove overlap">⊘ Exclude</button>
+        <button class="bool-btn" onclick="boolOp('union')">⊕ Union</button>
+        <button class="bool-btn" onclick="boolOp('subtract')">⊖ Subtract</button>
+        <button class="bool-btn" onclick="boolOp('intersect')">⊗ Intersect</button>
+        <button class="bool-btn" onclick="boolOp('exclude')">⊘ Exclude</button>
       </div>
     </div>
 
     <div class="ts">
       <div class="ts-label">Organize</div>
       <div class="tg">
-        <button class="tb" onclick="groupSelected()">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2" stroke-dasharray="2 1"/></svg>Group
-        </button>
-        <button class="tb" onclick="ungroupSelected()">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Ungroup
-        </button>
-        <button class="tb" onclick="duplicateSelected()">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="9" height="9" rx="1"/><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2"/></svg>Dup
-        </button>
-        <button class="tb" onclick="openCloneModal()">
-          🪡 Clone
-        </button>
-        <button class="tb" onclick="toggleLock(true)">🔒 Lock</button>
-        <button class="tb" onclick="toggleLock(false)">🔓 Unlock</button>
-        <button class="tb wide danger" onclick="deleteSelected()">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5h10M6 5V3h4v2M5 5l1 8h4l1-8"/></svg>Delete Selected
-        </button>
+        <button class="tb" onclick="groupSelected()">Group</button>
+        <button class="tb" onclick="ungroupSelected()">Ungroup</button>
+        <button class="tb" onclick="duplicateSelected()">Dup</button>
+        <button class="tb" onclick="openCloneModal()">Clone</button>
+        <button class="tb" onclick="toggleLock(true)">Lock</button>
+        <button class="tb" onclick="toggleLock(false)">Unlock</button>
+        <button class="tb wide danger" onclick="deleteSelected()">Delete Selected</button>
       </div>
     </div>
 
     <div class="ts">
       <div class="ts-label">Align</div>
       <div class="tg">
-        <button class="tb" onclick="alignObjects('left')" title="Align left">⫷ Left</button>
-        <button class="tb" onclick="alignObjects('right')" title="Align right">⫸ Right</button>
-        <button class="tb" onclick="alignObjects('top')" title="Align top">⬆ Top</button>
-        <button class="tb" onclick="alignObjects('bottom')" title="Align bottom">⬇ Bot</button>
-        <button class="tb" onclick="alignObjects('centerH')" title="Center horizontal">↔ CtrH</button>
-        <button class="tb" onclick="alignObjects('centerV')" title="Center vertical">↕ CtrV</button>
+        <button class="tb" onclick="alignObjects('left')">Left</button>
+        <button class="tb" onclick="alignObjects('right')">Right</button>
+        <button class="tb" onclick="alignObjects('top')">Top</button>
+        <button class="tb" onclick="alignObjects('bottom')">Bot</button>
+        <button class="tb" onclick="alignObjects('centerH')">CtrH</button>
+        <button class="tb" onclick="alignObjects('centerV')">CtrV</button>
       </div>
     </div>
 
@@ -326,13 +269,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
         <button class="btn-sm" style="flex-shrink:0;padding:4px 7px" onclick="applySeamSelected()">Apply</button>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ═══ MAIN AREA ═══ -->
 <div class="main">
-  <!-- Top bar -->
   <div class="topbar">
     <div class="tbg">
       <button class="tbb" onclick="newProject()">📄 New</button>
@@ -362,16 +302,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
     </div>
   </div>
 
-  <!-- Canvas area — full fill -->
   <div class="canvas-area" id="canvas-area">
     <canvas id="c"></canvas>
-    <!-- Rulers -->
     <canvas id="rh" style="position:absolute;top:0;left:20px;pointer-events:none;display:none;z-index:5"></canvas>
     <canvas id="rv" style="position:absolute;top:20px;left:0;pointer-events:none;display:none;z-index:5"></canvas>
     <div id="ruler-corner" style="position:absolute;top:0;left:0;width:20px;height:20px;background:var(--bg1);border-right:1px solid var(--border);border-bottom:1px solid var(--border);z-index:6;display:none"></div>
   </div>
 
-  <!-- Bottom bar -->
   <div class="botbar">
     <div class="bb-seg"><span class="status-dot"></span><span id="tool-lbl">Select</span></div>
     <div class="bb-seg" id="coord-lbl">X: — &nbsp; Y: —</div>
@@ -380,14 +317,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
   </div>
 </div>
 
-<!-- ═══ RIGHT SIDEBAR — PROPERTIES ═══ -->
 <div class="sidebar sidebar-right">
   <div class="ph">
     <h3>Properties</h3>
     <span id="obj-badge" style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px"></span>
   </div>
 
-  <!-- Tab bar -->
   <div class="tab-bar" id="prop-tabs">
     <div class="tab active" data-tab="transform" onclick="switchTab('transform')">Transform</div>
     <div class="tab" data-tab="style" onclick="switchTab('style')">Style</div>
@@ -395,15 +330,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
     <div class="tab" data-tab="info" onclick="switchTab('info')">Info</div>
   </div>
 
-  <!-- No selection -->
   <div id="no-sel" class="no-sel">
     <div style="font-size:32px;margin-bottom:8px">✂️</div>
     Select an object to<br>view & edit its properties
   </div>
 
   <div id="props-wrap" style="display:none;overflow-y:auto;flex:1">
-
-    <!-- TAB: Transform -->
     <div class="tab-panel active" id="tab-transform">
       <div class="ps">
         <div class="pl">Position</div>
@@ -417,7 +349,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
           <span class="pi-lbl" style="margin-left:4px">H</span><input type="number" id="p-h" class="pi pi-half" onchange="applySize('height',+this.value)">
         </div>
         <div class="pr" style="margin-top:6px;align-items:center">
-          <label class="tog" title="Lock aspect ratio"><input type="checkbox" id="lock-ar"><span class="tog-track"></span><span class="tog-thumb"></span></label>
+          <label class="tog"><input type="checkbox" id="lock-ar"><span class="tog-track"></span><span class="tog-thumb"></span></label>
           <span style="font-size:10px;color:var(--text2);margin-left:6px">Lock aspect ratio</span>
         </div>
       </div>
@@ -445,15 +377,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
       <div class="ps">
         <div class="pl">Layer Order</div>
         <div class="btn-row">
-          <button class="btn-sm" onclick="layerOp('front')">⬆ Front</button>
-          <button class="btn-sm" onclick="layerOp('forward')">↑ Fwd</button>
-          <button class="btn-sm" onclick="layerOp('backward')">↓ Back</button>
-          <button class="btn-sm" onclick="layerOp('back')">⬇ Back</button>
+          <button class="btn-sm" onclick="layerOp('front')">Front</button>
+          <button class="btn-sm" onclick="layerOp('forward')">Fwd</button>
+          <button class="btn-sm" onclick="layerOp('backward')">Back</button>
+          <button class="btn-sm" onclick="layerOp('back')">Back</button>
         </div>
       </div>
     </div>
 
-    <!-- TAB: Style -->
     <div class="tab-panel" id="tab-style">
       <div class="ps">
         <div class="pl">Fill</div>
@@ -489,1227 +420,4 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);fo
           <button class="btn-sm" onclick="applyProp('strokeLineCap','butt')">Butt</button>
           <button class="btn-sm" onclick="applyProp('strokeLineCap','round')">Round</button>
           <button class="btn-sm" onclick="applyProp('strokeLineCap','square')">Square</button>
-        </div>
-      </div>
-      <div class="ps">
-        <div class="pl">Shadow</div>
-        <div class="btn-row" style="margin-bottom:6px">
-          <button class="btn-sm" onclick="applyShadow(null)">None</button>
-          <button class="btn-sm" onclick="applyShadow('soft')">Soft</button>
-          <button class="btn-sm" onclick="applyShadow('hard')">Hard</button>
-          <button class="btn-sm" onclick="applyShadow('glow')">Glow</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB: Texture -->
-    <div class="tab-panel" id="tab-texture">
-      <div class="ps">
-        <div class="pl">Fabric Presets</div>
-        <div class="tex-grid" id="tex-grid"></div>
-        <div class="pl" style="margin-top:6px">Scale</div>
-        <input type="range" id="tex-scale" class="range pi-full" min="10" max="400" value="100" oninput="updateTexScale(this.value)" style="margin-bottom:6px">
-        <div class="pl">Angle</div>
-        <input type="range" id="tex-angle" class="range pi-full" min="0" max="360" value="0" oninput="updateTexAngle(this.value)" style="margin-bottom:6px">
-        <div class="pl">Opacity</div>
-        <input type="range" id="tex-opacity" class="range pi-full" min="0" max="100" value="80" oninput="updateTexOpacity(this.value)" style="margin-bottom:6px">
-        <div class="btn-row" style="margin-top:4px">
-          <button class="btn-sm" onclick="removeTexture()">✕ Remove Texture</button>
-          <button class="btn-sm" onclick="document.getElementById('tex-upload').click()">📂 Custom</button>
-        </div>
-        <input type="file" id="tex-upload" accept="image/*" style="display:none" onchange="loadCustomTexture(this)">
-      </div>
-    </div>
-
-    <!-- TAB: Info -->
-    <div class="tab-panel" id="tab-info">
-      <div class="ps">
-        <div class="pl">Pattern Info</div>
-        <div class="info-card">
-          <div id="i-type">—</div>
-          <div id="i-dims">—</div>
-          <div id="i-peri">—</div>
-          <div id="i-area">—</div>
-          <div id="i-verts">—</div>
-          <div id="i-angle">—</div>
-          <div id="i-seam">—</div>
-        </div>
-      </div>
-      <div class="ps">
-        <div class="pl">Notes</div>
-        <textarea id="obj-notes" class="pi pi-full" rows="4" style="resize:vertical;width:100%" placeholder="Add notes for this pattern piece..." oninput="saveObjNote(this.value)"></textarea>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-</div>
-
-<div class="pen-hint" id="pen-hint" style="display:none">Click to add points · Double-click to close · Esc to cancel</div>
-
-<script>
-// ══════════════════════════════════════════════════
-//  FABRIC SETUP — FULL VIEWPORT FILL
-// ══════════════════════════════════════════════════
-let cv, vpW, vpH;
-let tool = 'select';
-let showGrid=false, snapGrid=false, showRulers=false;
-let gridSize=20, gridGroup=null;
-let unit='px', unitRatio=1;
-let zoomLvl=1, panX=0, panY=0;
-let history=[], histIdx=-1, blockHistory=false;
-let activeTab='transform';
-
-// Draw state
-let isDrawing=false, drawStart=null, drawPreview=null;
-// Pen
-let penPts=[], penDots=[], penPrev=null;
-// Curve: 3-click bezier
-let cStep=0, cPts=[];
-// Measure
-let mStart=null, mLine=null;
-// Cut
-let cutStart=null, cutPrevLine=null;
-// Seam
-let seamMap=new Map(); // obj -> seamObj
-
-// Texture state per object
-let texState={scale:100, angle:0, opacity:0.8};
-let textures={};  // named texture patterns
-let selectedTexKey=null;
-
-window.addEventListener('load',()=>{
-  const area = document.getElementById('canvas-area');
-  vpW = area.clientWidth;
-  vpH = area.clientHeight;
-
-  cv = new fabric.Canvas('c',{
-    width:vpW, height:vpH,
-    backgroundColor:'#f5f3ee',
-    selection:true,
-    preserveObjectStacking:true,
-    stopContextMenu:true,
-    fireRightClick:true,
-  });
-
-  // Panning with middle mouse / alt+drag
-  cv.on('mouse:down', e=>{ if(e.e.button===1||(e.e.altKey&&e.e.button===0)){ cv.isDragging=true; cv.lastPosX=e.e.clientX; cv.lastPosY=e.e.clientY; } });
-  cv.on('mouse:move', e=>{
-    if(cv.isDragging){
-      const vpt=cv.viewportTransform;
-      vpt[4]+=(e.e.clientX-cv.lastPosX);
-      vpt[5]+=(e.e.clientY-cv.lastPosY);
-      cv.lastPosX=e.e.clientX; cv.lastPosY=e.e.clientY;
-      cv.requestRenderAll();
-    }
-  });
-  cv.on('mouse:up',()=>{ cv.isDragging=false; });
-
-  buildTextures();
-  renderTexGrid();
-  initRulers();
-  bindEvents();
-  saveHistory();
-  notify('Atelier Pattern Studio v2 ready','success');
-});
-
-// Resize canvas to fill area on window resize
-window.addEventListener('resize',()=>{
-  const area=document.getElementById('canvas-area');
-  vpW=area.clientWidth; vpH=area.clientHeight;
-  cv.setWidth(vpW); cv.setHeight(vpH);
-  cv.renderAll();
-  initRulers();
-});
-
-// ══════════════════════════════════════════════════
-//  HISTORY
-// ══════════════════════════════════════════════════
-function saveHistory(){
-  if(blockHistory) return;
-  const s=cv.toJSON(['_notes','_texKey']);
-  history=history.slice(0,histIdx+1);
-  history.push(JSON.stringify(s));
-  if(history.length>80) history.shift(); else histIdx++;
-}
-function undo(){
-  if(histIdx<=0){ notify('Nothing to undo','info'); return; }
-  histIdx--; restoreState(history[histIdx]); notify('Undo','info');
-}
-function redo(){
-  if(histIdx>=history.length-1){ notify('Nothing to redo','info'); return; }
-  histIdx++; restoreState(history[histIdx]); notify('Redo','info');
-}
-function restoreState(s){
-  blockHistory=true;
-  cv.loadFromJSON(JSON.parse(s),()=>{
-    cv.renderAll();
-    if(showGrid) drawGrid();
-    blockHistory=false;
-    updateProps();
-  });
-}
-
-// ══════════════════════════════════════════════════
-//  BIND EVENTS
-// ══════════════════════════════════════════════════
-function bindEvents(){
-  cv.on('mouse:down', onDown);
-  cv.on('mouse:move', onMove);
-  cv.on('mouse:up', onUp);
-  cv.on('mouse:dblclick', onDblClick);
-  cv.on('mouse:right', e=>showCtxMenu(e.e));
-  cv.on('selection:created', updateProps);
-  cv.on('selection:updated', updateProps);
-  cv.on('selection:cleared', clearProps);
-  cv.on('object:modified',()=>{ saveHistory(); updateProps(); });
-
-  document.addEventListener('keydown', e=>{
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
-    if(e.key==='Escape') cancelTool();
-    if(e.key==='Delete'||e.key==='Backspace') deleteSelected();
-    if((e.ctrlKey||e.metaKey)&&e.key==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); }
-    if((e.ctrlKey||e.metaKey)&&e.key==='y'){ e.preventDefault(); redo(); }
-    if((e.ctrlKey||e.metaKey)&&e.key==='d'){ e.preventDefault(); duplicateSelected(); }
-    if((e.ctrlKey||e.metaKey)&&e.key==='g'){ e.preventDefault(); groupSelected(); }
-    if((e.ctrlKey||e.metaKey)&&e.key==='a'){ e.preventDefault(); cv.discardActiveObject(); const objs=cv.getObjects().filter(o=>!o._grid&&!o._seam); if(objs.length){ const sel=new fabric.ActiveSelection(objs,{canvas:cv}); cv.setActiveObject(sel); cv.renderAll(); } }
-    if(e.key==='v') setTool('select');
-    if(e.key==='p') setTool('pen');
-    if(e.key==='l') setTool('line');
-    if(e.key==='r') setTool('rect');
-    if(e.key==='e') setTool('ellipse');
-    if(e.key==='n') setTool('node');
-    if(e.key==='='||e.key==='+') zoomIn();
-    if(e.key==='-') zoomOut();
-  });
-
-  document.getElementById('canvas-area').addEventListener('wheel',e=>{
-    e.preventDefault();
-    const f=e.deltaY<0?1.1:0.909;
-    const pt=new fabric.Point(e.offsetX,e.offsetY);
-    cv.zoomToPoint(pt,Math.min(Math.max(cv.getZoom()*f,0.04),12));
-    zoomLvl=cv.getZoom();
-    document.getElementById('zoom-d').textContent=Math.round(zoomLvl*100)+'%';
-    if(showRulers) drawRuler();
-  },{passive:false});
-
-  cv.on('mouse:move',e=>{
-    if(!e.absolutePointer) return;
-    const {x,y}=e.absolutePointer;
-    document.getElementById('coord-lbl').textContent=`X: ${fmt(toU(x))}  Y: ${fmt(toU(y))}`;
-    if(showRulers) drawRulerCursor(x,y);
-    // update cut preview
-    if(cutStart&&cutPrevLine){ cutPrevLine.set({x2:x,y2:y}); cv.renderAll(); }
-    // update measure preview
-    if(mStart&&mLine){ mLine.set({x2:x,y2:y}); cv.renderAll(); }
-  });
-
-  // Hide ctx menu on click elsewhere
-  document.addEventListener('click',()=> document.getElementById('ctx-menu').style.display='none');
-}
-
-// ══════════════════════════════════════════════════
-//  TOOL MANAGEMENT
-// ══════════════════════════════════════════════════
-function setTool(t){
-  cancelTool();
-  tool=t;
-  document.querySelectorAll('.tb[id^="t-"]').forEach(b=>b.classList.remove('active'));
-  const btn=document.getElementById('t-'+t);
-  if(btn) btn.classList.add('active');
-  const area=document.getElementById('canvas-area');
-  const editModes=['select','multi','node'];
-  area.style.cursor=editModes.includes(t)?'default':'crosshair';
-  const drawModes=['rect','ellipse','line','internal','pen','curve','measure','cut','seam'];
-  cv.selection=!drawModes.includes(t);
-  cv.forEachObject(o=>{ if(!o._grid&&!o._seam) o.selectable=!drawModes.includes(t); });
-  if(t==='pen') document.getElementById('pen-hint').style.display='block';
-  document.getElementById('tool-lbl').textContent=t.charAt(0).toUpperCase()+t.slice(1);
-
-  // Node editing
-  if(t==='node'){
-    const obj=cv.getActiveObject();
-    if(obj&&(obj.type==='polygon'||obj.type==='polyline'||obj.type==='path')) activateNodeEdit(obj);
-    else notify('Select a polygon/path first, then switch to Node tool','info');
-  }
-}
-
-function cancelTool(){
-  // cancel pen
-  penDots.forEach(d=>cv.remove(d)); penDots=[]; penPts=[];
-  if(penPrev){cv.remove(penPrev);penPrev=null;}
-  // cancel draw
-  if(drawPreview){cv.remove(drawPreview);drawPreview=null;}
-  isDrawing=false; drawStart=null;
-  cStep=0; cPts=[];
-  // cancel measure
-  if(mLine){cv.remove(mLine);mLine=null;} mStart=null;
-  // cancel cut
-  if(cutPrevLine){cv.remove(cutPrevLine);cutPrevLine=null;} cutStart=null;
-  document.getElementById('pen-hint').style.display='none';
-  cv.forEachObject(o=>{ if(!o._grid&&!o._seam) o.selectable=true; });
-  cv.selection=true;
-}
-
-// ══════════════════════════════════════════════════
-//  MOUSE HANDLERS
-// ══════════════════════════════════════════════════
-function onDown(e){
-  if(e.e.button===1||(e.e.altKey&&e.e.button===0)) return; // pan
-  const p=snap(cv.getPointer(e.e));
-  if(tool==='pen'){penDown(p);return;}
-  if(tool==='curve'){curveDown(p);return;}
-  if(tool==='measure'){measureDown(p);return;}
-  if(tool==='cut'){cutDown(p,e);return;}
-  if(tool==='seam'){seamClick(e);return;}
-  if(['rect','ellipse','line','internal'].includes(tool)){
-    isDrawing=true; drawStart=p; startShape(p);
-  }
-}
-function onMove(e){
-  const p=snap(cv.getPointer(e.e));
-  if(tool==='pen'&&penPts.length>0){penMove(p);return;}
-  if(tool==='curve'&&cStep>0){curveMove(p);return;}
-  if(isDrawing&&drawStart) updateShape(p);
-}
-function onUp(e){
-  if(isDrawing&&drawStart){
-    const p=snap(cv.getPointer(e.e));
-    finishShape(p); isDrawing=false; drawStart=null;
-  }
-}
-function onDblClick(e){
-  if(tool==='pen'){penFinish();return;}
-  if(tool==='node'){
-    const obj=cv.getActiveObject();
-    if(obj) activateNodeEdit(obj);
-  }
-}
-
-// ══════════════════════════════════════════════════
-//  SHAPE DRAWING
-// ══════════════════════════════════════════════════
-const STYLE_PREV={stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(200,179,102,0.06)',selectable:false,evented:false};
-const STYLE_FINAL={stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(232,230,223,0.92)',hasControls:true,hasBorders:true,cornerColor:'#c8b366',cornerSize:7,transparentCorners:false,cornerStyle:'circle'};
-
-function startShape(p){
-  if(tool==='rect') drawPreview=new fabric.Rect({left:p.x,top:p.y,width:1,height:1,...STYLE_PREV});
-  else if(tool==='ellipse') drawPreview=new fabric.Ellipse({left:p.x,top:p.y,rx:1,ry:1,...STYLE_PREV,fill:'rgba(200,179,102,0.06)'});
-  else if(tool==='line') drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c8b366',strokeWidth:1.5,selectable:false,evented:false});
-  else if(tool==='internal') drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#8a8c80',strokeWidth:1,strokeDashArray:[5,4],selectable:false,evented:false});
-  if(drawPreview) cv.add(drawPreview);
-}
-
-function updateShape(p){
-  if(!drawPreview||!drawStart) return;
-  const x0=drawStart.x,y0=drawStart.y,x1=p.x,y1=p.y;
-  const minX=Math.min(x0,x1),minY=Math.min(y0,y1),w=Math.abs(x1-x0),h=Math.abs(y1-y0);
-  if(tool==='rect') drawPreview.set({left:minX,top:minY,width:w,height:h});
-  else if(tool==='ellipse') drawPreview.set({left:minX,top:minY,rx:w/2,ry:h/2});
-  else drawPreview.set({x2:x1,y2:y1});
-  cv.renderAll();
-}
-
-function finishShape(p){
-  if(drawPreview) cv.remove(drawPreview);
-  const x0=drawStart.x,y0=drawStart.y,x1=p.x,y1=p.y;
-  const minX=Math.min(x0,x1),minY=Math.min(y0,y1),w=Math.abs(x1-x0)||4,h=Math.abs(y1-y0)||4;
-  let obj;
-  if(tool==='rect') obj=new fabric.Rect({left:minX,top:minY,width:w,height:h,...STYLE_FINAL});
-  else if(tool==='ellipse') obj=new fabric.Ellipse({left:minX,top:minY,rx:w/2,ry:h/2,...STYLE_FINAL,fill:'rgba(232,230,223,0.8)'});
-  else if(tool==='line') obj=new fabric.Line([x0,y0,x1,y1],{stroke:'#c8b366',strokeWidth:1.5,...STYLE_FINAL,fill:'transparent'});
-  else if(tool==='internal') obj=new fabric.Line([x0,y0,x1,y1],{stroke:'#8a8c80',strokeWidth:1,strokeDashArray:[5,4],...STYLE_FINAL,fill:'transparent'});
-  if(obj){
-    cv.add(obj); cv.setActiveObject(obj);
-    saveHistory(); setTool('select'); updateProps();
-    notify(`${tool} added`,'success');
-  }
-  drawPreview=null;
-}
-
-// ══════════════════════════════════════════════════
-//  PEN TOOL
-// ══════════════════════════════════════════════════
-function penDown(p){
-  penPts.push({x:p.x,y:p.y});
-  const dot=new fabric.Circle({left:p.x-4,top:p.y-4,radius:4,fill:'#c8b366',stroke:'#fff',strokeWidth:1,selectable:false,evented:false});
-  penDots.push(dot); cv.add(dot);
-  if(penPrev) cv.remove(penPrev);
-  penPrev=new fabric.Polyline([...penPts,{x:p.x,y:p.y}],{stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(200,179,102,0.06)',selectable:false,evented:false});
-  cv.add(penPrev); cv.renderAll();
-}
-function penMove(p){
-  if(!penPrev||penPts.length===0) return;
-  penPrev.set({points:[...penPts,{x:p.x,y:p.y}]}); cv.renderAll();
-}
-function penFinish(){
-  document.getElementById('pen-hint').style.display='none';
-  if(penPts.length<3){cancelTool();notify('Need at least 3 points','error');return;}
-  penDots.forEach(d=>cv.remove(d)); penDots=[];
-  if(penPrev){cv.remove(penPrev);penPrev=null;}
-  const poly=new fabric.Polygon([...penPts],{...STYLE_FINAL,stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(232,230,223,0.92)'});
-  cv.add(poly); cv.setActiveObject(poly);
-  penPts=[]; saveHistory(); setTool('select'); updateProps();
-  notify('Pattern piece created','success');
-}
-
-// ══════════════════════════════════════════════════
-//  CURVE TOOL (3-click quadratic bezier)
-// ══════════════════════════════════════════════════
-function curveDown(p){
-  cStep++; cPts.push(p);
-  if(cStep===1){
-    drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c8b366',strokeWidth:1.5,selectable:false,evented:false,strokeDashArray:[4,3]});
-    cv.add(drawPreview);
-    notify('Click control point','info');
-  } else if(cStep===2){
-    notify('Click end point','info');
-  } else if(cStep===3){
-    if(drawPreview){cv.remove(drawPreview);drawPreview=null;}
-    const [p0,p1,p2]=cPts;
-    const d=`M ${p0.x} ${p0.y} Q ${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
-    const curve=new fabric.Path(d,{...STYLE_FINAL,fill:'transparent',stroke:'#c8b366',strokeWidth:1.5});
-    cv.add(curve); cv.setActiveObject(curve);
-    saveHistory(); cStep=0; cPts=[]; setTool('select');
-    notify('Curve created','success');
-  }
-}
-function curveMove(p){
-  if(!drawPreview||cPts.length<1) return;
-  drawPreview.set({x2:p.x,y2:p.y}); cv.renderAll();
-}
-
-// ══════════════════════════════════════════════════
-//  MEASURE TOOL
-// ══════════════════════════════════════════════════
-function measureDown(p){
-  if(!mStart){
-    mStart=p;
-    mLine=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#6a9ac4',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
-    cv.add(mLine);
-    notify('Click end point to measure','info');
-  } else {
-    cv.remove(mLine);
-    const dx=p.x-mStart.x,dy=p.y-mStart.y;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    const mx=(mStart.x+p.x)/2,my=(mStart.y+p.y)/2;
-    const lbl=new fabric.Text(`${fmt(toU(dist))} ${unit}`,{
-      left:mx,top:my-14,fontSize:11,fill:'#6a9ac4',fontFamily:'DM Sans',
-      selectable:false,evented:false,backgroundColor:'rgba(11,12,10,0.75)',padding:3
-    });
-    // Permanent measure line
-    const ml=new fabric.Line([mStart.x,mStart.y,p.x,p.y],{stroke:'#6a9ac4',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
-    cv.add(ml); cv.add(lbl);
-    notify(`Distance: ${fmt(toU(dist))} ${unit}`,'info');
-    mStart=null; mLine=null; setTool('select'); saveHistory();
-  }
-}
-
-// ══════════════════════════════════════════════════
-//  CUT TOOL — split shape with a cutting line
-// ══════════════════════════════════════════════════
-function cutDown(p,e){
-  if(!cutStart){
-    cutStart=p;
-    cutPrevLine=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c46a6a',strokeWidth:1.5,strokeDashArray:[5,3],selectable:false,evented:false});
-    cv.add(cutPrevLine);
-    notify('Click end point of cut line','info');
-  } else {
-    cv.remove(cutPrevLine); cutPrevLine=null;
-    const cutEnd=p;
-    const obj=cv.getActiveObject();
-    if(!obj||obj._grid||obj._seam){
-      notify('Select a shape first, then use Cut','error');
-      cutStart=null; setTool('select'); return;
-    }
-    performCut(obj,cutStart,cutEnd);
-    cutStart=null; setTool('select');
-  }
-}
-
-function performCut(obj,p0,p1){
-  // Split rectangle into two polygons along cut line
-  if(obj.type==='rect'){
-    const {left:x,top:y,width:w,height:h}=obj;
-    const sx=obj.scaleX||1, sy=obj.scaleY||1;
-    const rw=w*sx,rh=h*sy;
-    // Clip line to rectangle bounds
-    const mid=intersectLineRect(p0,p1,x,y,x+rw,y+rh);
-    if(!mid||mid.length<2){ notify('Cut line must cross the shape','error'); return; }
-    const a=mid[0],b=mid[1];
-    const fill=obj.fill;
-    // Two polygons
-    const poly1=new fabric.Polygon([{x:x,y:y},{x:a.x,y:a.y},{x:b.x,y:b.y},{x:x,y:y+rh}],{...STYLE_FINAL,fill,stroke:obj.stroke||'#c8b366'});
-    const poly2=new fabric.Polygon([{x:a.x,y:a.y},{x:x+rw,y:y},{x:x+rw,y:y+rh},{x:b.x,y:b.y}],{...STYLE_FINAL,fill,stroke:obj.stroke||'#c8b366'});
-    cv.remove(obj); cv.add(poly1); cv.add(poly2);
-    saveHistory(); notify('Shape cut into two pieces','success');
-  } else {
-    // For other shapes, just show the cut line as a permanent internal line
-    const cl=new fabric.Line([p0.x,p0.y,p1.x,p1.y],{stroke:'#c46a6a',strokeWidth:1.5,strokeDashArray:[5,3],selectable:true,hasBorders:true,hasControls:true});
-    cv.add(cl); saveHistory();
-    notify('Cut line added. Use Boolean > Subtract for complex cuts.','info');
-  }
-}
-
-function intersectLineRect(p0,p1,x1,y1,x2,y2){
-  // Find intersections of line segment p0-p1 extended with rect edges
-  const edges=[
-    [{x:x1,y:y1},{x:x2,y:y1}], // top
-    [{x:x2,y:y1},{x:x2,y:y2}], // right
-    [{x:x2,y:y2},{x:x1,y:y2}], // bottom
-    [{x:x1,y:y2},{x:x1,y:y1}], // left
-  ];
-  const hits=[];
-  for(const [a,b] of edges){
-    const pt=lineIntersect(p0,p1,a,b);
-    if(pt) hits.push(pt);
-  }
-  return hits.length>=2?[hits[0],hits[hits.length-1]]:null;
-}
-
-function lineIntersect(p1,p2,p3,p4){
-  const d=(p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x);
-  if(Math.abs(d)<0.001) return null;
-  const t=((p1.x-p3.x)*(p3.y-p4.y)-(p1.y-p3.y)*(p3.x-p4.x))/d;
-  const u=-((p1.x-p2.x)*(p1.y-p3.y)-(p1.y-p2.y)*(p1.x-p3.x))/d;
-  if(u<0||u>1) return null;
-  return{x:p1.x+t*(p2.x-p1.x),y:p1.y+t*(p2.y-p1.y)};
-}
-
-// ══════════════════════════════════════════════════
-//  SEAM ALLOWANCE
-// ══════════════════════════════════════════════════
-function seamClick(e){
-  const obj=e.target;
-  if(!obj||obj._grid||obj._seam){ notify('Click a shape to apply seam','info'); return; }
-  applySeamToObj(obj); setTool('select');
-}
-
-function applySeamSelected(){
-  const obj=cv.getActiveObject();
-  if(!obj){ notify('Select an object first','error'); return; }
-  if(obj.type==='activeSelection'){
-    obj.getObjects().forEach(applySeamToObj);
-  } else {
-    applySeamToObj(obj);
-  }
-}
-
-function applySeamToObj(obj){
-  const amt=parseInt(document.getElementById('seam-amt').value)||10;
-  removeSeamFrom(obj);
-  let seam;
-  const dashed={stroke:'#6a9ac4',strokeWidth:0.8,strokeDashArray:[4,3],fill:'transparent',selectable:false,evented:false,_seam:true,_seamFor:obj};
-  if(obj.type==='rect'){
-    const sx=obj.scaleX||1,sy=obj.scaleY||1;
-    seam=new fabric.Rect({left:obj.left-amt,top:obj.top-amt,width:obj.width*sx+amt*2,height:obj.height*sy+amt*2,...dashed});
-  } else if(obj.type==='ellipse'){
-    seam=new fabric.Ellipse({left:obj.left-amt,top:obj.top-amt,rx:(obj.rx||0)*(obj.scaleX||1)+amt,ry:(obj.ry||0)*(obj.scaleY||1)+amt,...dashed});
-  } else if(obj.type==='polygon'){
-    const pts=obj.points.map(pt=>{
-      const cx=obj.left+(obj.width||0)/2, cy=obj.top+(obj.height||0)/2;
-      const dx=pt.x-cx,dy=pt.y-cy,len=Math.sqrt(dx*dx+dy*dy)||1;
-      return{x:obj.left+pt.x+dx/len*amt,y:obj.top+pt.y+dy/len*amt};
-    });
-    seam=new fabric.Polygon(pts,{...dashed});
-  }
-  if(seam){
-    seamMap.set(obj,seam);
-    cv.add(seam); cv.sendToBack(seam);
-    document.getElementById('seam-on').checked=true;
-    notify(`Seam: ${amt}px applied`,'success');
-    saveHistory();
-    updateInfo(obj);
-  }
-}
-
-function removeSeamFrom(obj){
-  if(seamMap.has(obj)){ cv.remove(seamMap.get(obj)); seamMap.delete(obj); }
-}
-
-function toggleSeamVis(){
-  const on=document.getElementById('seam-on').checked;
-  seamMap.forEach(s=>s.set('visible',on));
-  cv.renderAll();
-}
-
-// ══════════════════════════════════════════════════
-//  NODE EDITING  (polygon/path reshape)
-// ══════════════════════════════════════════════════
-let nodeHandles=[], editingObj=null;
-
-function activateNodeEdit(obj){
-  clearNodeHandles();
-  editingObj=obj;
-  obj.set({objectCaching:false,selectable:false});
-  let pts;
-  if(obj.type==='polygon'||obj.type==='polyline'){
-    pts=obj.points.map(p=>({x:obj.left+p.x-(obj.pathOffset?obj.pathOffset.x:0),y:obj.top+p.y-(obj.pathOffset?obj.pathOffset.y:0)}));
-  } else { notify('Node editing works best on polygons','info'); return; }
-
-  pts.forEach((pt,i)=>{
-    const h=new fabric.Circle({
-      radius:5,fill:'#c8b366',stroke:'#0b0c0a',strokeWidth:1.5,
-      left:pt.x-5,top:pt.y-5,
-      hasControls:false,hasBorders:false,_nodeHandle:true,_idx:i
-    });
-    h.on('moving',()=>{
-      const np=obj.points;
-      np[i]={x:h.left+5-obj.left,y:h.top+5-obj.top};
-      obj.set({points:np});
-      // Update connected seam
-      if(seamMap.has(obj)){ cv.remove(seamMap.get(obj)); seamMap.delete(obj); applySeamToObj(obj); }
-      cv.renderAll();
-    });
-    h.on('mouseup',saveHistory);
-    nodeHandles.push(h);
-    cv.add(h);
-  });
-  notify(`${pts.length} nodes active · Drag to reshape · Esc to exit`,'info');
-
-  const esc=e=>{ if(e.key==='Escape'){ clearNodeHandles(); document.removeEventListener('keydown',esc); setTool('select'); }};
-  document.addEventListener('keydown',esc);
-}
-
-function clearNodeHandles(){
-  nodeHandles.forEach(h=>cv.remove(h)); nodeHandles=[];
-  if(editingObj){ editingObj.set({selectable:true}); editingObj=null; }
-  cv.renderAll();
-}
-
-// ══════════════════════════════════════════════════
-//  BOOLEAN OPS (via SVG path approximation)
-// ══════════════════════════════════════════════════
-function boolOp(op){
-  const sel=cv.getActiveObject();
-  if(!sel||sel.type!=='activeSelection'||sel.getObjects().length<2){
-    notify('Select exactly 2 objects for Boolean ops','error'); return;
-  }
-  const objs=sel.getObjects();
-  const a=objs[0],b=objs[1];
-
-  // Get bounding boxes for approximation
-  const aRect=a.getBoundingRect(true), bRect=b.getBoundingRect(true);
-  const union_left=Math.min(aRect.left,bRect.left);
-  const union_top=Math.min(aRect.top,bRect.top);
-  const union_right=Math.max(aRect.left+aRect.width,bRect.left+bRect.width);
-  const union_bottom=Math.max(aRect.top+aRect.height,bRect.top+bRect.height);
-
-  let result;
-  if(op==='union'){
-    // Convex hull approximation — create merged outline
-    const allPts=getObjPoints(a).concat(getObjPoints(b));
-    const hull=convexHull(allPts);
-    result=new fabric.Polygon(hull,{...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)'});
-  } else if(op==='intersect'){
-    // Intersection bounding box
-    const il=Math.max(aRect.left,bRect.left), it=Math.max(aRect.top,bRect.top);
-    const ir=Math.min(aRect.left+aRect.width,bRect.left+bRect.width);
-    const ib=Math.min(aRect.top+aRect.height,bRect.top+bRect.height);
-    if(ir<=il||ib<=it){notify('Shapes do not overlap','error');return;}
-    result=new fabric.Rect({left:il,top:it,width:ir-il,height:ib-it,...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)'});
-  } else if(op==='subtract'){
-    // Subtract b from a — approximate with clipping polygon
-    const aPts=getObjPoints(a);
-    // Notch out the b area from a hull
-    result=new fabric.Polygon(aPts,{...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)',clipPath:new fabric.Rect({left:bRect.left,top:bRect.top,width:bRect.width,height:bRect.height,absolutePositioned:true,inverted:true})});
-  } else if(op==='exclude'){
-    // Exclude: both but not overlap
-    const hull=convexHull(getObjPoints(a).concat(getObjPoints(b)));
-    result=new fabric.Polygon(hull,{...STYLE_FINAL,fill:'transparent',stroke:'#c8b366'});
-  }
-
-  if(result){
-    cv.discardActiveObject();
-    cv.remove(a); cv.remove(b);
-    cv.add(result); cv.setActiveObject(result);
-    saveHistory(); updateProps();
-    notify(`Boolean ${op} applied`,'success');
-  }
-}
-
-function getObjPoints(obj){
-  const br=obj.getBoundingRect(true);
-  if(obj.type==='polygon'&&obj.points){
-    return obj.points.map(p=>({x:obj.left+p.x,y:obj.top+p.y}));
-  }
-  return[{x:br.left,y:br.top},{x:br.left+br.width,y:br.top},{x:br.left+br.width,y:br.top+br.height},{x:br.left,y:br.top+br.height}];
-}
-
-function convexHull(pts){
-  pts.sort((a,b)=>a.x-b.x||a.y-b.y);
-  const cross=(o,a,b)=>(a.x-o.x)*(b.y-o.y)-(a.y-o.y)*(b.x-o.x);
-  const lower=[],upper=[];
-  for(const p of pts){while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();lower.push(p);}
-  for(let i=pts.length-1;i>=0;i--){const p=pts[i];while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();upper.push(p);}
-  lower.pop();upper.pop();
-  return lower.concat(upper);
-}
-
-// ══════════════════════════════════════════════════
-//  CLONE (Marvelous Designer style)
-// ══════════════════════════════════════════════════
-function openCloneModal(){
-  const obj=cv.getActiveObject();
-  if(!obj){notify('Select an object to clone','error');return;}
-  document.getElementById('clone-modal').classList.add('open');
-}
-function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-function doClone(){
-  const obj=cv.getActiveObject();
-  if(!obj){closeModal('clone-modal');return;}
-  const axis=document.getElementById('clone-axis').value;
-  const dx=+document.getElementById('clone-dx').value||30;
-  const dy=+document.getElementById('clone-dy').value||0;
-  obj.clone(clone=>{
-    clone.set({left:obj.left+dx,top:obj.top+dy});
-    if(axis==='vertical') clone.set({flipX:!obj.flipX});
-    else if(axis==='horizontal') clone.set({flipY:!obj.flipY});
-    else if(axis==='both'){clone.set({flipX:!obj.flipX,flipY:!obj.flipY});}
-    cv.add(clone); cv.setActiveObject(clone); cv.renderAll();
-    saveHistory(); closeModal('clone-modal');
-    notify('Pattern piece cloned','success');
-  });
-}
-
-// ══════════════════════════════════════════════════
-//  TEXTURES
-// ══════════════════════════════════════════════════
-const TEX_DEFS=[
-  {key:'linen',label:'Linen',fn:drawLinen},
-  {key:'denim',label:'Denim',fn:drawDenim},
-  {key:'silk',label:'Silk',fn:drawSilk},
-  {key:'cotton',label:'Cotton',fn:drawCotton},
-  {key:'knit',label:'Knit',fn:drawKnit},
-  {key:'houndstooth',label:'Hound',fn:drawHoundstooth},
-  {key:'plaid',label:'Plaid',fn:drawPlaid},
-  {key:'dots',label:'Dots',fn:drawDots},
-];
-
-function buildTextures(){
-  TEX_DEFS.forEach(td=>{
-    const canvas=document.createElement('canvas');
-    canvas.width=64;canvas.height=64;
-    td.fn(canvas.getContext('2d'));
-    textures[td.key]=canvas;
-  });
-}
-
-function renderTexGrid(){
-  const grid=document.getElementById('tex-grid');
-  grid.innerHTML='';
-  TEX_DEFS.forEach(td=>{
-    const wrap=document.createElement('div');
-    wrap.className='tex-swatch';
-    wrap.title=td.label;
-    const mc=document.createElement('canvas');
-    mc.width=60;mc.height=60;
-    const ctx=mc.getContext('2d');
-    td.fn(ctx);
-    wrap.appendChild(mc);
-    wrap.onclick=()=>applyTexture(td.key,wrap);
-    grid.appendChild(wrap);
-    td._el=wrap;
-  });
-}
-
-function applyTexture(key,swatchEl){
-  const obj=cv.getActiveObject();
-  if(!obj){notify('Select an object first','error');return;}
-  selectedTexKey=key;
-  document.querySelectorAll('.tex-swatch').forEach(s=>s.classList.remove('selected'));
-  swatchEl.classList.add('selected');
-  const srcCanvas=textures[key];
-  const scale=parseInt(document.getElementById('tex-scale').value)/100;
-  fabric.Image.fromURL(srcCanvas.toDataURL(),img=>{
-    const pat=new fabric.Pattern({source:img.getElement(),repeat:'repeat',offsetX:0,offsetY:0});
-    const activeObjs=obj.type==='activeSelection'?obj.getObjects():[obj];
-    activeObjs.forEach(o=>{ o._texKey=key; o.set('fill',pat); });
-    cv.renderAll(); saveHistory();
-    notify(`${key} texture applied`,'success');
-  });
-}
-
-function removeTexture(){
-  const obj=cv.getActiveObject();
-  if(!obj)return;
-  const activeObjs=obj.type==='activeSelection'?obj.getObjects():[obj];
-  activeObjs.forEach(o=>{ o._texKey=null; o.set('fill','rgba(232,230,223,0.92)'); });
-  cv.renderAll(); saveHistory();
-  document.querySelectorAll('.tex-swatch').forEach(s=>s.classList.remove('selected'));
-  selectedTexKey=null;
-  notify('Texture removed','info');
-}
-
-function updateTexScale(v){ /* re-apply with new scale */ }
-function updateTexAngle(v){ const obj=cv.getActiveObject(); if(!obj||!obj._texKey)return; }
-function updateTexOpacity(v){ const obj=cv.getActiveObject(); if(!obj)return; obj.set('opacity',v/100); cv.renderAll(); }
-
-function loadCustomTexture(input){
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    fabric.Image.fromURL(e.target.result,img=>{
-      const pat=new fabric.Pattern({source:img.getElement(),repeat:'repeat'});
-      const obj=cv.getActiveObject();
-      if(!obj){notify('Select an object first','error');return;}
-      obj.set('fill',pat); cv.renderAll(); saveHistory();
-      notify('Custom texture applied','success');
-    });
-  };
-  reader.readAsDataURL(file);
-}
-
-// Texture drawing functions
-function drawLinen(ctx){
-  ctx.fillStyle='#e8e0d0';ctx.fillRect(0,0,64,64);
-  for(let i=0;i<64;i+=2){ctx.strokeStyle=`rgba(180,160,130,${Math.random()*0.3+0.1})`;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,64);ctx.stroke();}
-  for(let j=0;j<64;j+=2){ctx.strokeStyle=`rgba(160,140,110,${Math.random()*0.2+0.05})`;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(64,j);ctx.stroke();}
-}
-function drawDenim(ctx){
-  ctx.fillStyle='#4a6fa5';ctx.fillRect(0,0,64,64);
-  for(let i=0;i<64;i+=3){ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i-64,64);ctx.stroke();}
-  for(let i=0;i<128;i+=3){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i-64,0);ctx.lineTo(i,64);ctx.stroke();}
-}
-function drawSilk(ctx){
-  const g=ctx.createLinearGradient(0,0,64,64);g.addColorStop(0,'#f0e8f8');g.addColorStop(0.5,'#e8ddef');g.addColorStop(1,'#d8ccee');
-  ctx.fillStyle=g;ctx.fillRect(0,0,64,64);
-  for(let i=0;i<64;i+=8){ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,64);ctx.stroke();}
-}
-function drawCotton(ctx){
-  ctx.fillStyle='#f5f0e8';ctx.fillRect(0,0,64,64);
-  for(let y=0;y<64;y+=4) for(let x=0;x<64;x+=4){ctx.fillStyle=`rgba(200,190,170,${Math.random()*0.15+0.02})`;ctx.fillRect(x,y,4,4);}
-}
-function drawKnit(ctx){
-  ctx.fillStyle='#e8d8c0';ctx.fillRect(0,0,64,64);
-  for(let y=0;y<64;y+=6) for(let x=0;x<64;x+=8){
-    ctx.strokeStyle='rgba(180,150,110,0.5)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.arc(x+4,y+3,3,Math.PI,0);ctx.stroke();
-    ctx.beginPath();ctx.arc(x+4,y+3,3,0,Math.PI);ctx.stroke();
-  }
-}
-function drawHoundstooth(ctx){
-  ctx.fillStyle='#fff';ctx.fillRect(0,0,64,64);
-  ctx.fillStyle='#222';
-  [[0,0],[8,8],[4,4],[12,12],[16,0],[0,16],[16,16]].forEach(([x,y])=>{ctx.fillRect(x,y,8,8);});
-}
-function drawPlaid(ctx){
-  ctx.fillStyle='#e8d8c0';ctx.fillRect(0,0,64,64);
-  [0,16,32,48].forEach(i=>{
-    ctx.fillStyle='rgba(200,50,50,0.3)';ctx.fillRect(i,0,4,64);
-    ctx.fillStyle='rgba(50,80,200,0.2)';ctx.fillRect(0,i,64,4);
-  });
-}
-function drawDots(ctx){
-  ctx.fillStyle='#f5f2ec';ctx.fillRect(0,0,64,64);
-  ctx.fillStyle='rgba(100,80,50,0.3)';
-  for(let y=8;y<64;y+=16) for(let x=8;x<64;x+=16){ ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fill(); }
-}
-
-// ══════════════════════════════════════════════════
-//  CONTEXT MENU
-// ══════════════════════════════════════════════════
-function showCtxMenu(e){
-  const obj=cv.getActiveObject()||cv.findTarget(e);
-  if(!obj) return;
-  if(obj&&!cv.getActiveObject()) cv.setActiveObject(obj);
-  const menu=document.getElementById('ctx-menu');
-  menu.style.display='block';
-  menu.style.left=e.clientX+'px';
-  menu.style.top=e.clientY+'px';
-  e.preventDefault(); e.stopPropagation();
-}
-function ctxDuplicate(){duplicateSelected();document.getElementById('ctx-menu').style.display='none';}
-function ctxClone2D(){openCloneModal();document.getElementById('ctx-menu').style.display='none';}
-function ctxGroup(){groupSelected();document.getElementById('ctx-menu').style.display='none';}
-function ctxUngroup(){ungroupSelected();document.getElementById('ctx-menu').style.display='none';}
-function ctxLock(){const obj=cv.getActiveObject();if(!obj)return;toggleLock(!obj.lockMovementX);document.getElementById('ctx-menu').style.display='none';}
-function ctxApplySeam(){applySeamSelected();document.getElementById('ctx-menu').style.display='none';}
-
-// ══════════════════════════════════════════════════
-//  PROPERTIES PANEL
-// ══════════════════════════════════════════════════
-function switchTab(tab){
-  activeTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+tab));
-}
-
-function updateProps(){
-  const obj=cv.getActiveObject();
-  if(!obj){clearProps();return;}
-  document.getElementById('no-sel').style.display='none';
-  document.getElementById('props-wrap').style.display='';
-  document.getElementById('obj-badge').textContent=obj.type;
-
-  // Position
-  document.getElementById('p-x').value=Math.round(obj.left||0);
-  document.getElementById('p-y').value=Math.round(obj.top||0);
-  // Size
-  const w=obj.type==='ellipse'?Math.round((obj.rx||0)*2*(obj.scaleX||1)):Math.round((obj.width||0)*(obj.scaleX||1));
-  const h=obj.type==='ellipse'?Math.round((obj.ry||0)*2*(obj.scaleY||1)):Math.round((obj.height||0)*(obj.scaleY||1));
-  document.getElementById('p-w').value=w;
-  document.getElementById('p-h').value=h;
-  // Rotation
-  const rot=Math.round(obj.angle||0);
-  document.getElementById('p-rot').value=rot;
-  document.getElementById('p-rot-r').value=((rot%360)+360)%360;
-  // Fill
-  const fill=typeof obj.fill==='string'?obj.fill:'pattern';
-  if(fill!=='pattern'){
-    try{document.getElementById('p-fill-c').value=fill;}catch(e){}
-    document.getElementById('p-fill-t').value=fill;
-  } else {
-    document.getElementById('p-fill-t').value='[texture]';
-  }
-  // Stroke
-  const stk=obj.stroke||'#c8b366';
-  try{document.getElementById('p-stk-c').value=stk;}catch(e){}
-  document.getElementById('p-stk-t').value=stk;
-  const sw=obj.strokeWidth||1.5;
-  document.getElementById('p-sw').value=sw;
-  document.getElementById('p-sw-r').value=sw;
-  const op=Math.round((obj.opacity||1)*100);
-  document.getElementById('p-op').value=op;
-  document.getElementById('op-val').textContent=op+'%';
-  // Notes
-  document.getElementById('obj-notes').value=obj._notes||'';
-  // Status bar
-  document.getElementById('obj-lbl').textContent=`${obj.type} · W:${w} H:${h}`;
-  // Info tab
-  updateInfo(obj);
-}
-
-function updateInfo(obj){
-  const w=obj.type==='ellipse'?Math.round((obj.rx||0)*2*(obj.scaleX||1)):Math.round((obj.width||0)*(obj.scaleX||1));
-  const h=obj.type==='ellipse'?Math.round((obj.ry||0)*2*(obj.scaleY||1)):Math.round((obj.height||0)*(obj.scaleY||1));
-  document.getElementById('i-type').innerHTML=`<b>Type:</b> ${obj.type}`;
-  document.getElementById('i-dims').innerHTML=`<b>Size:</b> ${w} × ${h} ${unit}`;
-  document.getElementById('i-angle').innerHTML=`<b>Rotation:</b> ${Math.round(obj.angle||0)}°`;
-  let peri='—',area='—',verts='—',seamNote='—';
-  if(obj.type==='polygon'&&obj.points){
-    const pts=obj.points; verts=pts.length;
-    let p=0,ar=0;
-    for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];p+=Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);ar+=a.x*b.y-b.x*a.y;}
-    peri=fmt(toU(p))+' '+unit; area=fmt(toU(Math.abs(ar/2)))+' '+unit+'²';
-  } else if(obj.type==='rect'){
-    peri=fmt(toU(2*(w+h)))+' '+unit; area=fmt(toU(w*h))+' '+unit+'²';
-  } else if(obj.type==='ellipse'){
-    peri=fmt(toU(2*Math.PI*Math.sqrt(((obj.rx||0)**2+(obj.ry||0)**2)/2)))+' '+unit;
-    area=fmt(toU(Math.PI*(obj.rx||0)*(obj.ry||0)))+' '+unit+'²';
-  } else if(obj.type==='line'){
-    const dx=(obj.x2-obj.x1)*(obj.scaleX||1),dy=(obj.y2-obj.y1)*(obj.scaleY||1);
-    peri=fmt(toU(Math.sqrt(dx*dx+dy*dy)))+' '+unit;
-  }
-  if(seamMap.has(obj)) seamNote=document.getElementById('seam-amt').value+'px';
-  document.getElementById('i-peri').innerHTML=`<b>Perimeter:</b> ${peri}`;
-  document.getElementById('i-area').innerHTML=`<b>Area:</b> ${area}`;
-  document.getElementById('i-verts').innerHTML=`<b>Vertices:</b> ${verts}`;
-  document.getElementById('i-seam').innerHTML=`<b>Seam:</b> ${seamNote}`;
-}
-
-function clearProps(){
-  document.getElementById('no-sel').style.display='';
-  document.getElementById('props-wrap').style.display='none';
-  document.getElementById('obj-badge').textContent='';
-  document.getElementById('obj-lbl').textContent='No selection';
-}
-
-function applyProp(prop,val){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
-  objs.forEach(o=>o.set(prop,val));
-  cv.renderAll(); saveHistory();
-}
-function applyFill(v){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
-  objs.forEach(o=>o.set('fill',v));
-  try{document.getElementById('p-fill-c').value=v;}catch(e){}
-  document.getElementById('p-fill-t').value=v;
-  cv.renderAll(); saveHistory();
-}
-function applyStroke(v){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
-  objs.forEach(o=>o.set('stroke',v));
-  try{document.getElementById('p-stk-c').value=v;}catch(e){}
-  document.getElementById('p-stk-t').value=v;
-  cv.renderAll(); saveHistory();
-}
-function applyPos(){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  obj.set({left:+document.getElementById('p-x').value,top:+document.getElementById('p-y').value});
-  obj.setCoords(); cv.renderAll(); saveHistory();
-}
-function applySize(prop,val){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  const lockAR=document.getElementById('lock-ar').checked;
-  if(obj.type==='ellipse'){
-    if(prop==='width') obj.set('rx',val/2);
-    else obj.set('ry',val/2);
-    if(lockAR){if(prop==='width')obj.set('ry',val/2);else obj.set('rx',val/2);}
-  } else {
-    const curW=(obj.width||1)*(obj.scaleX||1), curH=(obj.height||1)*(obj.scaleY||1);
-    if(prop==='width'){
-      const s=val/(obj.width||1); obj.set('scaleX',s);
-      if(lockAR) obj.set('scaleY',s);
-    } else {
-      const s=val/(obj.height||1); obj.set('scaleY',s);
-      if(lockAR) obj.set('scaleX',s);
-    }
-  }
-  obj.setCoords(); cv.renderAll(); saveHistory();
-}
-function syncRot(){
-  const v=+document.getElementById('p-rot').value;
-  document.getElementById('p-rot-r').value=((v%360)+360)%360;
-}
-function flipObj(axis){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  if(axis==='X') obj.set('flipX',!obj.flipX); else obj.set('flipY',!obj.flipY);
-  cv.renderAll(); saveHistory();
-}
-function applyShadow(type){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  let shadow=null;
-  if(type==='soft') shadow=new fabric.Shadow({color:'rgba(0,0,0,0.25)',blur:15,offsetX:0,offsetY:4});
-  else if(type==='hard') shadow=new fabric.Shadow({color:'rgba(0,0,0,0.5)',blur:0,offsetX:4,offsetY:4});
-  else if(type==='glow') shadow=new fabric.Shadow({color:'rgba(200,179,102,0.5)',blur:20,offsetX:0,offsetY:0});
-  obj.set('shadow',shadow); cv.renderAll(); saveHistory();
-}
-function saveObjNote(v){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  obj._notes=v;
-}
-
-// ══════════════════════════════════════════════════
-//  OBJECT OPERATIONS
-// ══════════════════════════════════════════════════
-function deleteSelected(){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
-  objs.forEach(o=>{ if(seamMap.has(o)){cv.remove(seamMap.get(o));seamMap.delete(o);} cv.remove(o); });
-  cv.discardActiveObject(); cv.renderAll(); saveHistory(); notify('Deleted','info');
-}
-function duplicateSelected(){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  obj.clone(clone=>{ clone.set({left:obj.left+22,top:obj.top+22}); cv.add(clone); cv.setActiveObject(clone); cv.renderAll(); saveHistory(); notify('Duplicated','success'); });
-}
-function groupSelected(){
-  const sel=cv.getActiveObject();
-  if(!sel||sel.type!=='activeSelection'){notify('Select multiple objects to group','error');return;}
-  sel.toGroup(); cv.renderAll(); saveHistory(); notify('Grouped','success');
-}
-function ungroupSelected(){
-  const obj=cv.getActiveObject();
-  if(!obj||obj.type!=='group'){notify('Select a group to ungroup','error');return;}
-  obj.toActiveSelection(); cv.renderAll(); saveHistory(); notify('Ungrouped','success');
-}
-function toggleLock(lock){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  ['lockMovementX','lockMovementY','lockRotation','lockScalingX','lockScalingY'].forEach(p=>obj.set(p,lock));
-  obj.hasControls=!lock; obj.hasBorders=!lock; cv.renderAll(); notify(lock?'Locked':'Unlocked','info');
-}
-function layerOp(op){
-  const obj=cv.getActiveObject(); if(!obj) return;
-  if(op==='front')cv.bringToFront(obj);
-  else if(op==='forward')cv.bringForward(obj);
-  else if(op==='backward')cv.sendBackwards(obj);
-  else if(op==='back')cv.sendToBack(obj);
-  if(showGrid&&gridGroup) cv.sendToBack(gridGroup);
-  cv.renderAll(); saveHistory();
-}
-
-// ══════════════════════════════════════════════════
-//  ALIGN
-// ══════════════════════════════════════════════════
-function alignObjects(dir){
-  const sel=cv.getActiveObject();
-  if(!sel){notify('Select objects to align','error');return;}
-  const objs=sel.type==='activeSelection'?sel.getObjects():[sel];
-  if(objs.length<2){notify('Select multiple objects to align','info');return;}
-  const bbs=objs.map(o=>o.getBoundingRect(true));
-  const minL=Math.min(...bbs.map(b=>b.left));
-  const maxR=Math.max(...bbs.map(b=>b.left+b.width));
-  const minT=Math.min(...bbs.map(b=>b.top));
-  const maxB=Math.max(...bbs.map(b=>b.top+b.height));
-  objs.forEach((o,i)=>{
-    const bb=bbs[i];
-    if(dir==='left') o.set({left:minL+(o.left-bb.left)});
-    else if(dir==='right') o.set({left:maxR-bb.width+(o.left-bb.left)});
-    else if(dir==='top') o.set({top:minT+(o.top-bb.top)});
-    else if(dir==='bottom') o.set({top:maxB-bb.height+(o.top-bb.top)});
-    else if(dir==='centerH') o.set({left:(minL+maxR)/2-bb.width/2+(o.left-bb.left)});
-    else if(dir==='centerV') o.set({top:(minT+maxB)/2-bb.height/2+(o.top-bb.top)});
-    o.setCoords();
-  });
-  cv.renderAll(); saveHistory(); notify(`Aligned ${dir}`,'success');
-}
-
-// ══════════════════════════════════════════════════
-//  GRID & SNAP
-// ══════════════════════════════════════════════════
-function drawGrid(){
-  if(gridGroup){cv.remove(gridGroup);gridGroup=null;}
-  if(!showGrid) return;
-  const lines=[];
-  for(let x=0;x<=vpW*2;x+=gridSize){const maj=(x/gridSize)%5===0;lines.push(new fabric.Line([x,0,x,vpH*2],{stroke:maj?'#32362a':'#1e2219',strokeWidth:maj?0.6:0.3,selectable:false,evented:false,_grid:true}));}
-  for(let y=0;y<=vpH*2;y+=gridSize){const maj=(y/gridSize)%5===0;lines.push(new fabric.Line([0,y,vpW*2,y],{stroke:maj?'#32362a':'#1e2219',strokeWidth:maj?0.6:0.3,selectable:false,evented:false,_grid:true}));}
-  gridGroup=new fabric.Group(lines,{selectable:false,evented:false,_grid:true,left:-vpW/2,top:-vpH/2});
-  cv.add(gridGroup); cv.sendToBack(gridGroup); cv.renderAll();
-}
-function toggleGrid(){showGrid=!showGrid;drawGrid();document.getElementById('grid-btn').classList.toggle('active-btn',showGrid);updateSB();notify(`Grid ${showGrid?'on':'off'}`,'info');}
-function toggleSnap(){snapGrid=!snapGrid;document.getElementById('snap-btn').classList.toggle('active-btn',snapGrid);updateSB();notify(`Snap ${snapGrid?'on':'off'}`,'info');}
-function setGridSize(v){gridSize=Math.max(5,Math.min(200,v));if(showGrid)drawGrid();}
-function snap(p){if(!snapGrid)return p;return{x:Math.round(p.x/gridSize)*gridSize,y:Math.round(p.y/gridSize)*gridSize};}
-function updateSB(){document.getElementById('status-r').textContent=`Grid: ${showGrid?'ON':'OFF'}  |  Snap: ${snapGrid?'ON':'OFF'}`;}
-
-// ══════════════════════════════════════════════════
-//  RULERS
-// ══════════════════════════════════════════════════
-function initRulers(){
-  const rh=document.getElementById('rh'),rv=document.getElementById('rv');
-  rh.width=vpW-20;rh.height=20;
-  rv.width=20;rv.height=vpH-20;
-  if(showRulers)drawRuler();
-}
-function drawRuler(){
-  const rh=document.getElementById('rh'),ctxH=rh.getContext('2d');
-  const rv=document.getElementById('rv'),ctxV=rv.getContext('2d');
-  [ctxH,ctxV].forEach(ctx=>{ctx.fillStyle='#131510';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);});
-  const step=Math.max(gridSize,10)*zoomLvl;
-  ctxH.fillStyle='#4e5146';ctxH.font='8px DM Sans';
-  for(let x=0;x<rh.width;x+=step){
-    const maj=Math.round(x/(step*5))===x/(step*5);
-    ctxH.fillRect(x,20-(maj?8:4),1,maj?8:4);
-    if(maj){ctxH.textAlign='center';ctxH.fillText(Math.round(x/zoomLvl),x,10);}
-  }
-  ctxV.fillStyle='#4e5146';ctxV.font='8px DM Sans';
-  for(let y=0;y<rv.height;y+=step){
-    const maj=Math.round(y/(step*5))===y/(step*5);
-    ctxV.fillRect(20-(maj?8:4),y,maj?8:4,1);
-    if(maj){ctxV.save();ctxV.translate(10,y);ctxV.rotate(-Math.PI/2);ctxV.textAlign='center';ctxV.fillText(Math.round(y/zoomLvl),0,0);ctxV.restore();}
-  }
-}
-function drawRulerCursor(x,y){
-  if(!showRulers)return; drawRuler();
-  const rh=document.getElementById('rh'),rv=document.getElementById('rv');
-  const ch=rh.getContext('2d'),cv2=rv.getContext('2d');
-  ch.fillStyle='#c8b366';ch.fillRect(x*zoomLvl,0,1,20);
-  cv2.fillStyle='#c8b366';cv2.fillRect(0,y*zoomLvl,20,1);
-}
-function toggleRulers(){
-  showRulers=!showRulers;
-  ['rh','rv','ruler-corner'].forEach(id=>document.getElementById(id).style.display=showRulers?'block':'none');
-  document.getElementById('ruler-btn').classList.toggle('active-btn',showRulers);
-  if(showRulers)drawRuler();
-}
-
-// ══════════════════════════════════════════════════
-//  ZOOM
-// ══════════════════════════════════════════════════
-function zoomIn(){zoomBy(1.2);}
-function zoomOut(){zoomBy(1/1.2);}
-function zoomBy(f){
-  zoomLvl=Math.min(Math.max(zoomLvl*f,0.04),12);
-  cv.setZoom(zoomLvl);
-  document.getElementById('zoom-d').textContent=Math.round(zoomLvl*100)+'%';
-  if(showRulers)drawRuler();
-}
-function zoom100(){zoomLvl=1;cv.setZoom(1);cv.viewportTransform=[1,0,0,1,0,0];cv.renderAll();document.getElementById('zoom-d').textContent='100%';}
-function zoomFit(){
-  const s=Math.min(vpW/cv.getWidth(),vpH/cv.getHeight())*0.9;
-  zoomLvl=s;cv.setZoom(s);
-  document.getElementById('zoom-d').textContent=Math.round(s*100)+'%';
-  if(showRulers)drawRuler();
-}
-
-// ══════════════════════════════════════════════════
-//  UNIT SYSTEM
-// ══════════════════════════════════════════════════
-const UNITS={px:1,mm:3.7795,cm:37.795,in:96};
-function setUnit(u){unit=u;unitRatio=UNITS[u]||1;updateProps();}
-function toU(px){return px/unitRatio;}
-function fmt(v){return Number.isInteger(v)?v:parseFloat(v.toFixed(2));}
-
-// ══════════════════════════════════════════════════
-//  PROJECT
-// ══════════════════════════════════════════════════
-function newProject(){
-  if(!confirm('Start a new project? Unsaved work will be lost.'))return;
-  cv.clear();cv.backgroundColor='#f5f3ee';seamMap.clear();
-  if(showGrid)drawGrid();cv.renderAll();saveHistory();notify('New project','success');
-}
-function saveProject(){
-  const data={canvas:cv.toJSON(['_notes','_texKey']),meta:{unit,gridSize,showGrid,snapGrid,v:2,created:new Date().toISOString()}};
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-  a.download=`pattern_${Date.now()}.json`;a.click();notify('Project saved ✓','success');
-}
-function loadProject(){
-  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
-  inp.onchange=e=>{
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();r.onload=ev=>{
-      try{
-        const data=JSON.parse(ev.target.result);
-        blockHistory=true;
-        cv.loadFromJSON(data.canvas||data,()=>{
-          cv.renderAll();
-          if(data.meta){
-            if(data.meta.unit){unit=data.meta.unit;document.getElementById('unit-sel').value=unit;}
-            if(data.meta.gridSize){gridSize=data.meta.gridSize;document.getElementById('grid-px').value=gridSize;}
-          }
-          if(showGrid)drawGrid();blockHistory=false;saveHistory();notify('Project loaded','success');
-        });
-      }catch(err){notify('Error: '+err.message,'error');}
-    };r.readAsText(f);
-  };inp.click();
-}
-
-// ══════════════════════════════════════════════════
-//  EXPORT
-// ══════════════════════════════════════════════════
-function exportSVG(){
-  if(gridGroup)gridGroup.set('visible',false);
-  const svg=cv.toSVG();
-  if(gridGroup)gridGroup.set('visible',true);
-  dl(new Blob([svg],{type:'image/svg+xml'}),`pattern_${Date.now()}.svg`);
-  notify('SVG exported','success');
-}
-function exportPNG(){
-  if(gridGroup)gridGroup.set('visible',false);cv.renderAll();
-  const url=cv.toDataURL({format:'png',multiplier:2});
-  if(gridGroup)gridGroup.set('visible',true);cv.renderAll();
-  const a=document.createElement('a');a.href=url;a.download=`pattern_${Date.now()}.png`;a.click();
-  notify('PNG exported @2x','success');
-}
-function exportDXF(){
-  const objs=cv.getObjects().filter(o=>!o._grid&&!o._seam);
-  let dxf=`0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n`;
-  objs.forEach(obj=>{
-    if(obj.type==='line') dxf+=`0\nLINE\n8\n0\n10\n${obj.x1}\n20\n${-obj.y1}\n11\n${obj.x2}\n21\n${-obj.y2}\n`;
-    else if(obj.type==='rect'){const[x,y,w,h]=[obj.left,obj.top,obj.width*(obj.scaleX||1),obj.height*(obj.scaleY||1)];dxf+=`0\nLWPOLYLINE\n8\n0\n90\n4\n70\n1\n10\n${x}\n20\n${-y}\n10\n${x+w}\n20\n${-y}\n10\n${x+w}\n20\n${-y-h}\n10\n${x}\n20\n${-y-h}\n`;}
-    else if(obj.type==='polygon'&&obj.points){dxf+=`0\nLWPOLYLINE\n8\n0\n90\n${obj.points.length}\n70\n1\n`;obj.points.forEach(p=>{dxf+=`10\n${obj.left+p.x}\n20\n${-(obj.top+p.y)}\n`;});}
-    else if(obj.type==='ellipse') dxf+=`0\nELLIPSE\n8\n0\n10\n${obj.left+(obj.rx||0)}\n20\n${-(obj.top+(obj.ry||0))}\n11\n${obj.rx||0}\n21\n0\n40\n${(obj.ry||1)/(obj.rx||1)}\n`;
-  });
-  dxf+=`0\nENDSEC\n0\nEOF\n`;
-  dl(new Blob([dxf],{type:'application/dxf'}),`pattern_${Date.now()}.dxf`);
-  notify('DXF exported','success');
-}
-function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
-
-// ══════════════════════════════════════════════════
-//  NOTIFICATIONS
-// ══════════════════════════════════════════════════
-function notify(msg,type='info'){
-  const icons={success:'✓',error:'✕',info:'·'};
-  const n=document.createElement('div');
-  n.className=`notif notif-${type}`;n.textContent=`${icons[type]} ${msg}`;
-  document.body.appendChild(n);
-  setTimeout(()=>{n.style.opacity='0';n.style.transition='opacity .25s';setTimeout(()=>n.remove(),250);},2600);
-}
-</script>
-</body>
-</html>
+        </div
