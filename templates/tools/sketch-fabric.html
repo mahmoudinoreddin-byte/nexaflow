@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Sketch Studio - Drawing with Patterns & Grid</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Professional Pattern Design Studio - CAD Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,184 +15,40 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #1a1a2e;
+            background: #0d0f12;
             overflow: hidden;
             height: 100vh;
+            color: #e0e0e0;
         }
 
-        /* Main App Container */
-        .app-container {
+        /* Main Layout */
+        .app {
             display: flex;
             height: 100vh;
-            background: #0f0f1a;
+            position: relative;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: 320px;
-            background: linear-gradient(135deg, #1e1e2e 0%, #16161f 100%);
-            color: white;
+        /* Left Sidebar - Tools */
+        .sidebar-left {
+            width: 280px;
+            background: #1a1d22;
+            border-right: 1px solid #2a2d33;
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            border-right: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
             z-index: 10;
+            backdrop-filter: blur(10px);
         }
 
-        .sidebar-header {
-            padding: 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            text-align: center;
-        }
-
-        .sidebar-header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .sidebar-header p {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .tool-section {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .tool-section-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            color: #667eea;
-            font-weight: 600;
-        }
-
-        /* Tool Buttons Grid */
-        .tool-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .tool-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 12px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 20px;
-            text-align: center;
-        }
-
-        .tool-btn:hover {
-            background: rgba(102,126,234,0.5);
-            transform: translateY(-2px);
-        }
-
-        .tool-btn.active {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-        }
-
-        /* Controls */
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .control-label {
+        /* Right Sidebar - Properties */
+        .sidebar-right {
+            width: 320px;
+            background: #1a1d22;
+            border-left: 1px solid #2a2d33;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 13px;
-            color: #ccc;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 4px;
-            border-radius: 5px;
-            background: rgba(255,255,255,0.2);
-            outline: none;
-            -webkit-appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-        }
-
-        input[type="color"] {
-            width: 100%;
-            height: 40px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            cursor: pointer;
-            background: transparent;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        select option {
-            background: #1e1e2e;
-        }
-
-        .dimension-input {
-            display: flex;
-            gap: 10px;
-        }
-
-        .dimension-input input {
-            flex: 1;
-            padding: 8px;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 8px;
-            color: white;
-            text-align: center;
-        }
-
-        .action-btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border: none;
-            border-radius: 10px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-        }
-
-        .action-btn.danger {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-        }
-
-        .action-btn.secondary {
-            background: rgba(255,255,255,0.1);
+            flex-direction: column;
+            overflow-y: auto;
+            z-index: 10;
         }
 
         /* Main Canvas Area */
@@ -200,66 +56,141 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            position: relative;
+            background: #0d0f12;
         }
 
-        /* Top Bar */
-        .top-bar {
-            background: #1e1e2e;
-            padding: 15px 25px;
+        /* Top Toolbar */
+        .top-toolbar {
+            background: #1a1d22;
+            border-bottom: 1px solid #2a2d33;
+            padding: 12px 20px;
             display: flex;
-            justify-content: space-between;
+            gap: 15px;
             align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            z-index: 10;
         }
 
-        .canvas-info {
+        .toolbar-group {
             display: flex;
-            gap: 20px;
+            gap: 8px;
+            padding: 0 15px;
+            border-right: 1px solid #2a2d33;
         }
 
-        .info-item {
-            background: rgba(102,126,234,0.2);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: #667eea;
+        .toolbar-group:last-child {
+            border-right: none;
         }
 
         /* Canvas Container */
         .canvas-container {
             flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            background: #0f0f1a;
-            overflow: auto;
             position: relative;
-        }
-
-        .canvas-wrapper {
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            border-radius: 10px;
-            background: white;
-        }
-
-        #canvas {
-            display: block;
-            border-radius: 10px;
+            overflow: hidden;
             cursor: crosshair;
         }
 
-        /* Status Bar */
-        .status-bar {
-            background: #1e1e2e;
-            padding: 10px 25px;
+        #canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border-radius: 4px;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            background: #1a1d22;
+            border-top: 1px solid #2a2d33;
+            padding: 8px 20px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 12px;
-            color: #888;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            font-family: monospace;
+            z-index: 10;
+        }
+
+        /* Buttons & Controls */
+        .tool-btn, .action-btn {
+            background: #2a2d33;
+            border: none;
+            color: #e0e0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tool-btn:hover, .action-btn:hover {
+            background: #ff7a00;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .tool-btn.active {
+            background: #ff7a00;
+            color: white;
+            box-shadow: 0 2px 8px rgba(255,122,0,0.3);
+        }
+
+        .tool-group-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ff7a00;
+            margin: 15px 0 10px 0;
+            font-weight: 700;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Property Panel */
+        .property-group {
+            padding: 15px;
+            border-bottom: 1px solid #2a2d33;
+        }
+
+        .property-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        .property-input {
+            width: 100%;
+            padding: 8px;
+            background: #2a2d33;
+            border: 1px solid #3a3d43;
+            border-radius: 4px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .property-input:focus {
+            outline: none;
+            border-color: #ff7a00;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            border: 2px solid #3a3d43;
+            cursor: pointer;
         }
 
         /* Scrollbar */
@@ -269,461 +200,346 @@
         }
 
         ::-webkit-scrollbar-track {
-            background: #1e1e2e;
+            background: #1a1d22;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #667eea;
+            background: #ff7a00;
             border-radius: 4px;
         }
 
-        /* Alert */
+        /* Alert System */
         .alert {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            padding: 15px 20px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             animation: slideIn 0.3s ease;
             z-index: 1000;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
         }
 
-        .alert-success {
-            background: linear-gradient(135deg, #27ae60, #229954);
-            color: white;
-        }
-
-        .alert-error {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            color: white;
-        }
-
-        .alert-info {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            color: white;
-        }
+        .alert-success { background: #27ae60; color: white; }
+        .alert-error { background: #e74c3c; color: white; }
+        .alert-info { background: #ff7a00; color: white; }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+        /* Zoom Controls */
+        .zoom-controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
         }
 
-        /* Saved Drawings List */
-        .drawings-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .drawing-item {
-            background: rgba(255,255,255,0.05);
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 8px;
+        .zoom-btn {
+            background: #2a2d33;
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 12px;
+            font-size: 18px;
         }
 
-        .drawing-item:hover {
-            background: rgba(102,126,234,0.3);
-            transform: translateX(5px);
+        .zoom-btn:hover {
+            background: #ff7a00;
         }
 
-        .drawing-name {
-            font-weight: 500;
-            margin-bottom: 3px;
+        /* Selection Info */
+        .selection-info {
+            background: #2a2d33;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
         }
 
-        .drawing-date {
-            font-size: 10px;
-            opacity: 0.6;
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar-left { width: 240px; }
+            .sidebar-right { width: 280px; }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h1>🎨 Sketch Studio</h1>
-                <p>Professional Drawing Tool</p>
+    <div class="app">
+        <!-- LEFT SIDEBAR - TOOLS -->
+        <div class="sidebar-left">
+            <div style="padding: 20px; border-bottom: 1px solid #2a2d33;">
+                <h2 style="color: #ff7a00; font-size: 20px;">✂️ Pattern Studio</h2>
+                <p style="font-size: 11px; color: #888;">Professional CAD Tool</p>
             </div>
 
-            <!-- Drawing Tools -->
-            <div class="tool-section">
-                <div class="tool-section-title">✏️ Drawing Tools</div>
+            <div style="padding: 20px;">
+                <div class="tool-group-title">📌 SELECTION TOOLS</div>
                 <div class="tool-grid">
-                    <button class="tool-btn" id="tool-pencil" title="Pencil">✏️</button>
-                    <button class="tool-btn" id="tool-rectangle" title="Rectangle">📦</button>
-                    <button class="tool-btn" id="tool-circle" title="Circle">⚪</button>
-                    <button class="tool-btn" id="tool-line" title="Line">📏</button>
-                    <button class="tool-btn" id="tool-text" title="Text">📝</button>
-                    <button class="tool-btn" id="tool-select" title="Select">🖱️</button>
-                    <button class="tool-btn" id="tool-eraser" title="Eraser">🧽</button>
-                    <button class="tool-btn" id="tool-clear" title="Clear All">🗑️</button>
+                    <button class="tool-btn" id="tool-select">🖱️ Select</button>
+                    <button class="tool-btn" id="tool-multiselect">✨ Multi-Select</button>
                 </div>
-            </div>
 
-            <!-- Brush Settings -->
-            <div class="tool-section">
-                <div class="tool-section-title">🎨 Brush Settings</div>
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>Color</span>
-                        <span id="colorValue">#000000</span>
-                    </div>
-                    <input type="color" id="brushColor" value="#000000">
+                <div class="tool-group-title">✏️ DRAWING TOOLS</div>
+                <div class="tool-grid">
+                    <button class="tool-btn" id="tool-pen">✒️ Pen Tool</button>
+                    <button class="tool-btn" id="tool-rectangle">📦 Rectangle</button>
+                    <button class="tool-btn" id="tool-circle">⚪ Ellipse</button>
+                    <button class="tool-btn" id="tool-line">📏 Line</button>
+                    <button class="tool-btn" id="tool-curve">🔄 Curve</button>
+                    <button class="tool-btn" id="tool-internal">🔗 Internal Line</button>
                 </div>
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>Brush Size</span>
-                        <span id="sizeValue">3px</span>
-                    </div>
-                    <input type="range" id="brushSize" min="1" max="50" value="3">
-                </div>
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>Opacity</span>
-                        <span id="opacityValue">100%</span>
-                    </div>
-                    <input type="range" id="brushOpacity" min="0" max="100" value="100">
-                </div>
-            </div>
 
-            <!-- Pattern Textures -->
-            <div class="tool-section">
-                <div class="tool-section-title">🔄 Pattern Textures</div>
-                <div class="control-group">
-                    <select id="patternType">
-                        <option value="none">No Pattern</option>
-                        <option value="stripes">Stripes Pattern</option>
-                        <option value="dots">Dots Pattern</option>
-                        <option value="crosshatch">Crosshatch Pattern</option>
-                        <option value="checkerboard">Checkerboard</option>
-                        <option value="zigzag">Zigzag Pattern</option>
-                        <option value="waves">Waves Pattern</option>
-                    </select>
+                <div class="tool-group-title">🔧 EDITING TOOLS</div>
+                <div class="tool-grid">
+                    <button class="tool-btn" id="tool-editpoints">📍 Edit Points</button>
+                    <button class="tool-btn" id="tool-seam">🧵 Seam Tool</button>
+                    <button class="tool-btn" id="tool-cut">✂️ Cut Tool</button>
+                    <button class="tool-btn" id="tool-transform">🔄 Transform</button>
                 </div>
-                <div class="control-group">
-                    <select id="patternApply">
-                        <option value="fill">Apply to Fill</option>
-                        <option value="stroke">Apply to Stroke</option>
-                    </select>
-                </div>
-            </div>
 
-            <!-- Grid & Snapping Controls -->
-            <div class="tool-section">
-                <div class="tool-section-title">📐 Grid & Snapping</div>
-                <div class="control-group">
-                    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <input type="checkbox" id="showGrid"> Show Grid
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                        <input type="checkbox" id="snapToGrid"> Snap to Grid
-                    </label>
-                </div>
-                <div class="control-group">
-                    <div class="control-label">
-                        <span>Grid Size</span>
-                        <span id="gridSizeValue">20px</span>
-                    </div>
-                    <input type="range" id="gridSize" min="10" max="50" value="20">
-                </div>
-            </div>
-
-            <!-- Canvas Dimensions -->
-            <div class="tool-section">
-                <div class="tool-section-title">📏 Canvas Dimensions</div>
-                <div class="control-group">
-                    <div class="dimension-input">
-                        <input type="number" id="canvasWidth" placeholder="Width" value="900">
-                        <input type="number" id="canvasHeight" placeholder="Height" value="600">
-                    </div>
-                    <button class="action-btn" id="resizeCanvas">Resize Canvas</button>
-                </div>
-            </div>
-
-            <!-- File Operations -->
-            <div class="tool-section">
-                <div class="tool-section-title">💾 File Operations</div>
-                <button class="action-btn" id="saveDrawing">💾 Save Drawing</button>
-                <button class="action-btn secondary" id="exportPNG">📸 Export as PNG</button>
-                <button class="action-btn secondary" id="exportJSON">📄 Export as JSON</button>
-                <button class="action-btn danger" id="clearCanvas">🗑️ Clear Canvas</button>
-            </div>
-
-            <!-- Saved Drawings -->
-            <div class="tool-section">
-                <div class="tool-section-title">📂 Saved Drawings</div>
-                <button class="action-btn secondary" id="refreshList" style="margin-bottom: 10px;">🔄 Refresh List</button>
-                <div id="drawingsList" class="drawings-list">
-                    <div style="text-align: center; padding: 20px; color: #888;">Loading...</div>
+                <div class="tool-group-title">🎨 PATTERN SETTINGS</div>
+                <div class="tool-grid">
+                    <button class="tool-btn" id="tool-group">📁 Group</button>
+                    <button class="tool-btn" id="tool-ungroup">📂 Ungroup</button>
+                    <button class="tool-btn" id="tool-lock">🔒 Lock</button>
+                    <button class="tool-btn" id="tool-unlock">🔓 Unlock</button>
                 </div>
             </div>
         </div>
 
-        <!-- Main Area -->
+        <!-- MAIN AREA -->
         <div class="main-area">
-            <div class="top-bar">
-                <div class="canvas-info">
-                    <div class="info-item" id="coordInfo">📍 Position: 0, 0</div>
-                    <div class="info-item" id="dimensionInfo">📐 Size: 900 x 600</div>
-                    <div class="info-item" id="toolInfo">🖌️ Tool: Pencil</div>
+            <!-- Top Toolbar -->
+            <div class="top-toolbar">
+                <div class="toolbar-group">
+                    <button class="action-btn" id="new-project">📄 New</button>
+                    <button class="action-btn" id="save-project">💾 Save</button>
+                    <button class="action-btn" id="load-project">📂 Load</button>
                 </div>
-                <div class="canvas-info">
-                    <button class="action-btn" id="undoBtn" style="padding: 5px 15px; width: auto;">↩️ Undo</button>
-                    <button class="action-btn" id="redoBtn" style="padding: 5px 15px; width: auto;">↪️ Redo</button>
+                <div class="toolbar-group">
+                    <button class="action-btn" id="undo-btn">↩️ Undo</button>
+                    <button class="action-btn" id="redo-btn">↪️ Redo</button>
+                </div>
+                <div class="toolbar-group">
+                    <button class="action-btn" id="toggle-grid">📐 Toggle Grid</button>
+                    <button class="action-btn" id="toggle-snap">🎯 Toggle Snap</button>
+                </div>
+                <div class="toolbar-group">
+                    <div class="zoom-controls">
+                        <button class="zoom-btn" id="zoom-out">−</button>
+                        <span id="zoom-level" style="min-width: 60px; text-align: center;">100%</span>
+                        <button class="zoom-btn" id="zoom-in">+</button>
+                        <button class="zoom-btn" id="zoom-fit">⬚</button>
+                    </div>
+                </div>
+                <div class="toolbar-group">
+                    <button class="action-btn" id="export-svg">📎 Export SVG</button>
+                    <button class="action-btn" id="export-png">📸 Export PNG</button>
                 </div>
             </div>
 
-            <div class="canvas-container">
-                <div class="canvas-wrapper">
-                    <canvas id="canvas" width="900" height="600"></canvas>
-                </div>
+            <!-- Canvas Container -->
+            <div class="canvas-container" id="canvas-container">
+                <canvas id="canvas" width="1200" height="800"></canvas>
             </div>
 
-            <div class="status-bar">
-                <div>✅ Status: Ready</div>
-                <div>🎨 Pattern: None</div>
-                <div>📐 Grid: Off | Snap: Off</div>
+            <!-- Bottom Bar -->
+            <div class="bottom-bar">
+                <div id="coord-info">📍 X: 0, Y: 0</div>
+                <div id="object-info">📐 No object selected</div>
+                <div id="grid-status">📐 Grid: OFF | Snap: OFF</div>
+                <div id="tool-status">🖌️ Tool: Select</div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR - PROPERTIES -->
+        <div class="sidebar-right">
+            <div style="padding: 20px; border-bottom: 1px solid #2a2d33;">
+                <h3 style="color: #ff7a00; font-size: 16px;">📋 Properties Panel</h3>
+            </div>
+
+            <div id="properties-content" style="padding: 20px;">
+                <div class="property-group">
+                    <div class="property-label">📏 Position (X, Y)</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="prop-x" class="property-input" placeholder="X">
+                        <input type="number" id="prop-y" class="property-input" placeholder="Y">
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">📐 Dimensions (W, H)</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="number" id="prop-width" class="property-input" placeholder="Width">
+                        <input type="number" id="prop-height" class="property-input" placeholder="Height">
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">🔄 Rotation</div>
+                    <input type="number" id="prop-rotation" class="property-input" placeholder="Degrees">
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">🎨 Fill Color</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="prop-fill" class="property-input" style="width: 60px; padding: 0;">
+                        <span id="fill-value" style="flex: 1;">#ffffff</span>
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">✏️ Stroke Color</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="color" id="prop-stroke" class="property-input" style="width: 60px; padding: 0;">
+                        <span id="stroke-value" style="flex: 1;">#ff7a00</span>
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">📏 Stroke Width</div>
+                    <input type="range" id="prop-stroke-width" min="0" max="10" step="0.5" value="2" style="width: 100%;">
+                    <span id="stroke-width-value" style="font-size: 12px;">2px</span>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">🎭 Opacity</div>
+                    <input type="range" id="prop-opacity" min="0" max="100" value="100" style="width: 100%;">
+                    <span id="opacity-value" style="font-size: 12px;">100%</span>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">📊 Layer Order</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="action-btn" id="bring-forward" style="flex: 1; padding: 6px;">↑ Bring Forward</button>
+                        <button class="action-btn" id="send-backward" style="flex: 1; padding: 6px;">↓ Send Backward</button>
+                    </div>
+                </div>
+
+                <div class="property-group">
+                    <div class="property-label">📐 Pattern Info</div>
+                    <div class="selection-info">
+                        <div id="pattern-lengths">Lengths: —</div>
+                        <div id="pattern-angles">Angles: —</div>
+                        <div id="pattern-vertices">Vertices: —</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Initialize Fabric.js canvas
-        const canvas = new fabric.Canvas('canvas');
+        // ============================================
+        // FABRIC.JS INITIALIZATION & GLOBAL STATE
+        // ============================================
         
-        // Variables
-        let currentTool = 'pencil';
-        let history = [];
-        let historyIndex = -1;
+        const canvas = new fabric.Canvas('canvas');
+        let currentTool = 'select';
         let showGrid = false;
         let snapToGrid = false;
         let gridSize = 20;
         let gridLines = [];
+        let zoomLevel = 1;
+        let history = [];
+        let historyIndex = -1;
         
-        // Pattern definitions
-        const patterns = {
-            stripes: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 20;
-                        canvas.height = 20;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 20, 20);
-                        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                        ctx.fillRect(0, 10, 20, 5);
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            },
-            dots: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 20;
-                        canvas.height = 20;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 20, 20);
-                        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-                        ctx.beginPath();
-                        ctx.arc(10, 10, 3, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-                        ctx.beginPath();
-                        ctx.arc(10, 10, 2, 0, Math.PI * 2);
-                        ctx.fill();
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            },
-            crosshatch: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 20;
-                        canvas.height = 20;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 20, 20);
-                        ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                        ctx.lineWidth = 1.5;
-                        ctx.beginPath();
-                        ctx.moveTo(0, 0);
-                        ctx.lineTo(20, 20);
-                        ctx.stroke();
-                        ctx.beginPath();
-                        ctx.moveTo(20, 0);
-                        ctx.lineTo(0, 20);
-                        ctx.stroke();
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            },
-            checkerboard: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 20;
-                        canvas.height = 20;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 20, 20);
-                        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-                        ctx.fillRect(0, 0, 10, 10);
-                        ctx.fillRect(10, 10, 10, 10);
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            },
-            zigzag: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 30;
-                        canvas.height = 30;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 30, 30);
-                        ctx.beginPath();
-                        ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-                        ctx.lineWidth = 2;
-                        for(let i = 0; i < 30; i += 10) {
-                            ctx.beginPath();
-                            ctx.moveTo(i, 0);
-                            ctx.lineTo(i + 5, 15);
-                            ctx.lineTo(i, 30);
-                            ctx.stroke();
-                        }
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            },
-            waves: function(color) {
-                return new fabric.Pattern({
-                    source: function() {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 30;
-                        canvas.height = 30;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = color;
-                        ctx.fillRect(0, 0, 30, 30);
-                        ctx.beginPath();
-                        ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                        ctx.lineWidth = 1.5;
-                        for(let i = 0; i < 30; i += 10) {
-                            ctx.beginPath();
-                            for(let x = 0; x <= 30; x += 5) {
-                                const y = 15 + Math.sin(x * 0.5) * 5;
-                                if(x === 0) ctx.moveTo(x + i, y);
-                                else ctx.lineTo(x + i, y);
-                            }
-                            ctx.stroke();
-                        }
-                        return canvas;
-                    },
-                    repeat: 'repeat'
-                });
-            }
-        };
+        // Pen tool state
+        let isDrawingPath = false;
+        let currentPathPoints = [];
+        let tempPath = null;
         
-        // Save state to history
+        // ============================================
+        // HISTORY MANAGEMENT
+        // ============================================
+        
         function saveToHistory() {
             const state = JSON.stringify(canvas.toJSON());
             history = history.slice(0, historyIndex + 1);
             history.push(state);
             historyIndex++;
-            updateStatus('Action saved to history');
+            if (history.length > 50) {
+                history.shift();
+                historyIndex--;
+            }
         }
         
-        // Undo
         function undo() {
             if (historyIndex > 0) {
                 historyIndex--;
                 const state = history[historyIndex];
                 canvas.loadFromJSON(state, () => {
                     canvas.renderAll();
-                    updateStatus('Undo completed');
                     if (showGrid) drawGrid();
+                    updatePropertiesPanel();
+                    showAlert('Undo completed', 'info');
                 });
-            } else {
-                updateStatus('Nothing to undo', 'info');
             }
         }
         
-        // Redo
         function redo() {
             if (historyIndex < history.length - 1) {
                 historyIndex++;
                 const state = history[historyIndex];
                 canvas.loadFromJSON(state, () => {
                     canvas.renderAll();
-                    updateStatus('Redo completed');
                     if (showGrid) drawGrid();
+                    updatePropertiesPanel();
+                    showAlert('Redo completed', 'info');
                 });
-            } else {
-                updateStatus('Nothing to redo', 'info');
             }
         }
         
-        // Apply pattern to object
-        function applyPatternToObject(obj) {
-            const patternType = document.getElementById('patternType').value;
-            const color = document.getElementById('brushColor').value;
-            const applyTo = document.getElementById('patternApply').value;
+        // ============================================
+        // GRID SYSTEM
+        // ============================================
+        
+        function drawGrid() {
+            gridLines.forEach(line => canvas.remove(line));
+            gridLines = [];
             
-            if (patternType !== 'none' && patterns[patternType]) {
-                const pattern = patterns[patternType](color);
-                if (applyTo === 'fill') {
-                    obj.set('fill', pattern);
-                    obj.set('stroke', null);
-                } else {
-                    obj.set('stroke', pattern);
-                    obj.set('strokeWidth', obj.strokeWidth || 3);
-                    obj.set('fill', null);
-                }
-            } else {
-                if (applyTo === 'fill') {
-                    obj.set('fill', color);
-                    obj.set('stroke', null);
-                } else {
-                    obj.set('stroke', color);
-                    obj.set('fill', null);
-                }
+            if (!showGrid) return;
+            
+            const width = canvas.getWidth();
+            const height = canvas.getHeight();
+            
+            for (let i = 0; i <= width; i += gridSize) {
+                const line = new fabric.Line([i, 0, i, height], {
+                    stroke: '#2a2d33',
+                    strokeWidth: 0.5,
+                    selectable: false,
+                    evented: false,
+                    hasControls: false,
+                    hasBorders: false,
+                    lockMovementX: true,
+                    lockMovementY: true
+                });
+                gridLines.push(line);
+                canvas.add(line);
             }
+            
+            for (let i = 0; i <= height; i += gridSize) {
+                const line = new fabric.Line([0, i, width, i], {
+                    stroke: '#2a2d33',
+                    strokeWidth: 0.5,
+                    selectable: false,
+                    evented: false,
+                    hasControls: false,
+                    hasBorders: false,
+                    lockMovementX: true,
+                    lockMovementY: true
+                });
+                gridLines.push(line);
+                canvas.add(line);
+            }
+            
+            gridLines.forEach(line => canvas.sendToBack(line));
             canvas.renderAll();
         }
         
-        // Snap to grid
         function snapToGridValue(value) {
             if (snapToGrid) {
                 return Math.round(value / gridSize) * gridSize;
@@ -731,353 +547,430 @@
             return value;
         }
         
-        // Draw grid
-        function drawGrid() {
-            // Remove existing grid lines
-            gridLines.forEach(line => canvas.remove(line));
-            gridLines = [];
+        // ============================================
+        // ZOOM & PAN
+        // ============================================
+        
+        function zoom(factor) {
+            zoomLevel *= factor;
+            zoomLevel = Math.min(Math.max(zoomLevel, 0.1), 5);
+            canvas.setZoom(zoomLevel);
+            document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
             
-            if (!showGrid) return;
+            const container = document.getElementById('canvas-container');
+            const canvasEl = document.getElementById('canvas');
+            const rect = canvasEl.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
             
-            const width = canvas.width;
-            const height = canvas.height;
-            
-            // Draw vertical lines
-            for (let i = 0; i <= width; i += gridSize) {
-                const line = new fabric.Line([i, 0, i, height], {
-                    stroke: '#ddd',
-                    strokeWidth: 0.5,
-                    selectable: false,
-                    evented: false,
-                    hasControls: false,
-                    hasBorders: false,
-                    lockMovementX: true,
-                    lockMovementY: true
-                });
-                gridLines.push(line);
-                canvas.add(line);
-            }
-            
-            // Draw horizontal lines
-            for (let i = 0; i <= height; i += gridSize) {
-                const line = new fabric.Line([0, i, width, i], {
-                    stroke: '#ddd',
-                    strokeWidth: 0.5,
-                    selectable: false,
-                    evented: false,
-                    hasControls: false,
-                    hasBorders: false,
-                    lockMovementX: true,
-                    lockMovementY: true
-                });
-                gridLines.push(line);
-                canvas.add(line);
-            }
-            
-            // Send grid to back
-            gridLines.forEach(line => canvas.sendToBack(line));
-            canvas.renderAll();
+            canvasEl.style.left = (containerRect.width / 2 - rect.width / 2) + 'px';
+            canvasEl.style.top = (containerRect.height / 2 - rect.height / 2) + 'px';
         }
         
-        // Update status
-        function updateStatus(message, type = 'info') {
-            const statusDiv = document.querySelector('.status-bar div:first-child');
-            statusDiv.innerHTML = `✅ Status: ${message}`;
+        function fitToScreen() {
+            const container = document.getElementById('canvas-container');
+            const canvasWidth = canvas.getWidth();
+            const canvasHeight = canvas.getHeight();
+            const containerWidth = container.clientWidth;
+            const containerHeight = container.clientHeight;
             
-            if (type !== 'info') {
-                showAlert(message, type);
-            }
+            const scaleX = containerWidth / canvasWidth;
+            const scaleY = containerHeight / canvasHeight;
+            zoomLevel = Math.min(scaleX, scaleY) * 0.9;
+            canvas.setZoom(zoomLevel);
+            document.getElementById('zoom-level').innerText = Math.round(zoomLevel * 100) + '%';
             
-            setTimeout(() => {
-                if (statusDiv.innerHTML === `✅ Status: ${message}`) {
-                    statusDiv.innerHTML = `✅ Status: Ready`;
-                }
-            }, 2000);
+            const canvasEl = document.getElementById('canvas');
+            canvasEl.style.left = '50%';
+            canvasEl.style.top = '50%';
+            canvasEl.style.transform = 'translate(-50%, -50%)';
         }
         
-        // Show alert
-        function showAlert(message, type) {
-            const alert = document.createElement('div');
-            alert.className = `alert alert-${type}`;
-            alert.textContent = message;
-            document.body.appendChild(alert);
-            
-            setTimeout(() => {
-                alert.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => alert.remove(), 300);
-            }, 3000);
-        }
+        // ============================================
+        // SHAPE CREATION
+        // ============================================
         
-        // Resize canvas
-        function resizeCanvas() {
-            const newWidth = parseInt(document.getElementById('canvasWidth').value);
-            const newHeight = parseInt(document.getElementById('canvasHeight').value);
-            
-            if (newWidth > 0 && newHeight > 0) {
-                canvas.setWidth(newWidth);
-                canvas.setHeight(newHeight);
-                canvas.renderAll();
-                
-                document.getElementById('dimensionInfo').innerHTML = `📐 Size: ${newWidth} x ${newHeight}`;
-                updateStatus(`Canvas resized to ${newWidth}x${newHeight}`);
-                
-                if (showGrid) drawGrid();
-                saveToHistory();
-            }
-        }
-        
-        // Add shape with snapping
-        function addShape(type) {
-            const color = document.getElementById('brushColor').value;
-            const size = parseInt(document.getElementById('brushSize').value);
-            const opacity = parseInt(document.getElementById('brushOpacity').value) / 100;
+        function createRectangle() {
             const center = canvas.getCenter();
+            const rect = new fabric.Rect({
+                left: snapToGridValue(center.left - 50),
+                top: snapToGridValue(center.top - 50),
+                width: 100,
+                height: 100,
+                fill: '#e0e0e0',
+                stroke: '#ff7a00',
+                strokeWidth: 2,
+                hasControls: true,
+                hasBorders: true,
+                cornerColor: '#ff7a00',
+                cornerSize: 8,
+                transparentCorners: false
+            });
+            canvas.add(rect);
+            saveToHistory();
+            showAlert('Rectangle added', 'success');
+        }
+        
+        function createEllipse() {
+            const center = canvas.getCenter();
+            const ellipse = new fabric.Ellipse({
+                left: snapToGridValue(center.left - 50),
+                top: snapToGridValue(center.top - 40),
+                rx: 50,
+                ry: 40,
+                fill: '#e0e0e0',
+                stroke: '#ff7a00',
+                strokeWidth: 2,
+                hasControls: true
+            });
+            canvas.add(ellipse);
+            saveToHistory();
+            showAlert('Ellipse added', 'success');
+        }
+        
+        function createLine() {
+            const center = canvas.getCenter();
+            const line = new fabric.Line([
+                snapToGridValue(center.left - 50),
+                snapToGridValue(center.top),
+                snapToGridValue(center.left + 50),
+                snapToGridValue(center.top)
+            ], {
+                stroke: '#ff7a00',
+                strokeWidth: 2,
+                hasControls: true
+            });
+            canvas.add(line);
+            saveToHistory();
+            showAlert('Line added', 'success');
+        }
+        
+        // ============================================
+        // PEN TOOL (Polygon Drawing)
+        // ============================================
+        
+        function startPenTool() {
+            canvas.defaultCursor = 'crosshair';
+            canvas.selection = false;
+            canvas.forEachObject(obj => obj.selectable = false);
             
-            let left = snapToGridValue(center.left - 50);
-            let top = snapToGridValue(center.top - 50);
+            canvas.on('mouse:down', onPenMouseDown);
+        }
+        
+        function onPenMouseDown(e) {
+            const pointer = canvas.getPointer(e.e);
+            const x = snapToGridValue(pointer.x);
+            const y = snapToGridValue(pointer.y);
             
-            let shape;
-            switch(type) {
-                case 'rectangle':
-                    shape = new fabric.Rect({
-                        left: left,
-                        top: top,
-                        width: 100,
-                        height: 100,
-                        fill: color,
-                        opacity: opacity
-                    });
-                    break;
-                case 'circle':
-                    shape = new fabric.Circle({
-                        left: left,
-                        top: top,
-                        radius: 50,
-                        fill: color,
-                        opacity: opacity
-                    });
-                    break;
-                case 'line':
-                    shape = new fabric.Line([
-                        snapToGridValue(center.left - 50), 
-                        snapToGridValue(center.top), 
-                        snapToGridValue(center.left + 50), 
-                        snapToGridValue(center.top)
-                    ], {
-                        stroke: color,
-                        strokeWidth: size,
-                        opacity: opacity
-                    });
-                    break;
-                case 'text':
-                    shape = new fabric.Text('Edit Text', {
-                        left: left,
-                        top: top,
-                        fontSize: 20,
-                        fill: color,
-                        opacity: opacity,
-                        editable: true
-                    });
-                    break;
-            }
-            
-            if (shape) {
-                applyPatternToObject(shape);
-                canvas.add(shape);
-                saveToHistory();
-                updateStatus(`${type} added`);
+            if (!isDrawingPath) {
+                isDrawingPath = true;
+                currentPathPoints = [{ x, y }];
+                
+                tempPath = new fabric.Polyline(currentPathPoints, {
+                    stroke: '#ff7a00',
+                    strokeWidth: 2,
+                    fill: 'rgba(255,122,0,0.1)',
+                    selectable: false,
+                    evented: false
+                });
+                canvas.add(tempPath);
+            } else {
+                currentPathPoints.push({ x, y });
+                tempPath.set({ points: currentPathPoints });
+                canvas.renderAll();
             }
         }
         
-        // Setup drawing tools
-        function setupTools() {
-            // Pencil tool
-            document.getElementById('tool-pencil').addEventListener('click', () => {
-                currentTool = 'pencil';
-                canvas.isDrawingMode = true;
-                canvas.freeDrawingBrush.width = parseInt(document.getElementById('brushSize').value);
-                canvas.freeDrawingBrush.color = document.getElementById('brushColor').value;
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-pencil').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Pencil';
-                updateStatus('Pencil tool selected');
-            });
+        function finishPenTool() {
+            if (isDrawingPath && currentPathPoints.length > 2) {
+                const polygon = new fabric.Polygon(currentPathPoints, {
+                    fill: '#e0e0e0',
+                    stroke: '#ff7a00',
+                    strokeWidth: 2,
+                    selectable: true,
+                    hasControls: true
+                });
+                canvas.remove(tempPath);
+                canvas.add(polygon);
+                saveToHistory();
+                showAlert('Pattern created', 'success');
+            }
             
-            // Rectangle tool
-            document.getElementById('tool-rectangle').addEventListener('click', () => {
-                currentTool = 'rectangle';
-                canvas.isDrawingMode = false;
-                addShape('rectangle');
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-rectangle').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Rectangle';
-            });
+            isDrawingPath = false;
+            currentPathPoints = [];
+            tempPath = null;
+        }
+        
+        // ============================================
+        // PROPERTIES PANEL UPDATE
+        // ============================================
+        
+        function updatePropertiesPanel() {
+            const activeObj = canvas.getActiveObject();
             
-            // Circle tool
-            document.getElementById('tool-circle').addEventListener('click', () => {
-                currentTool = 'circle';
-                canvas.isDrawingMode = false;
-                addShape('circle');
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-circle').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Circle';
-            });
+            if (activeObj) {
+                document.getElementById('prop-x').value = Math.round(activeObj.left || 0);
+                document.getElementById('prop-y').value = Math.round(activeObj.top || 0);
+                document.getElementById('prop-width').value = Math.round(activeObj.width || activeObj.radiusX * 2 || 0);
+                document.getElementById('prop-height').value = Math.round(activeObj.height || activeObj.radiusY * 2 || 0);
+                document.getElementById('prop-rotation').value = Math.round(activeObj.angle || 0);
+                document.getElementById('prop-fill').value = activeObj.fill || '#e0e0e0';
+                document.getElementById('fill-value').innerText = activeObj.fill || '#e0e0e0';
+                document.getElementById('prop-stroke').value = activeObj.stroke || '#ff7a00';
+                document.getElementById('stroke-value').innerText = activeObj.stroke || '#ff7a00';
+                document.getElementById('prop-stroke-width').value = activeObj.strokeWidth || 2;
+                document.getElementById('stroke-width-value').innerText = (activeObj.strokeWidth || 2) + 'px';
+                document.getElementById('prop-opacity').value = (activeObj.opacity || 1) * 100;
+                document.getElementById('opacity-value').innerText = Math.round((activeObj.opacity || 1) * 100) + '%';
+                
+                document.getElementById('object-info').innerHTML = `📐 Selected: ${activeObj.type}`;
+                
+                if (activeObj.type === 'polygon' && activeObj.points) {
+                    document.getElementById('pattern-vertices').innerHTML = `Vertices: ${activeObj.points.length}`;
+                    let totalLength = 0;
+                    for (let i = 0; i < activeObj.points.length; i++) {
+                        const p1 = activeObj.points[i];
+                        const p2 = activeObj.points[(i + 1) % activeObj.points.length];
+                        const dx = p1.x - p2.x;
+                        const dy = p1.y - p2.y;
+                        totalLength += Math.sqrt(dx * dx + dy * dy);
+                    }
+                    document.getElementById('pattern-lengths').innerHTML = `Total Length: ${Math.round(totalLength)}px`;
+                }
+            } else {
+                document.getElementById('prop-x').value = '';
+                document.getElementById('prop-y').value = '';
+                document.getElementById('prop-width').value = '';
+                document.getElementById('prop-height').value = '';
+                document.getElementById('object-info').innerHTML = '📐 No object selected';
+                document.getElementById('pattern-vertices').innerHTML = 'Vertices: —';
+                document.getElementById('pattern-lengths').innerHTML = 'Lengths: —';
+            }
+        }
+        
+        // ============================================
+        // PROPERTY CONTROLS
+        // ============================================
+        
+        document.getElementById('prop-x').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('left', parseInt(e.target.value));
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-y').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('top', parseInt(e.target.value));
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-width').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj && obj.type !== 'line') {
+                obj.set('width', parseInt(e.target.value));
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-height').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj && obj.type !== 'line') {
+                obj.set('height', parseInt(e.target.value));
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-rotation').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('angle', parseInt(e.target.value));
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-fill').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('fill', e.target.value);
+                document.getElementById('fill-value').innerText = e.target.value;
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-stroke').addEventListener('change', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('stroke', e.target.value);
+                document.getElementById('stroke-value').innerText = e.target.value;
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-stroke-width').addEventListener('input', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('strokeWidth', parseFloat(e.target.value));
+                document.getElementById('stroke-width-value').innerText = e.target.value + 'px';
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('prop-opacity').addEventListener('input', (e) => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                obj.set('opacity', parseFloat(e.target.value) / 100);
+                document.getElementById('opacity-value').innerText = e.target.value + '%';
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        // ============================================
+        // LAYER CONTROLS
+        // ============================================
+        
+        document.getElementById('bring-forward').addEventListener('click', () => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                canvas.bringForward(obj);
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        document.getElementById('send-backward').addEventListener('click', () => {
+            const obj = canvas.getActiveObject();
+            if (obj) {
+                canvas.sendBackwards(obj);
+                canvas.renderAll();
+                saveToHistory();
+            }
+        });
+        
+        // ============================================
+        // TOOL SELECTION
+        // ============================================
+        
+        function setActiveTool(tool) {
+            currentTool = tool;
+            document.getElementById('tool-status').innerHTML = `🖌️ Tool: ${tool.charAt(0).toUpperCase() + tool.slice(1)}`;
             
-            // Line tool
-            document.getElementById('tool-line').addEventListener('click', () => {
-                currentTool = 'line';
-                canvas.isDrawingMode = false;
-                addShape('line');
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-line').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Line';
-            });
+            // Reset all tool buttons
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
             
-            // Text tool
-            document.getElementById('tool-text').addEventListener('click', () => {
-                currentTool = 'text';
-                canvas.isDrawingMode = false;
-                addShape('text');
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-text').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Text';
-            });
-            
-            // Select tool
-            document.getElementById('tool-select').addEventListener('click', () => {
-                currentTool = 'select';
+            if (tool === 'select') {
                 canvas.isDrawingMode = false;
                 canvas.selection = true;
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+                canvas.defaultCursor = 'default';
+                canvas.off('mouse:down', onPenMouseDown);
+                finishPenTool();
                 document.getElementById('tool-select').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Select';
-                updateStatus('Select tool active');
-            });
-            
-            // Eraser tool
-            document.getElementById('tool-eraser').addEventListener('click', () => {
-                currentTool = 'eraser';
-                canvas.isDrawingMode = true;
-                canvas.freeDrawingBrush.width = parseInt(document.getElementById('brushSize').value);
-                canvas.freeDrawingBrush.color = '#ffffff';
-                document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-                document.getElementById('tool-eraser').classList.add('active');
-                document.getElementById('toolInfo').innerHTML = '🖌️ Tool: Eraser';
-                updateStatus('Eraser tool selected');
-            });
-            
-            // Clear tool
-            document.getElementById('tool-clear').addEventListener('click', () => {
-                if (confirm('Clear entire canvas?')) {
-                    canvas.clear();
-                    canvas.backgroundColor = 'white';
-                    canvas.renderAll();
-                    if (showGrid) drawGrid();
-                    saveToHistory();
-                    updateStatus('Canvas cleared');
-                }
-            });
+            } else if (tool === 'pen') {
+                canvas.isDrawingMode = false;
+                canvas.selection = false;
+                startPenTool();
+                document.getElementById('tool-pen').classList.add('active');
+            } else if (tool === 'rectangle') {
+                canvas.isDrawingMode = false;
+                createRectangle();
+                document.getElementById('tool-rectangle').classList.add('active');
+            } else if (tool === 'circle') {
+                canvas.isDrawingMode = false;
+                createEllipse();
+                document.getElementById('tool-circle').classList.add('active');
+            } else if (tool === 'line') {
+                canvas.isDrawingMode = false;
+                createLine();
+                document.getElementById('tool-line').classList.add('active');
+            }
         }
         
-        // Event listeners
-        document.getElementById('brushSize').addEventListener('input', (e) => {
-            const size = e.target.value;
-            document.getElementById('sizeValue').innerHTML = `${size}px`;
-            if (currentTool === 'pencil' || currentTool === 'eraser') {
-                canvas.freeDrawingBrush.width = parseInt(size);
-            }
-        });
+        // Tool event listeners
+        document.getElementById('tool-select').addEventListener('click', () => setActiveTool('select'));
+        document.getElementById('tool-pen').addEventListener('click', () => setActiveTool('pen'));
+        document.getElementById('tool-rectangle').addEventListener('click', () => setActiveTool('rectangle'));
+        document.getElementById('tool-circle').addEventListener('click', () => setActiveTool('circle'));
+        document.getElementById('tool-line').addEventListener('click', () => setActiveTool('line'));
         
-        document.getElementById('brushColor').addEventListener('input', (e) => {
-            const color = e.target.value;
-            document.getElementById('colorValue').innerHTML = color;
-            if (currentTool === 'pencil') {
-                canvas.freeDrawingBrush.color = color;
-            }
-            if (canvas.getActiveObject()) {
-                applyPatternToObject(canvas.getActiveObject());
-            }
-        });
-        
-        document.getElementById('brushOpacity').addEventListener('input', (e) => {
-            const opacity = e.target.value;
-            document.getElementById('opacityValue').innerHTML = `${opacity}%`;
-            if (canvas.getActiveObject()) {
-                canvas.getActiveObject().set('opacity', opacity / 100);
+        document.getElementById('tool-group').addEventListener('click', () => {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj) {
+                const group = new fabric.Group([activeObj]);
+                canvas.remove(activeObj);
+                canvas.add(group);
+                canvas.setActiveObject(group);
                 canvas.renderAll();
-            }
-        });
-        
-        document.getElementById('showGrid').addEventListener('change', (e) => {
-            showGrid = e.target.checked;
-            drawGrid();
-            updateStatus(showGrid ? 'Grid enabled' : 'Grid disabled');
-            document.querySelector('.status-bar div:last-child').innerHTML = `📐 Grid: ${showGrid ? 'On' : 'Off'} | Snap: ${snapToGrid ? 'On' : 'Off'}`;
-        });
-        
-        document.getElementById('snapToGrid').addEventListener('change', (e) => {
-            snapToGrid = e.target.checked;
-            updateStatus(snapToGrid ? 'Snap to grid enabled' : 'Snap to grid disabled');
-            document.querySelector('.status-bar div:last-child').innerHTML = `📐 Grid: ${showGrid ? 'On' : 'Off'} | Snap: ${snapToGrid ? 'On' : 'Off'}`;
-        });
-        
-        document.getElementById('gridSize').addEventListener('input', (e) => {
-            gridSize = parseInt(e.target.value);
-            document.getElementById('gridSizeValue').innerHTML = `${gridSize}px`;
-            if (showGrid) drawGrid();
-            updateStatus(`Grid size: ${gridSize}px`);
-        });
-        
-        document.getElementById('resizeCanvas').addEventListener('click', resizeCanvas);
-        document.getElementById('clearCanvas').addEventListener('click', () => {
-            if (confirm('Clear entire canvas?')) {
-                canvas.clear();
-                canvas.backgroundColor = 'white';
-                canvas.renderAll();
-                if (showGrid) drawGrid();
                 saveToHistory();
-                updateStatus('Canvas cleared');
+                showAlert('Group created', 'success');
             }
         });
         
-        document.getElementById('undoBtn').addEventListener('click', undo);
-        document.getElementById('redoBtn').addEventListener('click', redo);
-        
-        document.getElementById('patternType').addEventListener('change', () => {
-            if (canvas.getActiveObject()) {
-                applyPatternToObject(canvas.getActiveObject());
+        document.getElementById('tool-ungroup').addEventListener('click', () => {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj && activeObj.type === 'group') {
+                const items = activeObj.getObjects();
+                activeObj.remove();
+                items.forEach(item => canvas.add(item));
+                canvas.renderAll();
+                saveToHistory();
+                showAlert('Group dissolved', 'success');
             }
-            const pattern = document.getElementById('patternType').value;
-            document.querySelector('.status-bar div:nth-child(2)').innerHTML = `🎨 Pattern: ${pattern === 'none' ? 'None' : pattern}`;
         });
         
-        // Export functions
-        document.getElementById('exportPNG').addEventListener('click', () => {
-            const dataURL = canvas.toDataURL({ format: 'png', quality: 1 });
-            const link = document.createElement('a');
-            link.download = `sketch_${Date.now()}.png`;
-            link.href = dataURL;
-            link.click();
-            showAlert('PNG exported successfully!', 'success');
+        document.getElementById('tool-lock').addEventListener('click', () => {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj) {
+                activeObj.set('lockMovementX', true);
+                activeObj.set('lockMovementY', true);
+                activeObj.set('lockRotation', true);
+                activeObj.set('lockScalingX', true);
+                activeObj.set('lockScalingY', true);
+                canvas.renderAll();
+                showAlert('Object locked', 'info');
+            }
         });
         
-        document.getElementById('exportJSON').addEventListener('click', () => {
-            const jsonData = JSON.stringify(canvas.toJSON(), null, 2);
-            const blob = new Blob([jsonData], { type: 'application/json' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `sketch_${Date.now()}.json`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-            showAlert('JSON exported successfully!', 'success');
+        document.getElementById('tool-unlock').addEventListener('click', () => {
+            const activeObj = canvas.getActiveObject();
+            if (activeObj) {
+                activeObj.set('lockMovementX', false);
+                activeObj.set('lockMovementY', false);
+                activeObj.set('lockRotation', false);
+                activeObj.set('lockScalingX', false);
+                activeObj.set('lockScalingY', false);
+                canvas.renderAll();
+                showAlert('Object unlocked', 'info');
+            }
         });
         
-        // Save drawing to server
-        document.getElementById('saveDrawing').addEventListener('click', async () => {
+        // ============================================
+        // TOP TOOLBAR ACTIONS
+        // ============================================
+        
+        document.getElementById('new-project').addEventListener('click', () => {
+            if (confirm('Create new project? All unsaved work will be lost.')) {
+                canvas.clear();
+                canvas.backgroundColor = '#ffffff';
+                canvas.renderAll();
+                saveToHistory();
+                showAlert('New project created', 'success');
+            }
+        });
+        
+        document.getElementById('save-project').addEventListener('click', async () => {
             const canvasData = canvas.toJSON();
             const imageData = canvas.toDataURL('png');
-            
-            updateStatus('Saving...');
             
             try {
                 const response = await fetch('/tools/sketch-fabric/save/', {
@@ -1086,17 +979,11 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken')
                     },
-                    body: JSON.stringify({
-                        canvasData: canvasData,
-                        imageData: imageData
-                    })
+                    body: JSON.stringify({ canvasData, imageData })
                 });
-                
                 const result = await response.json();
                 if (result.success) {
-                    showAlert('Drawing saved successfully!', 'success');
-                    updateStatus('Saved');
-                    loadDrawingsList();
+                    showAlert('Project saved successfully!', 'success');
                 } else {
                     showAlert('Error: ' + result.error, 'error');
                 }
@@ -1105,66 +992,65 @@
             }
         });
         
-        // Load drawings list
-        async function loadDrawingsList() {
-            try {
-                const response = await fetch('/tools/sketch-fabric/list/');
-                const result = await response.json();
-                
-                const listDiv = document.getElementById('drawingsList');
-                if (result.success && result.drawings.length > 0) {
-                    listDiv.innerHTML = '';
-                    result.drawings.forEach(drawing => {
-                        const item = document.createElement('div');
-                        item.className = 'drawing-item';
-                        item.innerHTML = `
-                            <div class="drawing-name">📄 ${drawing.filename}</div>
-                            <div class="drawing-date">${drawing.modified}</div>
-                        `;
-                        item.onclick = () => loadDrawing(drawing.filename);
-                        listDiv.appendChild(item);
-                    });
-                } else {
-                    listDiv.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No saved drawings</div>';
-                }
-            } catch (error) {
-                console.error('Error loading drawings:', error);
-            }
+        document.getElementById('load-project').addEventListener('click', () => {
+            const filename = prompt('Enter filename to load (from saved drawings list):');
+            if (filename) loadDrawing(filename);
+        });
+        
+        document.getElementById('undo-btn').addEventListener('click', undo);
+        document.getElementById('redo-btn').addEventListener('click', redo);
+        
+        document.getElementById('toggle-grid').addEventListener('click', () => {
+            showGrid = !showGrid;
+            drawGrid();
+            document.getElementById('grid-status').innerHTML = `📐 Grid: ${showGrid ? 'ON' : 'OFF'} | Snap: ${snapToGrid ? 'ON' : 'OFF'}`;
+            showAlert(`Grid ${showGrid ? 'enabled' : 'disabled'}`, 'info');
+        });
+        
+        document.getElementById('toggle-snap').addEventListener('click', () => {
+            snapToGrid = !snapToGrid;
+            document.getElementById('grid-status').innerHTML = `📐 Grid: ${showGrid ? 'ON' : 'OFF'} | Snap: ${snapToGrid ? 'ON' : 'OFF'}`;
+            showAlert(`Snap to grid ${snapToGrid ? 'enabled' : 'disabled'}`, 'info');
+        });
+        
+        document.getElementById('zoom-in').addEventListener('click', () => zoom(1.2));
+        document.getElementById('zoom-out').addEventListener('click', () => zoom(0.8));
+        document.getElementById('zoom-fit').addEventListener('click', fitToScreen);
+        
+        document.getElementById('export-svg').addEventListener('click', () => {
+            const svg = canvas.toSVG();
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `pattern_${Date.now()}.svg`;
+            link.click();
+            showAlert('SVG exported', 'success');
+        });
+        
+        document.getElementById('export-png').addEventListener('click', () => {
+            const dataURL = canvas.toDataURL('png');
+            const link = document.createElement('a');
+            link.download = `pattern_${Date.now()}.png`;
+            link.href = dataURL;
+            link.click();
+            showAlert('PNG exported', 'success');
+        });
+        
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            setTimeout(() => {
+                alert.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
         }
         
-        // Load drawing
-        async function loadDrawing(filename) {
-            updateStatus(`Loading ${filename}...`);
-            try {
-                const response = await fetch('/tools/sketch-fabric/load/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken')
-                    },
-                    body: JSON.stringify({ filename: filename })
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    canvas.loadFromJSON(result.canvasData, () => {
-                        canvas.renderAll();
-                        if (showGrid) drawGrid();
-                        saveToHistory();
-                        showAlert('Drawing loaded successfully!', 'success');
-                        updateStatus('Loaded');
-                    });
-                } else {
-                    showAlert('Error loading: ' + result.error, 'error');
-                }
-            } catch (error) {
-                showAlert('Error loading: ' + error.message, 'error');
-            }
-        }
-        
-        document.getElementById('refreshList').addEventListener('click', loadDrawingsList);
-        
-        // Helper function for CSRF token
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== '') {
@@ -1180,47 +1066,77 @@
             return cookieValue;
         }
         
-        // Mouse move tracking
+        async function loadDrawing(filename) {
+            try {
+                const response = await fetch('/tools/sketch-fabric/load/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ filename })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    canvas.loadFromJSON(result.canvasData, () => {
+                        canvas.renderAll();
+                        if (showGrid) drawGrid();
+                        saveToHistory();
+                        showAlert('Drawing loaded successfully!', 'success');
+                    });
+                } else {
+                    showAlert('Error loading: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // ============================================
+        // CANVAS EVENT HANDLERS
+        // ============================================
+        
         canvas.on('mouse:move', (e) => {
             if (e.absolutePointer) {
                 const x = Math.round(e.absolutePointer.x);
                 const y = Math.round(e.absolutePointer.y);
-                document.getElementById('coordInfo').innerHTML = `📍 Position: ${x}, ${y}`;
+                document.getElementById('coord-info').innerHTML = `📍 X: ${x}, Y: ${y}`;
             }
         });
         
-        // Object modifications
+        canvas.on('selection:created', updatePropertiesPanel);
+        canvas.on('selection:updated', updatePropertiesPanel);
+        canvas.on('selection:cleared', updatePropertiesPanel);
         canvas.on('object:modified', () => {
             saveToHistory();
+            updatePropertiesPanel();
         });
+        canvas.on('object:added', () => saveToHistory());
         
-        canvas.on('path:created', () => {
-            saveToHistory();
-        });
-        
-        canvas.on('object:added', () => {
-            if (!canvas.isDrawingMode) {
-                saveToHistory();
+        // Handle double-click to finish pen tool
+        canvas.on('mouse:dblclick', () => {
+            if (currentTool === 'pen') {
+                finishPenTool();
             }
         });
         
-        // Initialize canvas
-        canvas.backgroundColor = 'white';
-        canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-        canvas.freeDrawingBrush.width = 3;
-        canvas.freeDrawingBrush.color = '#000000';
-        canvas.isDrawingMode = true;
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        
+        canvas.backgroundColor = '#ffffff';
+        canvas.renderAll();
         canvas.selection = true;
-        
-        // Setup tools and initial state
-        setupTools();
+        setActiveTool('select');
         saveToHistory();
-        loadDrawingsList();
+        fitToScreen();
         
-        // Set default active tool
-        document.getElementById('tool-pencil').classList.add('active');
+        window.addEventListener('resize', () => {
+            fitToScreen();
+            if (showGrid) drawGrid();
+        });
         
-        updateStatus('Ready to draw!');
+        showAlert('Pattern Studio Ready! 🎨', 'success');
     </script>
 </body>
 </html>
