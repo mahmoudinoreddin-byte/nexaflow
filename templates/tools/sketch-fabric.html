@@ -191,6 +191,21 @@
                 opacity: 0;
             }
         }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -250,11 +265,29 @@
         <div class="status-bar">
             <div>🖌️ Tool: <span id="currentTool">Draw</span></div>
             <div>🎨 Pattern: <span id="currentPattern">None</span></div>
-            <div>💾 Status: Ready</div>
+            <div>💾 Status: <span id="status">Ready</span></div>
         </div>
     </div>
 
     <script>
+        // Get CSRF token for Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
         // Initialize Fabric.js canvas
         const canvas = new fabric.Canvas('canvas');
         
@@ -371,6 +404,16 @@
             }
         };
         
+        // Update status
+        function updateStatus(message, isLoading = false) {
+            const statusSpan = document.getElementById('status');
+            if (isLoading) {
+                statusSpan.innerHTML = '<span class="loading"></span> ' + message;
+            } else {
+                statusSpan.textContent = message;
+            }
+        }
+        
         // Save state to history
         function saveHistory() {
             history.push(JSON.stringify(canvas.toJSON()));
@@ -384,11 +427,15 @@
                 const lastState = history[history.length - 1];
                 canvas.loadFromJSON(lastState, () => {
                     canvas.renderAll();
+                    updateStatus('Undo completed');
                 });
             } else if (history.length === 1) {
                 canvas.clear();
                 canvas.backgroundColor = 'white';
                 canvas.renderAll();
+                updateStatus('Canvas cleared');
+            } else {
+                updateStatus('Nothing to undo');
             }
         }
         
@@ -426,13 +473,6 @@
             canvas.isDrawingMode = true;
             canvas.freeDrawingBrush.width = parseInt(document.getElementById('brushSize').value);
             canvas.freeDrawingBrush.color = document.getElementById('colorPicker').value;
-            
-            // Apply pattern to drawing brush if needed
-            const patternType = document.getElementById('patternSelect').value;
-            if (patternType !== 'none' && patterns[patternType]) {
-                // For drawing mode, patterns work differently
-                canvas.freeDrawingBrush.color = document.getElementById('colorPicker').value;
-            }
         }
         
         // Add shape
@@ -487,6 +527,7 @@
                 applyPattern(shape);
                 canvas.add(shape);
                 saveHistory();
+                updateStatus(`${type} added`);
             }
         }
         
@@ -497,6 +538,7 @@
             document.getElementById('currentTool').innerText = 'Draw';
             document.querySelectorAll('.tool-group button').forEach(btn => btn.classList.remove('active'));
             document.getElementById('draw').classList.add('active');
+            updateStatus('Drawing mode enabled');
         });
         
         document.getElementById('rectangle').addEventListener('click', () => {
@@ -545,6 +587,7 @@
                 canvas.backgroundColor = 'white';
                 canvas.renderAll();
                 saveHistory();
+                updateStatus('Canvas cleared');
             }
         });
         
@@ -558,6 +601,7 @@
             if (currentTool === 'draw') {
                 canvas.freeDrawingBrush.width = parseInt(size);
             }
+            updateStatus(`Brush size: ${size}`);
         });
         
         document.getElementById('colorPicker').addEventListener('input', (e) => {
@@ -566,6 +610,7 @@
             if (currentTool === 'draw') {
                 canvas.freeDrawingBrush.color = color;
             }
+            updateStatus(`Color changed to ${color}`);
         });
         
         document.getElementById('patternSelect').addEventListener('change', (e) => {
@@ -574,6 +619,7 @@
             if (canvas.getActiveObject()) {
                 applyPattern(canvas.getActiveObject());
             }
+            updateStatus(`Pattern: ${pattern}`);
         });
         
         document.getElementById('fillStyle').addEventListener('change', () => {
@@ -587,11 +633,14 @@
             const canvasData = canvas.toJSON();
             const imageData = canvas.toDataURL('png');
             
+            updateStatus('Saving drawing...', true);
+            
             try {
-                const response = await fetch('/save_drawing', {
+                const response = await fetch('/tools/sketch-fabric/save/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
                     },
                     body: JSON.stringify({
                         canvasData: canvasData,
@@ -602,12 +651,15 @@
                 const result = await response.json();
                 if (result.success) {
                     showAlert('Drawing saved successfully!', 'success');
+                    updateStatus('Drawing saved');
                     loadDrawingsList();
                 } else {
                     showAlert('Error saving drawing: ' + result.error, 'error');
+                    updateStatus('Save failed');
                 }
             } catch (error) {
                 showAlert('Error saving drawing: ' + error.message, 'error');
+                updateStatus('Save error');
             }
         });
         
@@ -618,16 +670,19 @@
                 quality: 1
             });
             const link = document.createElement('a');
-            link.download = 'drawing.png';
+            link.download = `drawing_${new Date().getTime()}.png`;
             link.href = dataURL;
             link.click();
             showAlert('PNG exported successfully!', 'success');
+            updateStatus('PNG exported');
         });
         
         // Load drawings list
         async function loadDrawingsList() {
+            updateStatus('Loading drawings...', true);
+            
             try {
-                const response = await fetch('/list_drawings');
+                const response = await fetch('/tools/sketch-fabric/list/');
                 const result = await response.json();
                 
                 const listDiv = document.getElementById('drawingList');
@@ -645,21 +700,27 @@
                         `;
                         listDiv.appendChild(item);
                     });
+                    updateStatus(`Loaded ${result.drawings.length} drawings`);
                 } else {
                     listDiv.innerHTML = '<p>No saved drawings found</p>';
+                    updateStatus('No drawings found');
                 }
             } catch (error) {
                 console.error('Error loading drawings:', error);
+                updateStatus('Error loading drawings');
             }
         }
         
         // Load drawing
         window.loadDrawing = async function(filename) {
+            updateStatus(`Loading ${filename}...`, true);
+            
             try {
-                const response = await fetch('/load_drawing', {
+                const response = await fetch('/tools/sketch-fabric/load/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
                     },
                     body: JSON.stringify({ filename: filename })
                 });
@@ -670,12 +731,15 @@
                         canvas.renderAll();
                         saveHistory();
                         showAlert('Drawing loaded successfully!', 'success');
+                        updateStatus('Drawing loaded');
                     });
                 } else {
                     showAlert('Error loading drawing: ' + result.error, 'error');
+                    updateStatus('Load failed');
                 }
             } catch (error) {
                 showAlert('Error loading drawing: ' + error.message, 'error');
+                updateStatus('Load error');
             }
         };
         
