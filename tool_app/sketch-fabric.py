@@ -1,104 +1,115 @@
-from flask import Flask, render_template, request, jsonify
 import json
+import os
 import base64
 from datetime import datetime
-import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.conf import settings
 
-app = Flask(__name__)
+# Define upload directory relative to your Django project
+UPLOAD_FOLDER = os.path.join(settings.BASE_DIR, 'static', 'uploads', 'sketch_fabric')
 
-# Configure upload folder
-UPLOAD_FOLDER = 'static/uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+# Ensure upload directory exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-@app.route('/')
-def index():
-    """Serve the main drawing page"""
-    return render_template('index.html')
-
-@app.route('/save_drawing', methods=['POST'])
-def save_drawing():
+@csrf_exempt
+@require_http_methods(["POST"])
+def save_drawing(request):
     """Save the drawing as JSON and optionally as image"""
     try:
-        data = request.json
+        data = json.loads(request.body)
         canvas_data = data.get('canvasData')
         image_data = data.get('imageData')
         
         # Generate filename with timestamp
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]
         
         # Save canvas state as JSON
         json_filename = f'drawing_{timestamp}.json'
-        json_path = os.path.join(app.config['UPLOAD_FOLDER'], json_filename)
+        json_path = os.path.join(UPLOAD_FOLDER, json_filename)
         
-        with open(json_path, 'w') as f:
+        with open(json_path, 'w', encoding='utf-8') as f:
             json.dump(canvas_data, f, indent=2)
         
         # Save as PNG if image data is provided
+        saved_files = [json_filename]
+        
         if image_data:
             # Remove the data:image/png;base64 prefix
             if ',' in image_data:
                 image_data = image_data.split(',')[1]
             
             png_filename = f'drawing_{timestamp}.png'
-            png_path = os.path.join(app.config['UPLOAD_FOLDER'], png_filename)
+            png_path = os.path.join(UPLOAD_FOLDER, png_filename)
             
             with open(png_path, 'wb') as f:
                 f.write(base64.b64decode(image_data))
             
-            return jsonify({
-                'success': True,
-                'json_file': json_filename,
-                'png_file': png_filename,
-                'message': 'Drawing saved successfully!'
-            })
+            saved_files.append(png_filename)
         
-        return jsonify({
+        return JsonResponse({
             'success': True,
-            'json_file': json_filename,
-            'message': 'Drawing state saved successfully!'
+            'files': saved_files,
+            'message': f'Drawing saved successfully! Files: {", ".join(saved_files)}'
         })
         
     except Exception as e:
-        return jsonify({
+        return JsonResponse({
             'success': False,
             'error': str(e)
-        }), 500
+        }, status=500)
 
-@app.route('/load_drawing', methods=['POST'])
-def load_drawing():
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def load_drawing(request):
     """Load a previously saved drawing"""
     try:
-        filename = request.json.get('filename')
+        data = json.loads(request.body)
+        filename = data.get('filename')
+        
         if not filename:
-            return jsonify({'success': False, 'error': 'No filename provided'}), 400
+            return JsonResponse({
+                'success': False, 
+                'error': 'No filename provided'
+            }, status=400)
         
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        # Security check: prevent directory traversal
+        filename = os.path.basename(filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
         
-        with open(filepath, 'r') as f:
+        if not os.path.exists(filepath):
+            return JsonResponse({
+                'success': False,
+                'error': 'File not found'
+            }, status=404)
+        
+        with open(filepath, 'r', encoding='utf-8') as f:
             canvas_data = json.load(f)
         
-        return jsonify({
+        return JsonResponse({
             'success': True,
-            'canvasData': canvas_data
+            'canvasData': canvas_data,
+            'filename': filename
         })
         
     except Exception as e:
-        return jsonify({
+        return JsonResponse({
             'success': False,
             'error': str(e)
-        }), 500
+        }, status=500)
 
-@app.route('/list_drawings', methods=['GET'])
-def list_drawings():
+
+@require_http_methods(["GET"])
+def list_drawings(request):
     """List all saved drawings"""
     try:
         drawings = []
-        for file in os.listdir(app.config['UPLOAD_FOLDER']):
+        for file in os.listdir(UPLOAD_FOLDER):
             if file.endswith('.json'):
-                filepath = os.path.join(app.config['UPLOAD_FOLDER'], file)
+                filepath = os.path.join(UPLOAD_FOLDER, file)
                 stat = os.stat(filepath)
                 drawings.append({
                     'filename': file,
@@ -109,16 +120,61 @@ def list_drawings():
         # Sort by modified time, newest first
         drawings.sort(key=lambda x: x['modified'], reverse=True)
         
-        return jsonify({
+        return JsonResponse({
             'success': True,
-            'drawings': drawings
+            'drawings': drawings,
+            'count': len(drawings)
         })
         
     except Exception as e:
-        return jsonify({
+        return JsonResponse({
             'success': False,
             'error': str(e)
-        }), 500
+        }, status=500)
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+
+@require_http_methods(["DELETE"])
+def delete_drawing(request, filename):
+    """Delete a saved drawing"""
+    try:
+        # Security check: prevent directory traversal
+        filename = os.path.basename(filename)
+        json_path = os.path.join(UPLOAD_FOLDER, filename)
+        png_path = os.path.join(UPLOAD_FOLDER, filename.replace('.json', '.png'))
+        
+        deleted_files = []
+        
+        if os.path.exists(json_path):
+            os.remove(json_path)
+            deleted_files.append(filename)
+        
+        if os.path.exists(png_path):
+            os.remove(png_path)
+            deleted_files.append(filename.replace('.json', '.png'))
+        
+        if deleted_files:
+            return JsonResponse({
+                'success': True,
+                'message': f'Deleted: {", ".join(deleted_files)}'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': 'File not found'
+            }, status=404)
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+
+# Helper function to get upload folder path (useful for debugging)
+def get_upload_folder_info(request):
+    """Get information about the upload folder (for debugging)"""
+    return JsonResponse({
+        'upload_folder': UPLOAD_FOLDER,
+        'exists': os.path.exists(UPLOAD_FOLDER),
+        'files_count': len([f for f in os.listdir(UPLOAD_FOLDER) if f.endswith('.json')]) if os.path.exists(UPLOAD_FOLDER) else 0
+    })
