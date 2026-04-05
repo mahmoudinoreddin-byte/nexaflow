@@ -5,1337 +5,1710 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atelier — Pattern Design Studio</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg0:#0e0f0d;--bg1:#161814;--bg2:#1e2019;--bg3:#272922;
-  --border:#2c2e27;--border2:#3a3d34;
-  --text:#d6d8cc;--text2:#8a8c80;--text3:#555750;
-  --accent:#c9b46a;--accent2:#9e8c4f;--accent3:#6b5e33;
-  --red:#c46a6a;--green:#6ac47a;--blue:#6a9ac4;
-  --sidebar-w:260px;--props-w:300px;--top-h:52px;--bot-h:32px;
+  --bg0:#0b0c0a;--bg1:#131510;--bg2:#1a1d16;--bg3:#21251b;
+  --border:#272b22;--border2:#363b2d;
+  --text:#d4d6c9;--text2:#888b7c;--text3:#4e5146;
+  --accent:#c8b366;--accent2:#9d8b4d;--accent3:#6a5e32;
+  --red:#c46a6a;--green:#6ac47a;--blue:#6a9ac4;--purple:#a06ac4;
+  --sidebar-w:240px;--props-w:280px;--top-h:46px;--bot-h:28px;
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);overflow:hidden;height:100vh;font-size:13px}
-.app{display:flex;height:100vh}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg0);color:var(--text);font-size:12px;line-height:1.4}
+.app{display:flex;height:100vh;width:100vw}
 
-/* ─── SIDEBARS ─── */
-.sidebar{background:var(--bg1);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
-.sidebar-left{width:var(--sidebar-w)}
-.sidebar-right{width:var(--props-w);border-right:none;border-left:1px solid var(--border)}
-.sidebar::-webkit-scrollbar{width:4px}
-.sidebar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-.brand{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.brand-icon{width:32px;height:32px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.brand-name{font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent);line-height:1.1}
-.brand-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px}
+/* ── SIDEBAR BASE ── */
+.sidebar{background:var(--bg1);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sidebar-left{width:var(--sidebar-w);border-right:1px solid var(--border)}
+.sidebar-right{width:var(--props-w);border-left:1px solid var(--border)}
+.sidebar-scroll{overflow-y:auto;overflow-x:hidden;flex:1}
 
-.tool-section{padding:12px 14px}
-.section-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--text3);margin-bottom:8px;font-weight:500}
-.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
-.tool-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:8px 6px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s;white-space:nowrap;overflow:hidden}
-.tool-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
-.tool-btn.active{background:var(--accent3);border-color:var(--accent2);color:var(--accent);box-shadow:0 0 0 1px var(--accent3)}
-.tool-btn svg{flex-shrink:0}
-.tool-btn-wide{grid-column:span 2}
-.sep{height:1px;background:var(--border);margin:10px 0}
+.brand{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;flex-shrink:0}
+.brand-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent3));border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.brand-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--accent);line-height:1}
+.brand-sub{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.8px;margin-top:1px}
 
-/* Quick shapes */
-.shape-row{display:flex;gap:5px;margin-bottom:4px}
-.shape-btn{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 4px;border-radius:6px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
-.shape-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
+/* ── TOOL SECTIONS ── */
+.ts{padding:8px 10px;border-bottom:1px solid var(--border)}
+.ts-label{font-size:9px;text-transform:uppercase;letter-spacing:1.8px;color:var(--text3);margin-bottom:6px;font-weight:600;padding:0 2px}
+.tg{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.tb{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:6px 4px;border-radius:5px;cursor:pointer;font-size:10.5px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;justify-content:center;gap:4px;transition:all .12s;white-space:nowrap;user-select:none}
+.tb:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
+.tb.active{background:rgba(200,179,102,0.12);border-color:var(--accent2);color:var(--accent)}
+.tb.wide{grid-column:span 2}
+.tb.danger:hover{background:rgba(196,106,106,0.12);border-color:rgba(196,106,106,0.4);color:var(--red)}
+.tb svg{flex-shrink:0;width:12px;height:12px}
 
-/* ─── MAIN ─── */
-.main{flex:1;display:flex;flex-direction:column;min-width:0}
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
 
-/* Top bar */
-.topbar{height:var(--top-h);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;padding:0;flex-shrink:0}
-.tb-group{display:flex;align-items:center;gap:4px;padding:0 12px;border-right:1px solid var(--border);height:100%}
-.tb-group:last-child{border-right:none}
-.tb-btn{background:transparent;border:1px solid transparent;color:var(--text2);padding:5px 9px;border-radius:5px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;gap:5px;transition:all .15s;white-space:nowrap}
-.tb-btn:hover{background:var(--bg3);border-color:var(--border);color:var(--text)}
-.tb-btn.danger:hover{background:#3d1a1a;border-color:#5a2a2a;color:var(--red)}
-.zoom-disp{font-size:12px;color:var(--text2);min-width:42px;text-align:center;font-variant-numeric:tabular-nums}
+/* Topbar */
+.topbar{height:var(--top-h);background:var(--bg1);border-bottom:1px solid var(--border);display:flex;align-items:center;flex-shrink:0;overflow:hidden}
+.tbg{display:flex;align-items:center;gap:3px;padding:0 10px;border-right:1px solid var(--border);height:100%;flex-shrink:0}
+.tbg:last-child{border-right:none;margin-left:auto}
+.tbb{background:transparent;border:1px solid transparent;color:var(--text2);padding:4px 8px;border-radius:4px;cursor:pointer;font-size:11px;font-family:'DM Sans',sans-serif;font-weight:500;display:flex;align-items:center;gap:4px;transition:all .12s;white-space:nowrap;user-select:none}
+.tbb:hover{background:var(--bg3);border-color:var(--border);color:var(--text)}
+.tbb.active-btn{color:var(--accent)}
+.zoom-d{font-size:11px;color:var(--text2);min-width:40px;text-align:center;font-variant-numeric:tabular-nums;font-weight:500}
 
-/* Canvas area */
-.canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg0);cursor:crosshair}
-.canvas-wrap.select-mode{cursor:default}
-#main-canvas{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 8px 40px rgba(0,0,0,.7)}
-.ruler-corner{position:absolute;top:0;left:0;width:24px;height:24px;background:var(--bg1);border-right:1px solid var(--border);border-bottom:1px solid var(--border);z-index:5}
-canvas#ruler-h,canvas#ruler-v{position:absolute;z-index:4;pointer-events:none}
-canvas#ruler-h{top:0;left:24px}
-canvas#ruler-v{top:24px;left:0}
+/* Canvas */
+.canvas-area{flex:1;position:relative;overflow:hidden;background:var(--bg0)}
+.canvas-area canvas{position:absolute}
+#c{position:absolute;top:0;left:0}
 
 /* Bottom bar */
-.botbar{height:var(--bot-h);background:var(--bg1);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:11px;color:var(--text3);flex-shrink:0;font-variant-numeric:tabular-nums}
-.botbar span{display:flex;align-items:center;gap:8px}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.botbar{height:var(--bot-h);background:var(--bg1);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:10.5px;color:var(--text3);flex-shrink:0;font-variant-numeric:tabular-nums;gap:12px}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
+.bb-seg{display:flex;align-items:center;gap:6px}
 
-/* ─── PROPERTIES ─── */
-.props-head{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.props-head h3{font-family:'DM Serif Display',serif;font-size:15px;color:var(--accent);font-weight:400}
-.prop-section{padding:12px 14px;border-bottom:1px solid var(--border)}
-.prop-label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);margin-bottom:7px;font-weight:500}
-.prop-row{display:flex;gap:8px;align-items:center}
-.prop-input{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:6px 8px;border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;width:0;min-width:0;outline:none;transition:border-color .15s;font-variant-numeric:tabular-nums}
-.prop-input:focus{border-color:var(--accent2)}
-.prop-input-label{font-size:11px;color:var(--text3);min-width:14px}
-.prop-range{width:100%;accent-color:var(--accent);cursor:pointer}
-.prop-range::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:var(--bg3)}
-.color-swatch{width:28px;height:28px;border-radius:4px;border:1px solid var(--border2);cursor:pointer;padding:0;flex-shrink:0}
-.layer-btns{display:flex;gap:5px}
-.layer-btn{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:5px;border-radius:5px;cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif;transition:all .15s;text-align:center}
-.layer-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
-.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:var(--text2);line-height:1.9}
+/* ── PROPERTIES ── */
+.ph{padding:10px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ph h3{font-family:'DM Serif Display',serif;font-size:14px;color:var(--accent);font-weight:400}
+.ps{padding:10px 12px;border-bottom:1px solid var(--border)}
+.pl{font-size:9px;text-transform:uppercase;letter-spacing:1.4px;color:var(--text3);margin-bottom:6px;font-weight:600}
+.pr{display:flex;gap:6px;align-items:center;margin-bottom:5px}
+.pr:last-child{margin-bottom:0}
+.pi{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:5px 7px;border-radius:4px;font-size:11.5px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .12s;font-variant-numeric:tabular-nums;min-width:0}
+.pi:focus{border-color:var(--accent2)}
+.pi-lbl{font-size:10px;color:var(--text3);flex-shrink:0;min-width:12px}
+.pi-full{width:100%}
+.pi-half{flex:1}
+.range{width:100%;accent-color:var(--accent);cursor:pointer;height:3px}
+.swatch{width:26px;height:26px;border-radius:4px;border:1px solid var(--border2);cursor:pointer;flex-shrink:0;padding:0}
+.btn-row{display:flex;gap:4px}
+.btn-sm{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:5px 3px;border-radius:4px;cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif;transition:all .12s;text-align:center}
+.btn-sm:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
+.no-sel{color:var(--text3);font-size:11px;text-align:center;padding:28px 14px;font-style:italic;line-height:1.7}
+
+/* Info card */
+.info-card{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:8px 10px;font-size:11px;color:var(--text2);line-height:2}
 .info-card b{color:var(--text);font-weight:500}
-.no-select{color:var(--text3);font-size:12px;text-align:center;padding:20px 0;font-style:italic}
 
-/* Seam overlay */
-.seam-input-row{display:flex;align-items:center;gap:8px}
-.seam-toggle{position:relative;width:32px;height:18px;flex-shrink:0}
-.seam-toggle input{opacity:0;width:0;height:0;position:absolute}
-.seam-toggle-track{position:absolute;inset:0;background:var(--bg3);border-radius:9px;border:1px solid var(--border2);cursor:pointer;transition:background .2s}
-.seam-toggle input:checked+.seam-toggle-track{background:var(--accent3);border-color:var(--accent2)}
-.seam-toggle-thumb{position:absolute;top:2px;left:2px;width:12px;height:12px;background:var(--text2);border-radius:50%;transition:transform .2s,background .2s;pointer-events:none}
-.seam-toggle input:checked~.seam-toggle-thumb{transform:translateX(14px);background:var(--accent)}
+/* Toggle */
+.tog{position:relative;width:30px;height:17px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--bg3);border-radius:9px;border:1px solid var(--border2);cursor:pointer;transition:background .2s}
+.tog input:checked+.tog-track{background:var(--accent3);border-color:var(--accent2)}
+.tog-thumb{position:absolute;top:2px;left:2px;width:11px;height:11px;background:var(--text3);border-radius:50%;transition:transform .2s,background .2s;pointer-events:none}
+.tog input:checked~.tog-thumb{transform:translateX(13px);background:var(--accent)}
 
-/* Notifications */
-.notif{position:fixed;bottom:24px;right:24px;padding:9px 16px;border-radius:7px;font-size:12px;font-weight:500;z-index:9999;animation:notifIn .25s ease;pointer-events:none;display:flex;align-items:center;gap:7px}
-.notif-success{background:#1e3020;border:1px solid #2d5030;color:var(--green)}
-.notif-error{background:#301e1e;border:1px solid #503030;color:var(--red)}
-.notif-info{background:#2a2810;border:1px solid #4a4818;color:var(--accent)}
-@keyframes notifIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+/* Texture panel */
+.tex-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
+.tex-swatch{width:100%;aspect-ratio:1;border-radius:4px;border:1.5px solid var(--border);cursor:pointer;transition:border-color .12s;overflow:hidden;position:relative}
+.tex-swatch.selected{border-color:var(--accent)}
+.tex-swatch canvas{width:100%;height:100%;display:block}
 
-/* Pen cursor helper */
-.pen-hint{position:absolute;bottom:50px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:11px;padding:6px 14px;border-radius:20px;pointer-events:none;z-index:100;white-space:nowrap}
+/* ── NOTIFICATIONS ── */
+.notif{position:fixed;bottom:20px;right:20px;padding:7px 13px;border-radius:6px;font-size:11.5px;font-weight:500;z-index:9999;animation:nIn .2s ease;pointer-events:none;display:flex;align-items:center;gap:6px;max-width:260px}
+.notif-success{background:#192c1b;border:1px solid #274d2a;color:var(--green)}
+.notif-error{background:#2c1919;border:1px solid #4d2727;color:var(--red)}
+.notif-info{background:#26220e;border:1px solid #46400f;color:var(--accent)}
+@keyframes nIn{from{transform:translateX(16px);opacity:0}to{transform:none;opacity:1}}
+
+/* Pen hint */
+.pen-hint{position:fixed;bottom:42px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);color:var(--text2);font-size:10.5px;padding:5px 14px;border-radius:20px;pointer-events:none;z-index:100;white-space:nowrap}
+
+/* Panel tabs */
+.tab-bar{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.tab{flex:1;padding:7px 0;text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;transition:all .12s;font-weight:600}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Texture preview on canvas objects */
+.ctx-menu{position:fixed;background:var(--bg2);border:1px solid var(--border2);border-radius:6px;z-index:999;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.6);min-width:160px;display:none}
+.ctx-item{padding:7px 14px;font-size:11.5px;color:var(--text2);cursor:pointer;transition:background .1s;display:flex;align-items:center;gap:8px}
+.ctx-item:hover{background:var(--bg3);color:var(--text)}
+.ctx-sep{height:1px;background:var(--border);margin:3px 0}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9000;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:24px;width:380px;max-width:90vw}
+.modal h4{font-family:'DM Serif Display',serif;font-size:17px;color:var(--accent);margin-bottom:14px}
+.modal .pi{width:100%;margin-bottom:8px}
+.modal-btns{display:flex;gap:8px;margin-top:14px;justify-content:flex-end}
+.modal-btn{padding:7px 18px;border-radius:5px;border:1px solid var(--border2);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .12s}
+.modal-btn.primary{background:var(--accent3);border-color:var(--accent2);color:var(--accent)}
+.modal-btn.primary:hover{background:rgba(200,179,102,0.2)}
+.modal-btn.secondary{background:var(--bg3);color:var(--text2)}
+.modal-btn.secondary:hover{color:var(--text)}
+
+/* Boolean ops buttons */
+.bool-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.bool-btn{background:var(--bg2);border:1px solid var(--border);color:var(--text2);padding:7px 4px;border-radius:5px;cursor:pointer;font-size:10px;font-family:'DM Sans',sans-serif;transition:all .12s;text-align:center;line-height:1.5}
+.bool-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent3)}
+
+/* Node editing handles */
+.node-handle{cursor:grab}
 </style>
 </head>
 <body>
+
+<!-- Context menu -->
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" onclick="ctxDuplicate()">⧉ Duplicate</div>
+  <div class="ctx-item" onclick="ctxClone2D()">🪡 Clone (Marvelous-style)</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxGroup()">⬡ Group</div>
+  <div class="ctx-item" onclick="ctxUngroup()">⬡ Ungroup</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="layerOp('front')">⬆ Bring to Front</div>
+  <div class="ctx-item" onclick="layerOp('back')">⬇ Send to Back</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="ctxLock()">🔒 Lock / Unlock</div>
+  <div class="ctx-item" onclick="ctxApplySeam()">□ Apply Seam</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item danger" onclick="deleteSelected()" style="color:var(--red)">✕ Delete</div>
+</div>
+
+<!-- Clone modal -->
+<div class="modal-bg" id="clone-modal">
+  <div class="modal">
+    <h4>Clone Pattern Piece</h4>
+    <label style="font-size:11px;color:var(--text2);margin-bottom:4px;display:block">Mirror axis</label>
+    <select id="clone-axis" class="pi" style="width:100%;margin-bottom:10px">
+      <option value="vertical">Vertical (flip horizontal)</option>
+      <option value="horizontal">Horizontal (flip vertical)</option>
+      <option value="both">Both axes</option>
+      <option value="none">No mirror (copy only)</option>
+    </select>
+    <label style="font-size:11px;color:var(--text2);margin-bottom:4px;display:block">Offset X</label>
+    <input type="number" id="clone-dx" class="pi" style="width:100%" value="30" placeholder="px">
+    <label style="font-size:11px;color:var(--text2);margin-bottom:4px;display:block">Offset Y</label>
+    <input type="number" id="clone-dy" class="pi" style="width:100%" value="0" placeholder="px">
+    <div class="modal-btns">
+      <button class="modal-btn secondary" onclick="closeModal('clone-modal')">Cancel</button>
+      <button class="modal-btn primary" onclick="doClone()">Clone ✂</button>
+    </div>
+  </div>
+</div>
+
 <div class="app">
 
-<!-- ════ LEFT SIDEBAR ════ -->
+<!-- ═══ LEFT SIDEBAR ═══ -->
 <div class="sidebar sidebar-left">
   <div class="brand">
     <div class="brand-icon">✂</div>
     <div>
       <div class="brand-name">Atelier</div>
-      <div class="brand-sub">Pattern Studio</div>
+      <div class="brand-sub">Pattern Studio v2</div>
     </div>
   </div>
 
-  <div class="tool-section">
-    <div class="section-label">Selection</div>
-    <div class="tool-grid">
-      <button class="tool-btn active" id="t-select" onclick="setTool('select')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M3 2l10 6-5 1-2 5z" stroke-linejoin="round"/></svg>Select
-      </button>
-      <button class="tool-btn" id="t-multiselect" onclick="activateMultiSelect()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Multi
-      </button>
+  <div class="sidebar-scroll">
+
+    <div class="ts">
+      <div class="ts-label">Selection</div>
+      <div class="tg">
+        <button class="tb active" id="t-select" onclick="setTool('select')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2l10 6-5 1-2 5z" stroke-linejoin="round"/></svg>Select
+        </button>
+        <button class="tb" id="t-multi" onclick="setTool('multi')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Multi
+        </button>
+      </div>
     </div>
 
-    <div class="sep"></div>
-    <div class="section-label">Draw</div>
-    <div class="tool-grid">
-      <button class="tool-btn" id="t-pen" onclick="setTool('pen')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M2 14l3-1 8-8-2-2-8 8z"/><path d="M11 3l2 2"/></svg>Pen
-      </button>
-      <button class="tool-btn" id="t-line" onclick="setTool('line')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line
-      </button>
-      <button class="tool-btn" id="t-rect" onclick="setTool('rect')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="4" width="12" height="8" rx="1"/></svg>Rect
-      </button>
-      <button class="tool-btn" id="t-ellipse" onclick="setTool('ellipse')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="4"/></svg>Ellipse
-      </button>
-      <button class="tool-btn" id="t-curve" onclick="setTool('curve')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M2 13 C4 4 12 4 14 13" fill="none"/></svg>Curve
-      </button>
-      <button class="tool-btn" id="t-internal" onclick="setTool('internal')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 1.5" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/></svg>Internal
-      </button>
+    <div class="ts">
+      <div class="ts-label">Draw</div>
+      <div class="tg">
+        <button class="tb" id="t-pen" onclick="setTool('pen')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 14l3-1 8-8-2-2-8 8z"/><path d="M11 3l2 2"/></svg>Pen
+        </button>
+        <button class="tb" id="t-line" onclick="setTool('line')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="14" x2="14" y2="2"/></svg>Line
+        </button>
+        <button class="tb" id="t-rect" onclick="setTool('rect')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1"/></svg>Rect
+        </button>
+        <button class="tb" id="t-ellipse" onclick="setTool('ellipse')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="8" cy="8" rx="6" ry="4"/></svg>Ellipse
+        </button>
+        <button class="tb" id="t-curve" onclick="setTool('curve')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 13 C4 4 12 4 14 13" fill="none"/></svg>Curve
+        </button>
+        <button class="tb" id="t-internal" onclick="setTool('internal')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 1.5"><line x1="2" y1="8" x2="14" y2="8"/></svg>Dart
+        </button>
+      </div>
     </div>
 
-    <div class="sep"></div>
-    <div class="section-label">Edit</div>
-    <div class="tool-grid">
-      <button class="tool-btn" id="t-editpts" onclick="setTool('editpts')">
-        <svg width="13" height="13" fill="currentColor" viewBox="0 0 16 16"><circle cx="3" cy="8" r="2"/><circle cx="8" cy="3" r="2"/><circle cx="13" cy="8" r="2"/><circle cx="8" cy="13" r="2"/></svg>Points
-      </button>
-      <button class="tool-btn" id="t-seam" onclick="setTool('seam')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="1"/><rect x="4" y="4" width="8" height="8" rx="0.5" stroke-dasharray="1.5 1"/></svg>Seam
-      </button>
-      <button class="tool-btn" id="t-cut" onclick="setTool('cut')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><circle cx="4" cy="12" r="2"/><circle cx="4" cy="4" r="2"/><line x1="6" y1="10.5" x2="14" y2="3"/><line x1="6" y1="5.5" x2="14" y2="13"/></svg>Cut
-      </button>
-      <button class="tool-btn" id="t-measure" onclick="setTool('measure')">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="6" x2="2" y2="10"/><line x1="14" y1="6" x2="14" y2="10"/><line x1="8" y1="7" x2="8" y2="9"/></svg>Measure
-      </button>
+    <div class="ts">
+      <div class="ts-label">Node Edit</div>
+      <div class="tg">
+        <button class="tb" id="t-node" onclick="setTool('node')">
+          <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="3" cy="8" r="2.5"/><circle cx="8" cy="3" r="2.5"/><circle cx="13" cy="8" r="2.5"/><circle cx="8" cy="13" r="2.5"/></svg>Nodes
+        </button>
+        <button class="tb" id="t-measure" onclick="setTool('measure')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="6" x2="2" y2="10"/><line x1="14" y1="6" x2="14" y2="10"/></svg>Measure
+        </button>
+        <button class="tb" id="t-seam" onclick="setTool('seam')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1"/><rect x="4.5" y="4.5" width="7" height="7" rx="0.5" stroke-dasharray="1.5 1"/></svg>Seam
+        </button>
+        <button class="tb" id="t-cut" onclick="setTool('cut')">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="12" r="2"/><circle cx="4" cy="4" r="2"/><line x1="6" y1="10.5" x2="14" y2="3"/><line x1="6" y1="5.5" x2="14" y2="13"/></svg>Cut
+        </button>
+      </div>
     </div>
 
-    <div class="sep"></div>
-    <div class="section-label">Organize</div>
-    <div class="tool-grid">
-      <button class="tool-btn" onclick="groupSelected()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" stroke-dasharray="2 1"/></svg>Group
-      </button>
-      <button class="tool-btn" onclick="ungroupSelected()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Ungroup
-      </button>
-      <button class="tool-btn" onclick="toggleLock(true)">🔒 Lock</button>
-      <button class="tool-btn" onclick="toggleLock(false)">🔓 Unlock</button>
-      <button class="tool-btn" onclick="duplicateSelected()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><rect x="2" y="5" width="9" height="9" rx="1"/><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2"/></svg>Duplicate
-      </button>
-      <button class="tool-btn danger" onclick="deleteSelected()" style="color:var(--red)">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 16 16"><path d="M3 5h10M6 5V3h4v2M5 5l1 8h4l1-8"/></svg>Delete
-      </button>
+    <div class="ts">
+      <div class="ts-label">Boolean Ops</div>
+      <div class="bool-grid">
+        <button class="bool-btn" onclick="boolOp('union')" title="Union: merge two shapes">⊕ Union</button>
+        <button class="bool-btn" onclick="boolOp('subtract')" title="Subtract: cut one from other">⊖ Subtract</button>
+        <button class="bool-btn" onclick="boolOp('intersect')" title="Intersect: keep overlap">⊗ Intersect</button>
+        <button class="bool-btn" onclick="boolOp('exclude')" title="Exclude: remove overlap">⊘ Exclude</button>
+      </div>
     </div>
-  </div>
 
-  <div style="padding:12px 14px;margin-top:auto;border-top:1px solid var(--border)">
-    <div class="section-label" style="margin-bottom:8px">Units & Grid</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-      <span style="font-size:11px;color:var(--text2);min-width:40px">Grid px</span>
-      <input type="number" id="grid-size-input" value="20" min="5" max="100" step="5" class="prop-input" style="width:60px;flex:none" onchange="setGridSize(+this.value)">
-      <select id="unit-sel" class="prop-input" style="flex:1" onchange="setUnit(this.value)">
-        <option value="px">px</option><option value="mm">mm</option><option value="cm">cm</option><option value="in">in</option>
-      </select>
+    <div class="ts">
+      <div class="ts-label">Organize</div>
+      <div class="tg">
+        <button class="tb" onclick="groupSelected()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2" stroke-dasharray="2 1"/></svg>Group
+        </button>
+        <button class="tb" onclick="ungroupSelected()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>Ungroup
+        </button>
+        <button class="tb" onclick="duplicateSelected()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="9" height="9" rx="1"/><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2"/></svg>Dup
+        </button>
+        <button class="tb" onclick="openCloneModal()">
+          🪡 Clone
+        </button>
+        <button class="tb" onclick="toggleLock(true)">🔒 Lock</button>
+        <button class="tb" onclick="toggleLock(false)">🔓 Unlock</button>
+        <button class="tb wide danger" onclick="deleteSelected()">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5h10M6 5V3h4v2M5 5l1 8h4l1-8"/></svg>Delete Selected
+        </button>
+      </div>
     </div>
-    <div class="section-label" style="margin-bottom:4px">Seam allowance</div>
-    <div class="seam-input-row">
-      <label class="seam-toggle"><input type="checkbox" id="seam-toggle" onchange="toggleSeamPreview()"><span class="seam-toggle-track"></span><span class="seam-toggle-thumb"></span></label>
-      <input type="number" id="seam-amount" value="10" min="0" max="50" class="prop-input" onchange="updateSeamAllowance()">
-      <span style="font-size:11px;color:var(--text3)">px</span>
+
+    <div class="ts">
+      <div class="ts-label">Align</div>
+      <div class="tg">
+        <button class="tb" onclick="alignObjects('left')" title="Align left">⫷ Left</button>
+        <button class="tb" onclick="alignObjects('right')" title="Align right">⫸ Right</button>
+        <button class="tb" onclick="alignObjects('top')" title="Align top">⬆ Top</button>
+        <button class="tb" onclick="alignObjects('bottom')" title="Align bottom">⬇ Bot</button>
+        <button class="tb" onclick="alignObjects('centerH')" title="Center horizontal">↔ CtrH</button>
+        <button class="tb" onclick="alignObjects('centerV')" title="Center vertical">↕ CtrV</button>
+      </div>
     </div>
+
+    <div class="ts" style="margin-top:auto">
+      <div class="ts-label">Canvas Settings</div>
+      <div class="pr" style="margin-bottom:6px">
+        <span style="font-size:10.5px;color:var(--text2);min-width:54px">Grid px</span>
+        <input type="number" id="grid-px" value="20" min="5" max="200" class="pi pi-half" onchange="setGridSize(+this.value)">
+        <select id="unit-sel" class="pi pi-half" onchange="setUnit(this.value)">
+          <option value="px">px</option>
+          <option value="mm">mm</option>
+          <option value="cm">cm</option>
+          <option value="in">in</option>
+        </select>
+      </div>
+      <div class="ts-label">Seam Allowance</div>
+      <div class="pr">
+        <label class="tog"><input type="checkbox" id="seam-on" onchange="toggleSeamVis()"><span class="tog-track"></span><span class="tog-thumb"></span></label>
+        <input type="number" id="seam-amt" value="10" min="0" max="100" class="pi pi-half" style="flex:1">
+        <span style="font-size:10px;color:var(--text3)">px</span>
+        <button class="btn-sm" style="flex-shrink:0;padding:4px 7px" onclick="applySeamSelected()">Apply</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
-<!-- ════ MAIN AREA ════ -->
+<!-- ═══ MAIN AREA ═══ -->
 <div class="main">
   <!-- Top bar -->
   <div class="topbar">
-    <div class="tb-group">
-      <button class="tb-btn" onclick="newProject()">📄 New</button>
-      <button class="tb-btn" onclick="saveProject()">💾 Save</button>
-      <button class="tb-btn" onclick="loadProject()">📂 Load</button>
+    <div class="tbg">
+      <button class="tbb" onclick="newProject()">📄 New</button>
+      <button class="tbb" onclick="saveProject()">💾 Save</button>
+      <button class="tbb" onclick="loadProject()">📂 Load</button>
     </div>
-    <div class="tb-group">
-      <button class="tb-btn" onclick="undo()">↩ Undo</button>
-      <button class="tb-btn" onclick="redo()">↪ Redo</button>
+    <div class="tbg">
+      <button class="tbb" onclick="undo()">↩ Undo</button>
+      <button class="tbb" onclick="redo()">↪ Redo</button>
     </div>
-    <div class="tb-group">
-      <button class="tb-btn" id="grid-btn" onclick="toggleGrid()">⊞ Grid</button>
-      <button class="tb-btn" id="snap-btn" onclick="toggleSnap()">⊙ Snap</button>
-      <button class="tb-btn" id="ruler-btn" onclick="toggleRulers()">📐 Rulers</button>
+    <div class="tbg">
+      <button class="tbb" id="grid-btn" onclick="toggleGrid()">⊞ Grid</button>
+      <button class="tbb" id="snap-btn" onclick="toggleSnap()">⊙ Snap</button>
+      <button class="tbb" id="ruler-btn" onclick="toggleRulers()">📐 Rulers</button>
     </div>
-    <div class="tb-group" style="flex:1;border-right:none">
-      <button class="tb-btn" onclick="zoomOut()">−</button>
-      <span class="zoom-disp" id="zoom-disp">100%</span>
-      <button class="tb-btn" onclick="zoomIn()">+</button>
-      <button class="tb-btn" onclick="zoomFit()" title="Fit to window">⬚</button>
-      <button class="tb-btn" onclick="zoom100()" title="100%">1:1</button>
+    <div class="tbg" style="flex:1">
+      <button class="tbb" onclick="zoomOut()">−</button>
+      <span class="zoom-d" id="zoom-d">100%</span>
+      <button class="tbb" onclick="zoomIn()">+</button>
+      <button class="tbb" onclick="zoomFit()">⬚ Fit</button>
+      <button class="tbb" onclick="zoom100()">1:1</button>
     </div>
-    <div class="tb-group">
-      <button class="tb-btn" onclick="exportSVG()">↗ SVG</button>
-      <button class="tb-btn" onclick="exportPNG()">↗ PNG</button>
-      <button class="tb-btn" onclick="exportDXF()">↗ DXF</button>
+    <div class="tbg">
+      <button class="tbb" onclick="exportSVG()">↗ SVG</button>
+      <button class="tbb" onclick="exportPNG()">↗ PNG</button>
+      <button class="tbb" onclick="exportDXF()">↗ DXF</button>
     </div>
   </div>
 
-  <!-- Canvas -->
-  <div class="canvas-wrap select-mode" id="canvas-wrap">
-    <canvas id="ruler-h"></canvas>
-    <canvas id="ruler-v"></canvas>
-    <div class="ruler-corner"></div>
-    <canvas id="main-canvas"></canvas>
+  <!-- Canvas area — full fill -->
+  <div class="canvas-area" id="canvas-area">
+    <canvas id="c"></canvas>
+    <!-- Rulers -->
+    <canvas id="rh" style="position:absolute;top:0;left:20px;pointer-events:none;display:none;z-index:5"></canvas>
+    <canvas id="rv" style="position:absolute;top:20px;left:0;pointer-events:none;display:none;z-index:5"></canvas>
+    <div id="ruler-corner" style="position:absolute;top:0;left:0;width:20px;height:20px;background:var(--bg1);border-right:1px solid var(--border);border-bottom:1px solid var(--border);z-index:6;display:none"></div>
   </div>
 
   <!-- Bottom bar -->
   <div class="botbar">
-    <span><span class="status-dot"></span><span id="tool-label">Select</span></span>
-    <span id="coord-label">X: — &nbsp; Y: —</span>
-    <span id="obj-label">No selection</span>
-    <span id="status-right">Grid: OFF &nbsp;|&nbsp; Snap: OFF</span>
+    <div class="bb-seg"><span class="status-dot"></span><span id="tool-lbl">Select</span></div>
+    <div class="bb-seg" id="coord-lbl">X: — &nbsp; Y: —</div>
+    <div class="bb-seg" id="obj-lbl">No selection</div>
+    <div class="bb-seg" id="status-r">Grid: OFF &nbsp;|&nbsp; Snap: OFF</div>
   </div>
 </div>
 
-<!-- ════ RIGHT SIDEBAR – PROPERTIES ════ -->
+<!-- ═══ RIGHT SIDEBAR — PROPERTIES ═══ -->
 <div class="sidebar sidebar-right">
-  <div class="props-head">
+  <div class="ph">
     <h3>Properties</h3>
-    <span id="obj-type-badge" style="font-size:10px;color:var(--text3)"></span>
+    <span id="obj-badge" style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.2px"></span>
   </div>
 
-  <div id="no-sel-msg" class="prop-section" style="text-align:center;padding:24px 14px">
-    <div style="font-size:28px;margin-bottom:8px">✂️</div>
-    <div style="color:var(--text3);font-size:12px;font-style:italic">Select an object to<br>view its properties</div>
+  <!-- Tab bar -->
+  <div class="tab-bar" id="prop-tabs">
+    <div class="tab active" data-tab="transform" onclick="switchTab('transform')">Transform</div>
+    <div class="tab" data-tab="style" onclick="switchTab('style')">Style</div>
+    <div class="tab" data-tab="texture" onclick="switchTab('texture')">Texture</div>
+    <div class="tab" data-tab="info" onclick="switchTab('info')">Info</div>
   </div>
 
-  <div id="props-panel" style="display:none">
-    <!-- Position & Size -->
-    <div class="prop-section">
-      <div class="prop-label">Position</div>
-      <div class="prop-row" style="margin-bottom:6px">
-        <span class="prop-input-label">X</span>
-        <input type="number" id="p-x" class="prop-input" onchange="applyProp('left',+this.value)">
-        <span class="prop-input-label" style="margin-left:4px">Y</span>
-        <input type="number" id="p-y" class="prop-input" onchange="applyProp('top',+this.value)">
+  <!-- No selection -->
+  <div id="no-sel" class="no-sel">
+    <div style="font-size:32px;margin-bottom:8px">✂️</div>
+    Select an object to<br>view & edit its properties
+  </div>
+
+  <div id="props-wrap" style="display:none;overflow-y:auto;flex:1">
+
+    <!-- TAB: Transform -->
+    <div class="tab-panel active" id="tab-transform">
+      <div class="ps">
+        <div class="pl">Position</div>
+        <div class="pr">
+          <span class="pi-lbl">X</span><input type="number" id="p-x" class="pi pi-half" onchange="applyPos()">
+          <span class="pi-lbl" style="margin-left:4px">Y</span><input type="number" id="p-y" class="pi pi-half" onchange="applyPos()">
+        </div>
+        <div class="pl" style="margin-top:8px">Size</div>
+        <div class="pr">
+          <span class="pi-lbl">W</span><input type="number" id="p-w" class="pi pi-half" onchange="applySize('width',+this.value)">
+          <span class="pi-lbl" style="margin-left:4px">H</span><input type="number" id="p-h" class="pi pi-half" onchange="applySize('height',+this.value)">
+        </div>
+        <div class="pr" style="margin-top:6px;align-items:center">
+          <label class="tog" title="Lock aspect ratio"><input type="checkbox" id="lock-ar"><span class="tog-track"></span><span class="tog-thumb"></span></label>
+          <span style="font-size:10px;color:var(--text2);margin-left:6px">Lock aspect ratio</span>
+        </div>
       </div>
-      <div class="prop-label">Size</div>
-      <div class="prop-row">
-        <span class="prop-input-label">W</span>
-        <input type="number" id="p-w" class="prop-input" onchange="applySize('width',+this.value)">
-        <span class="prop-input-label" style="margin-left:4px">H</span>
-        <input type="number" id="p-h" class="prop-input" onchange="applySize('height',+this.value)">
+      <div class="ps">
+        <div class="pl">Rotation</div>
+        <div class="pr">
+          <input type="number" id="p-rot" class="pi" style="width:60px;flex-shrink:0" min="-360" max="360" onchange="applyProp('angle',+this.value);syncRot()">
+          <span class="pi-lbl" style="margin-left:2px">°</span>
+          <input type="range" id="p-rot-r" class="range" style="flex:1;margin-left:8px" min="0" max="360" value="0" oninput="applyProp('angle',+this.value);document.getElementById('p-rot').value=this.value">
+        </div>
+        <div class="btn-row" style="margin-top:6px">
+          <button class="btn-sm" onclick="applyProp('angle',0)">0°</button>
+          <button class="btn-sm" onclick="applyProp('angle',90)">90°</button>
+          <button class="btn-sm" onclick="applyProp('angle',180)">180°</button>
+          <button class="btn-sm" onclick="applyProp('angle',270)">270°</button>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="pl">Flip</div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="flipObj('X')">↔ Flip H</button>
+          <button class="btn-sm" onclick="flipObj('Y')">↕ Flip V</button>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="pl">Layer Order</div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="layerOp('front')">⬆ Front</button>
+          <button class="btn-sm" onclick="layerOp('forward')">↑ Fwd</button>
+          <button class="btn-sm" onclick="layerOp('backward')">↓ Back</button>
+          <button class="btn-sm" onclick="layerOp('back')">⬇ Back</button>
+        </div>
       </div>
     </div>
 
-    <!-- Rotation -->
-    <div class="prop-section">
-      <div class="prop-label">Rotation</div>
-      <div class="prop-row">
-        <input type="number" id="p-rot" class="prop-input" min="-360" max="360" onchange="applyProp('angle',+this.value)">
-        <span style="font-size:11px;color:var(--text3);margin-left:4px">°</span>
-        <input type="range" id="p-rot-range" class="prop-range" min="0" max="360" value="0" style="flex:1;margin-left:8px" oninput="applyProp('angle',+this.value);document.getElementById('p-rot').value=this.value">
+    <!-- TAB: Style -->
+    <div class="tab-panel" id="tab-style">
+      <div class="ps">
+        <div class="pl">Fill</div>
+        <div class="pr" style="margin-bottom:6px">
+          <input type="color" id="p-fill-c" class="swatch" value="#e8e6df" onchange="applyFill(this.value)">
+          <input type="text" id="p-fill-t" class="pi pi-half" value="#e8e6df" onchange="applyFill(this.value)">
+          <button onclick="applyFill('transparent')" style="background:var(--bg2);border:1px solid var(--border);color:var(--text3);padding:4px 7px;border-radius:4px;cursor:pointer;font-size:10px;flex-shrink:0">∅</button>
+        </div>
+        <div class="pl">Opacity <span id="op-val" style="color:var(--accent)">100%</span></div>
+        <input type="range" id="p-op" class="range pi-full" min="0" max="100" value="100" oninput="applyProp('opacity',this.value/100);document.getElementById('op-val').textContent=this.value+'%'">
+      </div>
+      <div class="ps">
+        <div class="pl">Stroke</div>
+        <div class="pr" style="margin-bottom:6px">
+          <input type="color" id="p-stk-c" class="swatch" value="#c9b46a" onchange="applyStroke(this.value)">
+          <input type="text" id="p-stk-t" class="pi pi-half" value="#c9b46a" onchange="applyStroke(this.value)">
+        </div>
+        <div class="pl">Stroke Width</div>
+        <div class="pr">
+          <input type="range" id="p-sw-r" class="range" style="flex:1" min="0" max="20" step="0.5" value="1.5" oninput="applyProp('strokeWidth',+this.value);document.getElementById('p-sw').value=this.value">
+          <input type="number" id="p-sw" class="pi" style="width:48px;flex-shrink:0" value="1.5" min="0" max="30" step="0.5" onchange="applyProp('strokeWidth',+this.value);document.getElementById('p-sw-r').value=this.value">
+          <span class="pi-lbl">px</span>
+        </div>
+        <div class="pl" style="margin-top:8px">Line Style</div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="applyProp('strokeDashArray',null)">——</button>
+          <button class="btn-sm" onclick="applyProp('strokeDashArray',[8,5])">– –</button>
+          <button class="btn-sm" onclick="applyProp('strokeDashArray',[2,4])">· ·</button>
+          <button class="btn-sm" onclick="applyProp('strokeDashArray',[10,4,2,4])">-·-</button>
+        </div>
+        <div class="pl" style="margin-top:8px">Line Cap</div>
+        <div class="btn-row">
+          <button class="btn-sm" onclick="applyProp('strokeLineCap','butt')">Butt</button>
+          <button class="btn-sm" onclick="applyProp('strokeLineCap','round')">Round</button>
+          <button class="btn-sm" onclick="applyProp('strokeLineCap','square')">Square</button>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="pl">Shadow</div>
+        <div class="btn-row" style="margin-bottom:6px">
+          <button class="btn-sm" onclick="applyShadow(null)">None</button>
+          <button class="btn-sm" onclick="applyShadow('soft')">Soft</button>
+          <button class="btn-sm" onclick="applyShadow('hard')">Hard</button>
+          <button class="btn-sm" onclick="applyShadow('glow')">Glow</button>
+        </div>
       </div>
     </div>
 
-    <!-- Fill & Stroke -->
-    <div class="prop-section">
-      <div class="prop-label">Fill</div>
-      <div class="prop-row" style="margin-bottom:8px">
-        <input type="color" id="p-fill" class="color-swatch" value="#e8e6df" onchange="applyProp('fill',this.value)">
-        <input type="text" id="p-fill-txt" class="prop-input" value="#e8e6df" onchange="applyProp('fill',this.value);document.getElementById('p-fill').value=this.value">
-        <button onclick="applyProp('fill','transparent')" style="background:var(--bg2);border:1px solid var(--border);color:var(--text3);padding:5px 7px;border-radius:4px;cursor:pointer;font-size:10px;flex-shrink:0">∅</button>
-      </div>
-      <div class="prop-label">Stroke</div>
-      <div class="prop-row" style="margin-bottom:8px">
-        <input type="color" id="p-stroke" class="color-swatch" value="#c9b46a" onchange="applyProp('stroke',this.value)">
-        <input type="text" id="p-stroke-txt" class="prop-input" value="#c9b46a" onchange="applyProp('stroke',this.value);document.getElementById('p-stroke').value=this.value">
-      </div>
-      <div class="prop-label">Stroke width</div>
-      <div class="prop-row">
-        <input type="range" id="p-sw-range" class="prop-range" min="0.5" max="10" step="0.5" value="1.5" style="flex:1" oninput="applyProp('strokeWidth',+this.value);document.getElementById('p-sw').value=this.value">
-        <input type="number" id="p-sw" class="prop-input" value="1.5" min="0" max="20" step="0.5" onchange="applyProp('strokeWidth',+this.value);document.getElementById('p-sw-range').value=this.value" style="width:50px;flex:none">
-        <span style="font-size:10px;color:var(--text3);margin-left:2px">px</span>
+    <!-- TAB: Texture -->
+    <div class="tab-panel" id="tab-texture">
+      <div class="ps">
+        <div class="pl">Fabric Presets</div>
+        <div class="tex-grid" id="tex-grid"></div>
+        <div class="pl" style="margin-top:6px">Scale</div>
+        <input type="range" id="tex-scale" class="range pi-full" min="10" max="400" value="100" oninput="updateTexScale(this.value)" style="margin-bottom:6px">
+        <div class="pl">Angle</div>
+        <input type="range" id="tex-angle" class="range pi-full" min="0" max="360" value="0" oninput="updateTexAngle(this.value)" style="margin-bottom:6px">
+        <div class="pl">Opacity</div>
+        <input type="range" id="tex-opacity" class="range pi-full" min="0" max="100" value="80" oninput="updateTexOpacity(this.value)" style="margin-bottom:6px">
+        <div class="btn-row" style="margin-top:4px">
+          <button class="btn-sm" onclick="removeTexture()">✕ Remove Texture</button>
+          <button class="btn-sm" onclick="document.getElementById('tex-upload').click()">📂 Custom</button>
+        </div>
+        <input type="file" id="tex-upload" accept="image/*" style="display:none" onchange="loadCustomTexture(this)">
       </div>
     </div>
 
-    <!-- Opacity -->
-    <div class="prop-section">
-      <div class="prop-label">Opacity <span id="p-op-val" style="color:var(--accent)">100%</span></div>
-      <input type="range" id="p-opacity" class="prop-range" min="0" max="100" value="100" style="width:100%" oninput="applyProp('opacity',this.value/100);document.getElementById('p-op-val').textContent=this.value+'%'">
-    </div>
-
-    <!-- Stroke style -->
-    <div class="prop-section">
-      <div class="prop-label">Line style</div>
-      <div class="shape-row">
-        <button class="shape-btn" onclick="applyProp('strokeDashArray',null)">——</button>
-        <button class="shape-btn" onclick="applyProp('strokeDashArray',[6,4])">– –</button>
-        <button class="shape-btn" onclick="applyProp('strokeDashArray',[2,3])">· ·</button>
-        <button class="shape-btn" onclick="applyProp('strokeDashArray',[8,4,2,4])">-·-</button>
+    <!-- TAB: Info -->
+    <div class="tab-panel" id="tab-info">
+      <div class="ps">
+        <div class="pl">Pattern Info</div>
+        <div class="info-card">
+          <div id="i-type">—</div>
+          <div id="i-dims">—</div>
+          <div id="i-peri">—</div>
+          <div id="i-area">—</div>
+          <div id="i-verts">—</div>
+          <div id="i-angle">—</div>
+          <div id="i-seam">—</div>
+        </div>
+      </div>
+      <div class="ps">
+        <div class="pl">Notes</div>
+        <textarea id="obj-notes" class="pi pi-full" rows="4" style="resize:vertical;width:100%" placeholder="Add notes for this pattern piece..." oninput="saveObjNote(this.value)"></textarea>
       </div>
     </div>
 
-    <!-- Layers -->
-    <div class="prop-section">
-      <div class="prop-label">Layer order</div>
-      <div class="layer-btns">
-        <button class="layer-btn" onclick="layerOp('front')">⬆ Front</button>
-        <button class="layer-btn" onclick="layerOp('forward')">↑ Fwd</button>
-        <button class="layer-btn" onclick="layerOp('backward')">↓ Back</button>
-        <button class="layer-btn" onclick="layerOp('back')">⬇ Back</button>
-      </div>
-    </div>
-
-    <!-- Pattern measurements -->
-    <div class="prop-section">
-      <div class="prop-label">Pattern info</div>
-      <div class="info-card" id="info-card">
-        <div id="info-type">—</div>
-        <div id="info-dims">—</div>
-        <div id="info-perimeter">—</div>
-        <div id="info-vertices">—</div>
-        <div id="info-angle">—</div>
-        <div id="info-area">—</div>
-      </div>
-    </div>
   </div>
 </div>
 
-</div><!-- .app -->
+</div>
 
-<!-- Pen hint overlay -->
 <div class="pen-hint" id="pen-hint" style="display:none">Click to add points · Double-click to close · Esc to cancel</div>
 
 <script>
 // ══════════════════════════════════════════════════
-//  STATE
+//  FABRIC SETUP — FULL VIEWPORT FILL
 // ══════════════════════════════════════════════════
-const RULERL = 24;
-let cv, W = 1200, H = 900;
+let cv, vpW, vpH;
 let tool = 'select';
-let showGrid = false, snapGrid = false, showRulers = false;
-let gridSize = 20;
-let unit = 'px', unitRatio = 1;
-let zoomLvl = 1;
-let history = [], histIdx = -1;
-let blockHistory = false;
+let showGrid=false, snapGrid=false, showRulers=false;
+let gridSize=20, gridGroup=null;
+let unit='px', unitRatio=1;
+let zoomLvl=1, panX=0, panY=0;
+let history=[], histIdx=-1, blockHistory=false;
+let activeTab='transform';
 
-// Drawing state
-let isDrawing = false, drawStart = null, drawPreview = null;
-// Pen polygon
-let penPoints = [], penPreview = null, penDots = [];
-// Curve (quadratic)
-let curveStep = 0, curvePts = [];
-// Seam previews
-let seamObjects = [];
+// Draw state
+let isDrawing=false, drawStart=null, drawPreview=null;
+// Pen
+let penPts=[], penDots=[], penPrev=null;
+// Curve: 3-click bezier
+let cStep=0, cPts=[];
+// Measure
+let mStart=null, mLine=null;
+// Cut
+let cutStart=null, cutPrevLine=null;
+// Seam
+let seamMap=new Map(); // obj -> seamObj
 
-// Grid refs
-let gridGroup = null;
+// Texture state per object
+let texState={scale:100, angle:0, opacity:0.8};
+let textures={};  // named texture patterns
+let selectedTexKey=null;
 
-// ══════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════
-window.addEventListener('load', () => {
-  const wrap = document.getElementById('canvas-wrap');
-  W = Math.max(800, wrap.clientWidth - 50);
-  H = Math.max(600, wrap.clientHeight - 50);
+window.addEventListener('load',()=>{
+  const area = document.getElementById('canvas-area');
+  vpW = area.clientWidth;
+  vpH = area.clientHeight;
 
-  cv = new fabric.Canvas('main-canvas', {
-    width: W, height: H,
-    backgroundColor: '#ffffff',
-    selection: true,
-    preserveObjectStacking: true,
-    stopContextMenu: true,
-    fireRightClick: false,
+  cv = new fabric.Canvas('c',{
+    width:vpW, height:vpH,
+    backgroundColor:'#f5f3ee',
+    selection:true,
+    preserveObjectStacking:true,
+    stopContextMenu:true,
+    fireRightClick:true,
   });
 
-  cv.setWidth(W); cv.setHeight(H);
-  cv.renderAll();
+  // Panning with middle mouse / alt+drag
+  cv.on('mouse:down', e=>{ if(e.e.button===1||(e.e.altKey&&e.e.button===0)){ cv.isDragging=true; cv.lastPosX=e.e.clientX; cv.lastPosY=e.e.clientY; } });
+  cv.on('mouse:move', e=>{
+    if(cv.isDragging){
+      const vpt=cv.viewportTransform;
+      vpt[4]+=(e.e.clientX-cv.lastPosX);
+      vpt[5]+=(e.e.clientY-cv.lastPosY);
+      cv.lastPosX=e.e.clientX; cv.lastPosY=e.e.clientY;
+      cv.requestRenderAll();
+    }
+  });
+  cv.on('mouse:up',()=>{ cv.isDragging=false; });
 
+  buildTextures();
+  renderTexGrid();
   initRulers();
   bindEvents();
   saveHistory();
-  zoomFit();
-  notify('Pattern Studio ready', 'success');
+  notify('Atelier Pattern Studio v2 ready','success');
+});
+
+// Resize canvas to fill area on window resize
+window.addEventListener('resize',()=>{
+  const area=document.getElementById('canvas-area');
+  vpW=area.clientWidth; vpH=area.clientHeight;
+  cv.setWidth(vpW); cv.setHeight(vpH);
+  cv.renderAll();
+  initRulers();
 });
 
 // ══════════════════════════════════════════════════
 //  HISTORY
 // ══════════════════════════════════════════════════
-function saveHistory() {
-  if (blockHistory) return;
-  const state = JSON.stringify(cv.toJSON(['id','_seamParent']));
-  history = history.slice(0, histIdx + 1);
-  history.push(state);
-  if (history.length > 60) { history.shift(); }
-  else { histIdx++; }
+function saveHistory(){
+  if(blockHistory) return;
+  const s=cv.toJSON(['_notes','_texKey']);
+  history=history.slice(0,histIdx+1);
+  history.push(JSON.stringify(s));
+  if(history.length>80) history.shift(); else histIdx++;
 }
-
-function undo() {
-  if (histIdx <= 0) return;
-  histIdx--;
-  restoreState(history[histIdx]);
-  notify('Undo', 'info');
+function undo(){
+  if(histIdx<=0){ notify('Nothing to undo','info'); return; }
+  histIdx--; restoreState(history[histIdx]); notify('Undo','info');
 }
-
-function redo() {
-  if (histIdx >= history.length - 1) return;
-  histIdx++;
-  restoreState(history[histIdx]);
-  notify('Redo', 'info');
+function redo(){
+  if(histIdx>=history.length-1){ notify('Nothing to redo','info'); return; }
+  histIdx++; restoreState(history[histIdx]); notify('Redo','info');
 }
-
-function restoreState(state) {
-  blockHistory = true;
-  cv.loadFromJSON(state, () => {
+function restoreState(s){
+  blockHistory=true;
+  cv.loadFromJSON(JSON.parse(s),()=>{
     cv.renderAll();
-    if (showGrid) drawGrid();
-    blockHistory = false;
-    updatePropsPanel();
+    if(showGrid) drawGrid();
+    blockHistory=false;
+    updateProps();
   });
 }
 
 // ══════════════════════════════════════════════════
-//  CANVAS EVENTS
+//  BIND EVENTS
 // ══════════════════════════════════════════════════
-function bindEvents() {
+function bindEvents(){
   cv.on('mouse:down', onDown);
   cv.on('mouse:move', onMove);
   cv.on('mouse:up', onUp);
   cv.on('mouse:dblclick', onDblClick);
-  cv.on('selection:created', updatePropsPanel);
-  cv.on('selection:updated', updatePropsPanel);
-  cv.on('selection:cleared', clearPropsPanel);
-  cv.on('object:modified', () => { saveHistory(); updatePropsPanel(); });
+  cv.on('mouse:right', e=>showCtxMenu(e.e));
+  cv.on('selection:created', updateProps);
+  cv.on('selection:updated', updateProps);
+  cv.on('selection:cleared', clearProps);
+  cv.on('object:modified',()=>{ saveHistory(); updateProps(); });
 
-  // Keyboard shortcuts
-  document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-    if (e.key === 'Escape') cancelCurrentTool();
-    if (e.key === 'Delete' || e.key === 'Backspace') deleteSelected();
-    if ((e.ctrlKey||e.metaKey) && e.key === 'z') { e.preventDefault(); e.shiftKey ? redo() : undo(); }
-    if ((e.ctrlKey||e.metaKey) && e.key === 'y') { e.preventDefault(); redo(); }
-    if ((e.ctrlKey||e.metaKey) && e.key === 'd') { e.preventDefault(); duplicateSelected(); }
-    if ((e.ctrlKey||e.metaKey) && e.key === 'g') { e.preventDefault(); groupSelected(); }
-    if (e.key === 'v') setTool('select');
-    if (e.key === 'p') setTool('pen');
-    if (e.key === 'l') setTool('line');
-    if (e.key === 'r') setTool('rect');
-    if (e.key === 'e') setTool('ellipse');
-    if (e.key === '+' || e.key === '=') zoomIn();
-    if (e.key === '-') zoomOut();
+  document.addEventListener('keydown', e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+    if(e.key==='Escape') cancelTool();
+    if(e.key==='Delete'||e.key==='Backspace') deleteSelected();
+    if((e.ctrlKey||e.metaKey)&&e.key==='z'){ e.preventDefault(); e.shiftKey?redo():undo(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='y'){ e.preventDefault(); redo(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='d'){ e.preventDefault(); duplicateSelected(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='g'){ e.preventDefault(); groupSelected(); }
+    if((e.ctrlKey||e.metaKey)&&e.key==='a'){ e.preventDefault(); cv.discardActiveObject(); const objs=cv.getObjects().filter(o=>!o._grid&&!o._seam); if(objs.length){ const sel=new fabric.ActiveSelection(objs,{canvas:cv}); cv.setActiveObject(sel); cv.renderAll(); } }
+    if(e.key==='v') setTool('select');
+    if(e.key==='p') setTool('pen');
+    if(e.key==='l') setTool('line');
+    if(e.key==='r') setTool('rect');
+    if(e.key==='e') setTool('ellipse');
+    if(e.key==='n') setTool('node');
+    if(e.key==='='||e.key==='+') zoomIn();
+    if(e.key==='-') zoomOut();
   });
 
-  // Zoom with wheel
-  document.getElementById('canvas-wrap').addEventListener('wheel', e => {
+  document.getElementById('canvas-area').addEventListener('wheel',e=>{
     e.preventDefault();
-    const factor = e.deltaY < 0 ? 1.1 : 0.9;
-    zoomBy(factor);
-  }, {passive: false});
+    const f=e.deltaY<0?1.1:0.909;
+    const pt=new fabric.Point(e.offsetX,e.offsetY);
+    cv.zoomToPoint(pt,Math.min(Math.max(cv.getZoom()*f,0.04),12));
+    zoomLvl=cv.getZoom();
+    document.getElementById('zoom-d').textContent=Math.round(zoomLvl*100)+'%';
+    if(showRulers) drawRuler();
+  },{passive:false});
 
-  // Coordinate display
-  cv.on('mouse:move', e => {
-    if (!e.absolutePointer) return;
-    const x = toUnit(e.absolutePointer.x), y = toUnit(e.absolutePointer.y);
-    document.getElementById('coord-label').textContent = `X: ${fmt(x)}  Y: ${fmt(y)}`;
-    drawRulerCursor(e.absolutePointer.x, e.absolutePointer.y);
+  cv.on('mouse:move',e=>{
+    if(!e.absolutePointer) return;
+    const {x,y}=e.absolutePointer;
+    document.getElementById('coord-lbl').textContent=`X: ${fmt(toU(x))}  Y: ${fmt(toU(y))}`;
+    if(showRulers) drawRulerCursor(x,y);
+    // update cut preview
+    if(cutStart&&cutPrevLine){ cutPrevLine.set({x2:x,y2:y}); cv.renderAll(); }
+    // update measure preview
+    if(mStart&&mLine){ mLine.set({x2:x,y2:y}); cv.renderAll(); }
   });
-}
 
-// ── Mouse handlers ──
-function onDown(e) {
-  const p = snap(cv.getPointer(e.e));
-
-  if (tool === 'pen') { penDown(p); return; }
-  if (tool === 'curve') { curveDown(p); return; }
-  if (tool === 'measure') { measureDown(p); return; }
-  if (tool === 'cut') { cutDown(p, e); return; }
-  if (tool === 'seam') { seamDown(e); return; }
-
-  if (['rect','ellipse','line','internal'].includes(tool)) {
-    if (e.target && tool !== 'internal') return;
-    isDrawing = true;
-    drawStart = p;
-    startDrawShape(p);
-  }
-}
-
-function onMove(e) {
-  if (!e.absolutePointer) return;
-  const p = snap(cv.getPointer(e.e));
-
-  if (tool === 'pen' && penPoints.length > 0) { penMove(p); return; }
-  if (tool === 'curve' && curveStep === 1) { curveMove(p); return; }
-
-  if (isDrawing && drawStart) {
-    updateDrawShape(p);
-  }
-}
-
-function onUp(e) {
-  if (isDrawing && drawStart) {
-    const p = snap(cv.getPointer(e.e));
-    finishDrawShape(p);
-    isDrawing = false; drawStart = null;
-  }
-}
-
-function onDblClick(e) {
-  if (tool === 'pen') { penFinish(); return; }
-  if (tool === 'editpts') {
-    const obj = cv.getActiveObject();
-    if (obj && obj.type === 'polygon') enablePointEditing(obj);
-  }
+  // Hide ctx menu on click elsewhere
+  document.addEventListener('click',()=> document.getElementById('ctx-menu').style.display='none');
 }
 
 // ══════════════════════════════════════════════════
 //  TOOL MANAGEMENT
 // ══════════════════════════════════════════════════
-function setTool(t) {
-  cancelCurrentTool();
-  tool = t;
-  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('t-'+t);
-  if (btn) btn.classList.add('active');
+function setTool(t){
+  cancelTool();
+  tool=t;
+  document.querySelectorAll('.tb[id^="t-"]').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('t-'+t);
+  if(btn) btn.classList.add('active');
+  const area=document.getElementById('canvas-area');
+  const editModes=['select','multi','node'];
+  area.style.cursor=editModes.includes(t)?'default':'crosshair';
+  const drawModes=['rect','ellipse','line','internal','pen','curve','measure','cut','seam'];
+  cv.selection=!drawModes.includes(t);
+  cv.forEachObject(o=>{ if(!o._grid&&!o._seam) o.selectable=!drawModes.includes(t); });
+  if(t==='pen') document.getElementById('pen-hint').style.display='block';
+  document.getElementById('tool-lbl').textContent=t.charAt(0).toUpperCase()+t.slice(1);
 
-  const wrap = document.getElementById('canvas-wrap');
-  const editableTools = ['select','editpts','multiselect'];
-  wrap.style.cursor = editableTools.includes(t) ? 'default' : 'crosshair';
-
-  const drawingModes = ['rect','ellipse','line','internal','pen','curve','measure','cut','seam'];
-  cv.selection = !drawingModes.includes(t);
-  cv.forEachObject(o => { if (!o._grid) o.selectable = !drawingModes.includes(t); });
-
-  if (t === 'pen') {
-    document.getElementById('pen-hint').style.display = 'block';
+  // Node editing
+  if(t==='node'){
+    const obj=cv.getActiveObject();
+    if(obj&&(obj.type==='polygon'||obj.type==='polyline'||obj.type==='path')) activateNodeEdit(obj);
+    else notify('Select a polygon/path first, then switch to Node tool','info');
   }
-
-  if (t === 'editpts') {
-    const obj = cv.getActiveObject();
-    if (obj && (obj.type === 'polygon' || obj.type === 'polyline')) {
-      enablePointEditing(obj);
-    }
-  }
-
-  document.getElementById('tool-label').textContent = t.charAt(0).toUpperCase()+t.slice(1);
 }
 
-function cancelCurrentTool() {
-  // Cancel pen
-  if (penPoints.length > 0) {
-    penDots.forEach(d => cv.remove(d));
-    penDots = [];
-    if (penPreview) { cv.remove(penPreview); penPreview = null; }
-    penPoints = [];
-  }
-  // Cancel shape draw
-  if (drawPreview) { cv.remove(drawPreview); drawPreview = null; }
-  isDrawing = false; drawStart = null;
-  curveStep = 0; curvePts = [];
-  document.getElementById('pen-hint').style.display = 'none';
-}
-
-function activateMultiSelect() {
-  setTool('select');
-  cv.selection = true;
-  notify('Click and drag to select multiple objects', 'info');
+function cancelTool(){
+  // cancel pen
+  penDots.forEach(d=>cv.remove(d)); penDots=[]; penPts=[];
+  if(penPrev){cv.remove(penPrev);penPrev=null;}
+  // cancel draw
+  if(drawPreview){cv.remove(drawPreview);drawPreview=null;}
+  isDrawing=false; drawStart=null;
+  cStep=0; cPts=[];
+  // cancel measure
+  if(mLine){cv.remove(mLine);mLine=null;} mStart=null;
+  // cancel cut
+  if(cutPrevLine){cv.remove(cutPrevLine);cutPrevLine=null;} cutStart=null;
+  document.getElementById('pen-hint').style.display='none';
+  cv.forEachObject(o=>{ if(!o._grid&&!o._seam) o.selectable=true; });
+  cv.selection=true;
 }
 
 // ══════════════════════════════════════════════════
-//  SHAPE DRAWING (drag to create)
+//  MOUSE HANDLERS
 // ══════════════════════════════════════════════════
-function startDrawShape(p) {
-  const baseStyle = { stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(201,180,106,0.08)', selectable:false, evented:false, _preview:true };
-
-  if (tool === 'rect') {
-    drawPreview = new fabric.Rect({ left:p.x, top:p.y, width:1, height:1, ...baseStyle });
-  } else if (tool === 'ellipse') {
-    drawPreview = new fabric.Ellipse({ left:p.x, top:p.y, rx:1, ry:1, ...baseStyle });
-  } else if (tool === 'line') {
-    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#c9b46a', strokeWidth:1.5, selectable:false, evented:false, _preview:true });
-  } else if (tool === 'internal') {
-    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#8a8c80', strokeWidth:1, strokeDashArray:[5,4], selectable:false, evented:false, _preview:true });
+function onDown(e){
+  if(e.e.button===1||(e.e.altKey&&e.e.button===0)) return; // pan
+  const p=snap(cv.getPointer(e.e));
+  if(tool==='pen'){penDown(p);return;}
+  if(tool==='curve'){curveDown(p);return;}
+  if(tool==='measure'){measureDown(p);return;}
+  if(tool==='cut'){cutDown(p,e);return;}
+  if(tool==='seam'){seamClick(e);return;}
+  if(['rect','ellipse','line','internal'].includes(tool)){
+    isDrawing=true; drawStart=p; startShape(p);
   }
-  if (drawPreview) cv.add(drawPreview);
+}
+function onMove(e){
+  const p=snap(cv.getPointer(e.e));
+  if(tool==='pen'&&penPts.length>0){penMove(p);return;}
+  if(tool==='curve'&&cStep>0){curveMove(p);return;}
+  if(isDrawing&&drawStart) updateShape(p);
+}
+function onUp(e){
+  if(isDrawing&&drawStart){
+    const p=snap(cv.getPointer(e.e));
+    finishShape(p); isDrawing=false; drawStart=null;
+  }
+}
+function onDblClick(e){
+  if(tool==='pen'){penFinish();return;}
+  if(tool==='node'){
+    const obj=cv.getActiveObject();
+    if(obj) activateNodeEdit(obj);
+  }
 }
 
-function updateDrawShape(p) {
-  if (!drawPreview || !drawStart) return;
-  const x0=drawStart.x, y0=drawStart.y, x1=p.x, y1=p.y;
-  const minX=Math.min(x0,x1), minY=Math.min(y0,y1), w=Math.abs(x1-x0), h=Math.abs(y1-y0);
+// ══════════════════════════════════════════════════
+//  SHAPE DRAWING
+// ══════════════════════════════════════════════════
+const STYLE_PREV={stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(200,179,102,0.06)',selectable:false,evented:false};
+const STYLE_FINAL={stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(232,230,223,0.92)',hasControls:true,hasBorders:true,cornerColor:'#c8b366',cornerSize:7,transparentCorners:false,cornerStyle:'circle'};
 
-  if (tool === 'rect') {
-    drawPreview.set({ left:minX, top:minY, width:w, height:h });
-  } else if (tool === 'ellipse') {
-    drawPreview.set({ left:minX, top:minY, rx:w/2, ry:h/2 });
-  } else if (tool === 'line' || tool === 'internal') {
-    drawPreview.set({ x2:x1, y2:y1 });
-  }
+function startShape(p){
+  if(tool==='rect') drawPreview=new fabric.Rect({left:p.x,top:p.y,width:1,height:1,...STYLE_PREV});
+  else if(tool==='ellipse') drawPreview=new fabric.Ellipse({left:p.x,top:p.y,rx:1,ry:1,...STYLE_PREV,fill:'rgba(200,179,102,0.06)'});
+  else if(tool==='line') drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c8b366',strokeWidth:1.5,selectable:false,evented:false});
+  else if(tool==='internal') drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#8a8c80',strokeWidth:1,strokeDashArray:[5,4],selectable:false,evented:false});
+  if(drawPreview) cv.add(drawPreview);
+}
+
+function updateShape(p){
+  if(!drawPreview||!drawStart) return;
+  const x0=drawStart.x,y0=drawStart.y,x1=p.x,y1=p.y;
+  const minX=Math.min(x0,x1),minY=Math.min(y0,y1),w=Math.abs(x1-x0),h=Math.abs(y1-y0);
+  if(tool==='rect') drawPreview.set({left:minX,top:minY,width:w,height:h});
+  else if(tool==='ellipse') drawPreview.set({left:minX,top:minY,rx:w/2,ry:h/2});
+  else drawPreview.set({x2:x1,y2:y1});
   cv.renderAll();
 }
 
-function finishDrawShape(p) {
-  if (!drawPreview) return;
-  cv.remove(drawPreview);
-
-  const x0=drawStart.x, y0=drawStart.y, x1=p.x, y1=p.y;
-  const minX=Math.min(x0,x1), minY=Math.min(y0,y1), w=Math.abs(x1-x0)||2, h=Math.abs(y1-y0)||2;
-
-  const style = { stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(232,230,223,0.9)', hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false, cornerStyle:'circle' };
-
+function finishShape(p){
+  if(drawPreview) cv.remove(drawPreview);
+  const x0=drawStart.x,y0=drawStart.y,x1=p.x,y1=p.y;
+  const minX=Math.min(x0,x1),minY=Math.min(y0,y1),w=Math.abs(x1-x0)||4,h=Math.abs(y1-y0)||4;
   let obj;
-  if (tool === 'rect') {
-    obj = new fabric.Rect({ left:minX, top:minY, width:w, height:h, ...style });
-  } else if (tool === 'ellipse') {
-    obj = new fabric.Ellipse({ left:minX, top:minY, rx:w/2, ry:h/2, ...style, fill:'rgba(232,230,223,0.7)' });
-  } else if (tool === 'line') {
-    obj = new fabric.Line([x0,y0,x1,y1], { stroke:'#c9b46a', strokeWidth:1.5, hasControls:true });
-  } else if (tool === 'internal') {
-    obj = new fabric.Line([x0,y0,x1,y1], { stroke:'#8a8c80', strokeWidth:1, strokeDashArray:[5,4], hasControls:true });
+  if(tool==='rect') obj=new fabric.Rect({left:minX,top:minY,width:w,height:h,...STYLE_FINAL});
+  else if(tool==='ellipse') obj=new fabric.Ellipse({left:minX,top:minY,rx:w/2,ry:h/2,...STYLE_FINAL,fill:'rgba(232,230,223,0.8)'});
+  else if(tool==='line') obj=new fabric.Line([x0,y0,x1,y1],{stroke:'#c8b366',strokeWidth:1.5,...STYLE_FINAL,fill:'transparent'});
+  else if(tool==='internal') obj=new fabric.Line([x0,y0,x1,y1],{stroke:'#8a8c80',strokeWidth:1,strokeDashArray:[5,4],...STYLE_FINAL,fill:'transparent'});
+  if(obj){
+    cv.add(obj); cv.setActiveObject(obj);
+    saveHistory(); setTool('select'); updateProps();
+    notify(`${tool} added`,'success');
   }
-
-  if (obj) {
-    cv.add(obj);
-    cv.setActiveObject(obj);
-    saveHistory();
-    setTool('select');
-    updatePropsPanel();
-    notify(`${tool.charAt(0).toUpperCase()+tool.slice(1)} created`, 'success');
-  }
-  drawPreview = null;
+  drawPreview=null;
 }
 
 // ══════════════════════════════════════════════════
-//  PEN TOOL (polygon)
+//  PEN TOOL
 // ══════════════════════════════════════════════════
-function penDown(p) {
-  penPoints.push({x:p.x, y:p.y});
-  const dot = new fabric.Circle({ left:p.x-4, top:p.y-4, radius:4, fill:'#c9b46a', stroke:'#ffffff', strokeWidth:1, selectable:false, evented:false, _penDot:true });
-  penDots.push(dot);
-  cv.add(dot);
-
-  if (penPreview) cv.remove(penPreview);
-  penPreview = new fabric.Polyline([...penPoints, {x:p.x,y:p.y}], {
-    stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(201,180,106,0.07)', selectable:false, evented:false
-  });
-  cv.add(penPreview);
-  cv.renderAll();
+function penDown(p){
+  penPts.push({x:p.x,y:p.y});
+  const dot=new fabric.Circle({left:p.x-4,top:p.y-4,radius:4,fill:'#c8b366',stroke:'#fff',strokeWidth:1,selectable:false,evented:false});
+  penDots.push(dot); cv.add(dot);
+  if(penPrev) cv.remove(penPrev);
+  penPrev=new fabric.Polyline([...penPts,{x:p.x,y:p.y}],{stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(200,179,102,0.06)',selectable:false,evented:false});
+  cv.add(penPrev); cv.renderAll();
 }
-
-function penMove(p) {
-  if (!penPreview || penPoints.length === 0) return;
-  penPreview.set({ points: [...penPoints, {x:p.x,y:p.y}] });
-  cv.renderAll();
+function penMove(p){
+  if(!penPrev||penPts.length===0) return;
+  penPrev.set({points:[...penPts,{x:p.x,y:p.y}]}); cv.renderAll();
 }
-
-function penFinish() {
-  document.getElementById('pen-hint').style.display = 'none';
-  if (penPoints.length < 3) {
-    cancelCurrentTool();
-    notify('Need at least 3 points', 'error');
-    return;
-  }
-  penDots.forEach(d => cv.remove(d));
-  penDots = [];
-  if (penPreview) { cv.remove(penPreview); penPreview = null; }
-
-  const poly = new fabric.Polygon([...penPoints], {
-    stroke:'#c9b46a', strokeWidth:1.5, fill:'rgba(232,230,223,0.9)',
-    hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false, cornerStyle:'circle'
-  });
-  cv.add(poly);
-  cv.setActiveObject(poly);
-  penPoints = [];
-  saveHistory();
-  setTool('select');
-  updatePropsPanel();
-  notify('Pattern piece created', 'success');
+function penFinish(){
+  document.getElementById('pen-hint').style.display='none';
+  if(penPts.length<3){cancelTool();notify('Need at least 3 points','error');return;}
+  penDots.forEach(d=>cv.remove(d)); penDots=[];
+  if(penPrev){cv.remove(penPrev);penPrev=null;}
+  const poly=new fabric.Polygon([...penPts],{...STYLE_FINAL,stroke:'#c8b366',strokeWidth:1.5,fill:'rgba(232,230,223,0.92)'});
+  cv.add(poly); cv.setActiveObject(poly);
+  penPts=[]; saveHistory(); setTool('select'); updateProps();
+  notify('Pattern piece created','success');
 }
 
 // ══════════════════════════════════════════════════
-//  CURVE TOOL (quadratic bezier)
+//  CURVE TOOL (3-click quadratic bezier)
 // ══════════════════════════════════════════════════
-function curveDown(p) {
-  curveStep++;
-  curvePts.push(p);
-
-  if (curveStep === 1) {
-    if (drawPreview) cv.remove(drawPreview);
-    drawPreview = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#c9b46a', strokeWidth:1.5, selectable:false, evented:false });
+function curveDown(p){
+  cStep++; cPts.push(p);
+  if(cStep===1){
+    drawPreview=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c8b366',strokeWidth:1.5,selectable:false,evented:false,strokeDashArray:[4,3]});
     cv.add(drawPreview);
-  } else if (curveStep === 2) {
-    if (drawPreview) cv.remove(drawPreview);
-  } else if (curveStep === 3) {
-    // p0, p1(ctrl), p2(end)
-    const [p0,p1,p2] = curvePts;
-    const d = `M ${p0.x} ${p0.y} Q ${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
-    const curve = new fabric.Path(d, {
-      stroke:'#c9b46a', strokeWidth:1.5, fill:'transparent',
-      hasControls:true, hasBorders:true, cornerColor:'#c9b46a', cornerSize:7, transparentCorners:false
-    });
-    cv.add(curve);
-    cv.setActiveObject(curve);
-    saveHistory();
-    curveStep = 0; curvePts = [];
-    if (drawPreview) { cv.remove(drawPreview); drawPreview = null; }
-    setTool('select');
-    notify('Curve created  (3 clicks: start → control → end)', 'success');
+    notify('Click control point','info');
+  } else if(cStep===2){
+    notify('Click end point','info');
+  } else if(cStep===3){
+    if(drawPreview){cv.remove(drawPreview);drawPreview=null;}
+    const [p0,p1,p2]=cPts;
+    const d=`M ${p0.x} ${p0.y} Q ${p1.x} ${p1.y} ${p2.x} ${p2.y}`;
+    const curve=new fabric.Path(d,{...STYLE_FINAL,fill:'transparent',stroke:'#c8b366',strokeWidth:1.5});
+    cv.add(curve); cv.setActiveObject(curve);
+    saveHistory(); cStep=0; cPts=[]; setTool('select');
+    notify('Curve created','success');
   }
 }
-
-function curveMove(p) {
-  if (!drawPreview || curvePts.length < 1) return;
-  if (curveStep === 1) drawPreview.set({x2:p.x, y2:p.y});
-  cv.renderAll();
+function curveMove(p){
+  if(!drawPreview||cPts.length<1) return;
+  drawPreview.set({x2:p.x,y2:p.y}); cv.renderAll();
 }
 
 // ══════════════════════════════════════════════════
 //  MEASURE TOOL
 // ══════════════════════════════════════════════════
-let measureStart = null, measureLine = null, measureLabel = null;
-function measureDown(p) {
-  if (!measureStart) {
-    measureStart = p;
-    measureLine = new fabric.Line([p.x,p.y,p.x,p.y], { stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3], selectable:false, evented:false });
-    cv.add(measureLine);
-    cv.on('mouse:move', measureMoveHandler);
+function measureDown(p){
+  if(!mStart){
+    mStart=p;
+    mLine=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#6a9ac4',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
+    cv.add(mLine);
+    notify('Click end point to measure','info');
   } else {
-    cv.off('mouse:move', measureMoveHandler);
-    const dx = p.x - measureStart.x, dy = p.y - measureStart.y;
-    const dist = Math.sqrt(dx*dx+dy*dy);
-    if (measureLine) cv.remove(measureLine);
-    if (measureLabel) cv.remove(measureLabel);
-    const mx = (measureStart.x+p.x)/2, my = (measureStart.y+p.y)/2;
-    const lbl = new fabric.Text(`${fmt(toUnit(dist))} ${unit}`, {
-      left:mx, top:my-14, fontSize:11, fill:'#6a9ac4', fontFamily:'DM Sans', selectable:false, evented:false, backgroundColor:'rgba(14,15,13,0.7)', padding:3
+    cv.remove(mLine);
+    const dx=p.x-mStart.x,dy=p.y-mStart.y;
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    const mx=(mStart.x+p.x)/2,my=(mStart.y+p.y)/2;
+    const lbl=new fabric.Text(`${fmt(toU(dist))} ${unit}`,{
+      left:mx,top:my-14,fontSize:11,fill:'#6a9ac4',fontFamily:'DM Sans',
+      selectable:false,evented:false,backgroundColor:'rgba(11,12,10,0.75)',padding:3
     });
-    cv.add(lbl);
-    notify(`Distance: ${fmt(toUnit(dist))} ${unit}`, 'info');
-    measureStart = null; measureLine = null; measureLabel = null;
-    setTool('select');
+    // Permanent measure line
+    const ml=new fabric.Line([mStart.x,mStart.y,p.x,p.y],{stroke:'#6a9ac4',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
+    cv.add(ml); cv.add(lbl);
+    notify(`Distance: ${fmt(toU(dist))} ${unit}`,'info');
+    mStart=null; mLine=null; setTool('select'); saveHistory();
   }
-}
-function measureMoveHandler(e) {
-  if (!measureLine || !measureStart) return;
-  const p = snap(cv.getPointer(e.e));
-  measureLine.set({x2:p.x, y2:p.y});
-  cv.renderAll();
 }
 
 // ══════════════════════════════════════════════════
-//  CUT TOOL (split line across object)
+//  CUT TOOL — split shape with a cutting line
 // ══════════════════════════════════════════════════
-let cutStart = null, cutLine = null;
-function cutDown(p, e) {
-  if (!cutStart) {
-    cutStart = p;
-    cutLine = new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c46a6a',strokeWidth:1,strokeDashArray:[4,3],selectable:false,evented:false});
-    cv.add(cutLine);
-    notify('Click end point of cut line', 'info');
+function cutDown(p,e){
+  if(!cutStart){
+    cutStart=p;
+    cutPrevLine=new fabric.Line([p.x,p.y,p.x,p.y],{stroke:'#c46a6a',strokeWidth:1.5,strokeDashArray:[5,3],selectable:false,evented:false});
+    cv.add(cutPrevLine);
+    notify('Click end point of cut line','info');
   } else {
-    if (cutLine) cv.remove(cutLine);
-    // Duplicate object and show a gap
-    const obj = cv.getActiveObject();
-    if (obj) {
-      notify('Cut applied — use Edit Points to refine', 'success');
-    } else {
-      notify('Select an object first, then use the cut tool', 'error');
+    cv.remove(cutPrevLine); cutPrevLine=null;
+    const cutEnd=p;
+    const obj=cv.getActiveObject();
+    if(!obj||obj._grid||obj._seam){
+      notify('Select a shape first, then use Cut','error');
+      cutStart=null; setTool('select'); return;
     }
-    cutStart = null; cutLine = null;
-    setTool('select');
+    performCut(obj,cutStart,cutEnd);
+    cutStart=null; setTool('select');
   }
 }
 
-// ══════════════════════════════════════════════════
-//  SEAM ALLOWANCE TOOL
-// ══════════════════════════════════════════════════
-function seamDown(e) {
-  const obj = e.target;
-  if (!obj || obj._grid) { notify('Click a shape to apply seam allowance', 'info'); return; }
-  applySeamToObject(obj);
-  setTool('select');
+function performCut(obj,p0,p1){
+  // Split rectangle into two polygons along cut line
+  if(obj.type==='rect'){
+    const {left:x,top:y,width:w,height:h}=obj;
+    const sx=obj.scaleX||1, sy=obj.scaleY||1;
+    const rw=w*sx,rh=h*sy;
+    // Clip line to rectangle bounds
+    const mid=intersectLineRect(p0,p1,x,y,x+rw,y+rh);
+    if(!mid||mid.length<2){ notify('Cut line must cross the shape','error'); return; }
+    const a=mid[0],b=mid[1];
+    const fill=obj.fill;
+    // Two polygons
+    const poly1=new fabric.Polygon([{x:x,y:y},{x:a.x,y:a.y},{x:b.x,y:b.y},{x:x,y:y+rh}],{...STYLE_FINAL,fill,stroke:obj.stroke||'#c8b366'});
+    const poly2=new fabric.Polygon([{x:a.x,y:a.y},{x:x+rw,y:y},{x:x+rw,y:y+rh},{x:b.x,y:b.y}],{...STYLE_FINAL,fill,stroke:obj.stroke||'#c8b366'});
+    cv.remove(obj); cv.add(poly1); cv.add(poly2);
+    saveHistory(); notify('Shape cut into two pieces','success');
+  } else {
+    // For other shapes, just show the cut line as a permanent internal line
+    const cl=new fabric.Line([p0.x,p0.y,p1.x,p1.y],{stroke:'#c46a6a',strokeWidth:1.5,strokeDashArray:[5,3],selectable:true,hasBorders:true,hasControls:true});
+    cv.add(cl); saveHistory();
+    notify('Cut line added. Use Boolean > Subtract for complex cuts.','info');
+  }
 }
 
-function applySeamToObject(obj) {
-  const amt = parseInt(document.getElementById('seam-amount').value) || 10;
+function intersectLineRect(p0,p1,x1,y1,x2,y2){
+  // Find intersections of line segment p0-p1 extended with rect edges
+  const edges=[
+    [{x:x1,y:y1},{x:x2,y:y1}], // top
+    [{x:x2,y:y1},{x:x2,y:y2}], // right
+    [{x:x2,y:y2},{x:x1,y:y2}], // bottom
+    [{x:x1,y:y2},{x:x1,y:y1}], // left
+  ];
+  const hits=[];
+  for(const [a,b] of edges){
+    const pt=lineIntersect(p0,p1,a,b);
+    if(pt) hits.push(pt);
+  }
+  return hits.length>=2?[hits[0],hits[hits.length-1]]:null;
+}
+
+function lineIntersect(p1,p2,p3,p4){
+  const d=(p1.x-p2.x)*(p3.y-p4.y)-(p1.y-p2.y)*(p3.x-p4.x);
+  if(Math.abs(d)<0.001) return null;
+  const t=((p1.x-p3.x)*(p3.y-p4.y)-(p1.y-p3.y)*(p3.x-p4.x))/d;
+  const u=-((p1.x-p2.x)*(p1.y-p3.y)-(p1.y-p2.y)*(p1.x-p3.x))/d;
+  if(u<0||u>1) return null;
+  return{x:p1.x+t*(p2.x-p1.x),y:p1.y+t*(p2.y-p1.y)};
+}
+
+// ══════════════════════════════════════════════════
+//  SEAM ALLOWANCE
+// ══════════════════════════════════════════════════
+function seamClick(e){
+  const obj=e.target;
+  if(!obj||obj._grid||obj._seam){ notify('Click a shape to apply seam','info'); return; }
+  applySeamToObj(obj); setTool('select');
+}
+
+function applySeamSelected(){
+  const obj=cv.getActiveObject();
+  if(!obj){ notify('Select an object first','error'); return; }
+  if(obj.type==='activeSelection'){
+    obj.getObjects().forEach(applySeamToObj);
+  } else {
+    applySeamToObj(obj);
+  }
+}
+
+function applySeamToObj(obj){
+  const amt=parseInt(document.getElementById('seam-amt').value)||10;
   removeSeamFrom(obj);
   let seam;
-  if (obj.type === 'rect') {
-    seam = new fabric.Rect({
-      left: obj.left - amt, top: obj.top - amt,
-      width: obj.width * obj.scaleX + amt*2,
-      height: obj.height * obj.scaleY + amt*2,
-      fill: 'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3],
-      selectable:false, evented:false, _seamParent: obj.canvas ? cv.getObjects().indexOf(obj) : true
+  const dashed={stroke:'#6a9ac4',strokeWidth:0.8,strokeDashArray:[4,3],fill:'transparent',selectable:false,evented:false,_seam:true,_seamFor:obj};
+  if(obj.type==='rect'){
+    const sx=obj.scaleX||1,sy=obj.scaleY||1;
+    seam=new fabric.Rect({left:obj.left-amt,top:obj.top-amt,width:obj.width*sx+amt*2,height:obj.height*sy+amt*2,...dashed});
+  } else if(obj.type==='ellipse'){
+    seam=new fabric.Ellipse({left:obj.left-amt,top:obj.top-amt,rx:(obj.rx||0)*(obj.scaleX||1)+amt,ry:(obj.ry||0)*(obj.scaleY||1)+amt,...dashed});
+  } else if(obj.type==='polygon'){
+    const pts=obj.points.map(pt=>{
+      const cx=obj.left+(obj.width||0)/2, cy=obj.top+(obj.height||0)/2;
+      const dx=pt.x-cx,dy=pt.y-cy,len=Math.sqrt(dx*dx+dy*dy)||1;
+      return{x:obj.left+pt.x+dx/len*amt,y:obj.top+pt.y+dy/len*amt};
     });
-  } else if (obj.type === 'ellipse') {
-    seam = new fabric.Ellipse({
-      left: obj.left - amt, top: obj.top - amt,
-      rx: obj.rx * obj.scaleX + amt, ry: obj.ry * obj.scaleY + amt,
-      fill:'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3],
-      selectable:false, evented:false
-    });
-  } else if (obj.type === 'polygon') {
-    // Offset polygon (simple expand)
-    const cx = obj.left + obj.width/2, cy = obj.top + obj.height/2;
-    const pts = obj.points.map(pt => {
-      const dx = pt.x - cx, dy = pt.y - cy;
-      const len = Math.sqrt(dx*dx+dy*dy)||1;
-      return { x: pt.x + dx/len*amt, y: pt.y + dy/len*amt };
-    });
-    seam = new fabric.Polygon(pts, { fill:'transparent', stroke:'#6a9ac4', strokeWidth:1, strokeDashArray:[4,3], selectable:false, evented:false });
+    seam=new fabric.Polygon(pts,{...dashed});
   }
-  if (seam) {
-    seam._seamFor = obj;
-    seamObjects.push(seam);
-    cv.add(seam);
-    cv.sendToBack(seam);
-    notify(`Seam allowance: ${amt}px applied`, 'success');
+  if(seam){
+    seamMap.set(obj,seam);
+    cv.add(seam); cv.sendToBack(seam);
+    document.getElementById('seam-on').checked=true;
+    notify(`Seam: ${amt}px applied`,'success');
     saveHistory();
+    updateInfo(obj);
   }
 }
 
-function removeSeamFrom(obj) {
-  seamObjects = seamObjects.filter(s => {
-    if (s._seamFor === obj) { cv.remove(s); return false; }
-    return true;
-  });
+function removeSeamFrom(obj){
+  if(seamMap.has(obj)){ cv.remove(seamMap.get(obj)); seamMap.delete(obj); }
 }
 
-function toggleSeamPreview() {
-  const on = document.getElementById('seam-toggle').checked;
-  seamObjects.forEach(s => s.set('visible', on));
+function toggleSeamVis(){
+  const on=document.getElementById('seam-on').checked;
+  seamMap.forEach(s=>s.set('visible',on));
   cv.renderAll();
 }
 
-function updateSeamAllowance() {
-  // re-apply to all objects that have seams
-  const existing = [...seamObjects];
-  existing.forEach(s => {
-    if (s._seamFor) applySeamToObject(s._seamFor);
-    else cv.remove(s);
-  });
-}
+// ══════════════════════════════════════════════════
+//  NODE EDITING  (polygon/path reshape)
+// ══════════════════════════════════════════════════
+let nodeHandles=[], editingObj=null;
 
-// ══════════════════════════════════════════════════
-//  POINT EDITING
-// ══════════════════════════════════════════════════
-function enablePointEditing(poly) {
-  poly.set({ objectCaching:false });
-  const pts = poly.points;
-  const handles = pts.map((pt,i) => {
-    const h = new fabric.Circle({
-      radius:5, fill:'#c9b46a', stroke:'#0e0f0d', strokeWidth:1,
-      left: poly.left + pt.x - 5, top: poly.top + pt.y - 5,
-      hasControls:false, hasBorders:false, _ptHandle:true, _ptIdx:i, _poly:poly
+function activateNodeEdit(obj){
+  clearNodeHandles();
+  editingObj=obj;
+  obj.set({objectCaching:false,selectable:false});
+  let pts;
+  if(obj.type==='polygon'||obj.type==='polyline'){
+    pts=obj.points.map(p=>({x:obj.left+p.x-(obj.pathOffset?obj.pathOffset.x:0),y:obj.top+p.y-(obj.pathOffset?obj.pathOffset.y:0)}));
+  } else { notify('Node editing works best on polygons','info'); return; }
+
+  pts.forEach((pt,i)=>{
+    const h=new fabric.Circle({
+      radius:5,fill:'#c8b366',stroke:'#0b0c0a',strokeWidth:1.5,
+      left:pt.x-5,top:pt.y-5,
+      hasControls:false,hasBorders:false,_nodeHandle:true,_idx:i
     });
-    h.on('moving', () => {
-      pts[i].x = h.left - poly.left + 5;
-      pts[i].y = h.top - poly.top + 5;
-      poly.set({ points: pts });
+    h.on('moving',()=>{
+      const np=obj.points;
+      np[i]={x:h.left+5-obj.left,y:h.top+5-obj.top};
+      obj.set({points:np});
+      // Update connected seam
+      if(seamMap.has(obj)){ cv.remove(seamMap.get(obj)); seamMap.delete(obj); applySeamToObj(obj); }
       cv.renderAll();
     });
-    h.on('mouseup', saveHistory);
-    return h;
+    h.on('mouseup',saveHistory);
+    nodeHandles.push(h);
+    cv.add(h);
   });
-  handles.forEach(h => cv.add(h));
-  notify('Drag the golden handles to reshape. Press Esc to finish.', 'info');
+  notify(`${pts.length} nodes active · Drag to reshape · Esc to exit`,'info');
 
-  const cleanup = () => {
-    handles.forEach(h => cv.remove(h));
-    document.removeEventListener('keydown', escHandler);
-  };
-  const escHandler = e => { if (e.key==='Escape') { cleanup(); setTool('select'); } };
-  document.addEventListener('keydown', escHandler);
+  const esc=e=>{ if(e.key==='Escape'){ clearNodeHandles(); document.removeEventListener('keydown',esc); setTool('select'); }};
+  document.addEventListener('keydown',esc);
 }
 
-// ══════════════════════════════════════════════════
-//  GRID
-// ══════════════════════════════════════════════════
-function drawGrid() {
-  if (gridGroup) { cv.remove(gridGroup); gridGroup = null; }
-  if (!showGrid) return;
-
-  const lines = [];
-  const majorEvery = 5;
-  for (let x = 0; x <= W; x += gridSize) {
-    const isMajor = (x/gridSize) % majorEvery === 0;
-    lines.push(new fabric.Line([x,0,x,H], { stroke: isMajor?'#3a3d34':'#25271f', strokeWidth:isMajor?0.7:0.4, selectable:false, evented:false, _grid:true }));
-  }
-  for (let y = 0; y <= H; y += gridSize) {
-    const isMajor = (y/gridSize) % majorEvery === 0;
-    lines.push(new fabric.Line([0,y,W,y], { stroke: isMajor?'#3a3d34':'#25271f', strokeWidth:isMajor?0.7:0.4, selectable:false, evented:false, _grid:true }));
-  }
-  gridGroup = new fabric.Group(lines, { selectable:false, evented:false, _grid:true });
-  cv.add(gridGroup);
-  cv.sendToBack(gridGroup);
+function clearNodeHandles(){
+  nodeHandles.forEach(h=>cv.remove(h)); nodeHandles=[];
+  if(editingObj){ editingObj.set({selectable:true}); editingObj=null; }
   cv.renderAll();
 }
 
-function toggleGrid() {
-  showGrid = !showGrid;
-  drawGrid();
-  document.getElementById('grid-btn').style.color = showGrid ? 'var(--accent)' : '';
-  updateStatusBar();
-  notify(`Grid ${showGrid?'on':'off'}`, 'info');
+// ══════════════════════════════════════════════════
+//  BOOLEAN OPS (via SVG path approximation)
+// ══════════════════════════════════════════════════
+function boolOp(op){
+  const sel=cv.getActiveObject();
+  if(!sel||sel.type!=='activeSelection'||sel.getObjects().length<2){
+    notify('Select exactly 2 objects for Boolean ops','error'); return;
+  }
+  const objs=sel.getObjects();
+  const a=objs[0],b=objs[1];
+
+  // Get bounding boxes for approximation
+  const aRect=a.getBoundingRect(true), bRect=b.getBoundingRect(true);
+  const union_left=Math.min(aRect.left,bRect.left);
+  const union_top=Math.min(aRect.top,bRect.top);
+  const union_right=Math.max(aRect.left+aRect.width,bRect.left+bRect.width);
+  const union_bottom=Math.max(aRect.top+aRect.height,bRect.top+bRect.height);
+
+  let result;
+  if(op==='union'){
+    // Convex hull approximation — create merged outline
+    const allPts=getObjPoints(a).concat(getObjPoints(b));
+    const hull=convexHull(allPts);
+    result=new fabric.Polygon(hull,{...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)'});
+  } else if(op==='intersect'){
+    // Intersection bounding box
+    const il=Math.max(aRect.left,bRect.left), it=Math.max(aRect.top,bRect.top);
+    const ir=Math.min(aRect.left+aRect.width,bRect.left+bRect.width);
+    const ib=Math.min(aRect.top+aRect.height,bRect.top+bRect.height);
+    if(ir<=il||ib<=it){notify('Shapes do not overlap','error');return;}
+    result=new fabric.Rect({left:il,top:it,width:ir-il,height:ib-it,...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)'});
+  } else if(op==='subtract'){
+    // Subtract b from a — approximate with clipping polygon
+    const aPts=getObjPoints(a);
+    // Notch out the b area from a hull
+    result=new fabric.Polygon(aPts,{...STYLE_FINAL,fill:a.fill||'rgba(232,230,223,0.92)',clipPath:new fabric.Rect({left:bRect.left,top:bRect.top,width:bRect.width,height:bRect.height,absolutePositioned:true,inverted:true})});
+  } else if(op==='exclude'){
+    // Exclude: both but not overlap
+    const hull=convexHull(getObjPoints(a).concat(getObjPoints(b)));
+    result=new fabric.Polygon(hull,{...STYLE_FINAL,fill:'transparent',stroke:'#c8b366'});
+  }
+
+  if(result){
+    cv.discardActiveObject();
+    cv.remove(a); cv.remove(b);
+    cv.add(result); cv.setActiveObject(result);
+    saveHistory(); updateProps();
+    notify(`Boolean ${op} applied`,'success');
+  }
 }
 
-function toggleSnap() {
-  snapGrid = !snapGrid;
-  document.getElementById('snap-btn').style.color = snapGrid ? 'var(--accent)' : '';
-  updateStatusBar();
-  notify(`Snap to grid ${snapGrid?'on':'off'}`, 'info');
+function getObjPoints(obj){
+  const br=obj.getBoundingRect(true);
+  if(obj.type==='polygon'&&obj.points){
+    return obj.points.map(p=>({x:obj.left+p.x,y:obj.top+p.y}));
+  }
+  return[{x:br.left,y:br.top},{x:br.left+br.width,y:br.top},{x:br.left+br.width,y:br.top+br.height},{x:br.left,y:br.top+br.height}];
 }
 
-function setGridSize(v) {
-  gridSize = Math.max(5, Math.min(200, v));
-  if (showGrid) drawGrid();
-}
-
-function snap(p) {
-  if (!snapGrid) return p;
-  return { x: Math.round(p.x/gridSize)*gridSize, y: Math.round(p.y/gridSize)*gridSize };
+function convexHull(pts){
+  pts.sort((a,b)=>a.x-b.x||a.y-b.y);
+  const cross=(o,a,b)=>(a.x-o.x)*(b.y-o.y)-(a.y-o.y)*(b.x-o.x);
+  const lower=[],upper=[];
+  for(const p of pts){while(lower.length>=2&&cross(lower[lower.length-2],lower[lower.length-1],p)<=0)lower.pop();lower.push(p);}
+  for(let i=pts.length-1;i>=0;i--){const p=pts[i];while(upper.length>=2&&cross(upper[upper.length-2],upper[upper.length-1],p)<=0)upper.pop();upper.push(p);}
+  lower.pop();upper.pop();
+  return lower.concat(upper);
 }
 
 // ══════════════════════════════════════════════════
-//  RULERS
+//  CLONE (Marvelous Designer style)
 // ══════════════════════════════════════════════════
-function initRulers() {
-  const wrap = document.getElementById('canvas-wrap');
-  const rh = document.getElementById('ruler-h');
-  const rv = document.getElementById('ruler-v');
-  rh.width = wrap.clientWidth - RULERL; rh.height = RULERL;
-  rv.width = RULERL; rv.height = wrap.clientHeight - RULERL;
-  if (showRulers) { drawRuler(); }
+function openCloneModal(){
+  const obj=cv.getActiveObject();
+  if(!obj){notify('Select an object to clone','error');return;}
+  document.getElementById('clone-modal').classList.add('open');
 }
-
-function drawRuler() {
-  const wrap = document.getElementById('canvas-wrap');
-  const rh = document.getElementById('ruler-h'), ctxH = rh.getContext('2d');
-  const rv = document.getElementById('ruler-v'), ctxV = rv.getContext('2d');
-
-  [ctxH,ctxV].forEach(ctx => {
-    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-    ctx.fillStyle = '#1e2019';
-    ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function doClone(){
+  const obj=cv.getActiveObject();
+  if(!obj){closeModal('clone-modal');return;}
+  const axis=document.getElementById('clone-axis').value;
+  const dx=+document.getElementById('clone-dx').value||30;
+  const dy=+document.getElementById('clone-dy').value||0;
+  obj.clone(clone=>{
+    clone.set({left:obj.left+dx,top:obj.top+dy});
+    if(axis==='vertical') clone.set({flipX:!obj.flipX});
+    else if(axis==='horizontal') clone.set({flipY:!obj.flipY});
+    else if(axis==='both'){clone.set({flipX:!obj.flipX,flipY:!obj.flipY});}
+    cv.add(clone); cv.setActiveObject(clone); cv.renderAll();
+    saveHistory(); closeModal('clone-modal');
+    notify('Pattern piece cloned','success');
   });
-
-  const step = gridSize * zoomLvl;
-  ctxH.fillStyle = '#555750'; ctxH.font = '9px DM Sans'; ctxH.textAlign = 'center';
-  for (let x = 0; x < rh.width; x += step) {
-    const v = Math.round(x / zoomLvl / unitRatio);
-    ctxH.fillStyle = '#555750'; ctxH.fillRect(x,RULERL-4,1,(x%(step*5)<1)?8:4);
-    if (x%(step*5)<1) { ctxH.fillStyle='#8a8c80'; ctxH.fillText(v,x,10); }
-  }
-  ctxV.fillStyle = '#555750'; ctxV.font = '9px DM Sans'; ctxV.textAlign = 'center';
-  for (let y = 0; y < rv.height; y += step) {
-    const v = Math.round(y / zoomLvl / unitRatio);
-    ctxV.fillStyle = '#555750'; ctxV.fillRect(RULERL-4,y,4,(y%(step*5)<1)?8:4);
-    if (y%(step*5)<1) {
-      ctxV.save(); ctxV.translate(10,y); ctxV.rotate(-Math.PI/2);
-      ctxV.fillStyle='#8a8c80'; ctxV.fillText(v,0,0); ctxV.restore();
-    }
-  }
-}
-
-function drawRulerCursor(x,y) {
-  if (!showRulers) return;
-  drawRuler();
-  const rh = document.getElementById('ruler-h'), ctxH = rh.getContext('2d');
-  const rv = document.getElementById('ruler-v'), ctxV = rv.getContext('2d');
-  ctxH.fillStyle='#c9b46a'; ctxH.fillRect(x*zoomLvl,0,1,RULERL);
-  ctxV.fillStyle='#c9b46a'; ctxV.fillRect(0,y*zoomLvl,RULERL,1);
-}
-
-function toggleRulers() {
-  showRulers = !showRulers;
-  const rh = document.getElementById('ruler-h'), rv = document.getElementById('ruler-v'), corner = document.querySelector('.ruler-corner');
-  [rh,rv,corner].forEach(el => el.style.display = showRulers ? 'block' : 'none');
-  document.getElementById('ruler-btn').style.color = showRulers ? 'var(--accent)' : '';
-  if (showRulers) drawRuler();
 }
 
 // ══════════════════════════════════════════════════
-//  ZOOM & PAN
+//  TEXTURES
 // ══════════════════════════════════════════════════
-function zoomBy(factor) {
-  zoomLvl = Math.min(Math.max(zoomLvl * factor, 0.05), 8);
-  cv.setZoom(zoomLvl);
-  document.getElementById('zoom-disp').textContent = Math.round(zoomLvl*100)+'%';
-  if (showRulers) drawRuler();
+const TEX_DEFS=[
+  {key:'linen',label:'Linen',fn:drawLinen},
+  {key:'denim',label:'Denim',fn:drawDenim},
+  {key:'silk',label:'Silk',fn:drawSilk},
+  {key:'cotton',label:'Cotton',fn:drawCotton},
+  {key:'knit',label:'Knit',fn:drawKnit},
+  {key:'houndstooth',label:'Hound',fn:drawHoundstooth},
+  {key:'plaid',label:'Plaid',fn:drawPlaid},
+  {key:'dots',label:'Dots',fn:drawDots},
+];
+
+function buildTextures(){
+  TEX_DEFS.forEach(td=>{
+    const canvas=document.createElement('canvas');
+    canvas.width=64;canvas.height=64;
+    td.fn(canvas.getContext('2d'));
+    textures[td.key]=canvas;
+  });
 }
-function zoomIn() { zoomBy(1.2); }
-function zoomOut() { zoomBy(1/1.2); }
-function zoom100() { zoomLvl=1; cv.setZoom(1); document.getElementById('zoom-disp').textContent='100%'; if(showRulers)drawRuler(); }
-function zoomFit() {
-  const wrap = document.getElementById('canvas-wrap');
-  const s = Math.min(wrap.clientWidth/W, wrap.clientHeight/H) * 0.88;
-  zoomLvl = s; cv.setZoom(s);
-  document.getElementById('zoom-disp').textContent = Math.round(s*100)+'%';
-  if (showRulers) drawRuler();
+
+function renderTexGrid(){
+  const grid=document.getElementById('tex-grid');
+  grid.innerHTML='';
+  TEX_DEFS.forEach(td=>{
+    const wrap=document.createElement('div');
+    wrap.className='tex-swatch';
+    wrap.title=td.label;
+    const mc=document.createElement('canvas');
+    mc.width=60;mc.height=60;
+    const ctx=mc.getContext('2d');
+    td.fn(ctx);
+    wrap.appendChild(mc);
+    wrap.onclick=()=>applyTexture(td.key,wrap);
+    grid.appendChild(wrap);
+    td._el=wrap;
+  });
 }
+
+function applyTexture(key,swatchEl){
+  const obj=cv.getActiveObject();
+  if(!obj){notify('Select an object first','error');return;}
+  selectedTexKey=key;
+  document.querySelectorAll('.tex-swatch').forEach(s=>s.classList.remove('selected'));
+  swatchEl.classList.add('selected');
+  const srcCanvas=textures[key];
+  const scale=parseInt(document.getElementById('tex-scale').value)/100;
+  fabric.Image.fromURL(srcCanvas.toDataURL(),img=>{
+    const pat=new fabric.Pattern({source:img.getElement(),repeat:'repeat',offsetX:0,offsetY:0});
+    const activeObjs=obj.type==='activeSelection'?obj.getObjects():[obj];
+    activeObjs.forEach(o=>{ o._texKey=key; o.set('fill',pat); });
+    cv.renderAll(); saveHistory();
+    notify(`${key} texture applied`,'success');
+  });
+}
+
+function removeTexture(){
+  const obj=cv.getActiveObject();
+  if(!obj)return;
+  const activeObjs=obj.type==='activeSelection'?obj.getObjects():[obj];
+  activeObjs.forEach(o=>{ o._texKey=null; o.set('fill','rgba(232,230,223,0.92)'); });
+  cv.renderAll(); saveHistory();
+  document.querySelectorAll('.tex-swatch').forEach(s=>s.classList.remove('selected'));
+  selectedTexKey=null;
+  notify('Texture removed','info');
+}
+
+function updateTexScale(v){ /* re-apply with new scale */ }
+function updateTexAngle(v){ const obj=cv.getActiveObject(); if(!obj||!obj._texKey)return; }
+function updateTexOpacity(v){ const obj=cv.getActiveObject(); if(!obj)return; obj.set('opacity',v/100); cv.renderAll(); }
+
+function loadCustomTexture(input){
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    fabric.Image.fromURL(e.target.result,img=>{
+      const pat=new fabric.Pattern({source:img.getElement(),repeat:'repeat'});
+      const obj=cv.getActiveObject();
+      if(!obj){notify('Select an object first','error');return;}
+      obj.set('fill',pat); cv.renderAll(); saveHistory();
+      notify('Custom texture applied','success');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+// Texture drawing functions
+function drawLinen(ctx){
+  ctx.fillStyle='#e8e0d0';ctx.fillRect(0,0,64,64);
+  for(let i=0;i<64;i+=2){ctx.strokeStyle=`rgba(180,160,130,${Math.random()*0.3+0.1})`;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,64);ctx.stroke();}
+  for(let j=0;j<64;j+=2){ctx.strokeStyle=`rgba(160,140,110,${Math.random()*0.2+0.05})`;ctx.lineWidth=0.5;ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(64,j);ctx.stroke();}
+}
+function drawDenim(ctx){
+  ctx.fillStyle='#4a6fa5';ctx.fillRect(0,0,64,64);
+  for(let i=0;i<64;i+=3){ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i-64,64);ctx.stroke();}
+  for(let i=0;i<128;i+=3){ctx.strokeStyle='rgba(0,0,0,0.06)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(i-64,0);ctx.lineTo(i,64);ctx.stroke();}
+}
+function drawSilk(ctx){
+  const g=ctx.createLinearGradient(0,0,64,64);g.addColorStop(0,'#f0e8f8');g.addColorStop(0.5,'#e8ddef');g.addColorStop(1,'#d8ccee');
+  ctx.fillStyle=g;ctx.fillRect(0,0,64,64);
+  for(let i=0;i<64;i+=8){ctx.strokeStyle='rgba(255,255,255,0.4)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,64);ctx.stroke();}
+}
+function drawCotton(ctx){
+  ctx.fillStyle='#f5f0e8';ctx.fillRect(0,0,64,64);
+  for(let y=0;y<64;y+=4) for(let x=0;x<64;x+=4){ctx.fillStyle=`rgba(200,190,170,${Math.random()*0.15+0.02})`;ctx.fillRect(x,y,4,4);}
+}
+function drawKnit(ctx){
+  ctx.fillStyle='#e8d8c0';ctx.fillRect(0,0,64,64);
+  for(let y=0;y<64;y+=6) for(let x=0;x<64;x+=8){
+    ctx.strokeStyle='rgba(180,150,110,0.5)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(x+4,y+3,3,Math.PI,0);ctx.stroke();
+    ctx.beginPath();ctx.arc(x+4,y+3,3,0,Math.PI);ctx.stroke();
+  }
+}
+function drawHoundstooth(ctx){
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,64,64);
+  ctx.fillStyle='#222';
+  [[0,0],[8,8],[4,4],[12,12],[16,0],[0,16],[16,16]].forEach(([x,y])=>{ctx.fillRect(x,y,8,8);});
+}
+function drawPlaid(ctx){
+  ctx.fillStyle='#e8d8c0';ctx.fillRect(0,0,64,64);
+  [0,16,32,48].forEach(i=>{
+    ctx.fillStyle='rgba(200,50,50,0.3)';ctx.fillRect(i,0,4,64);
+    ctx.fillStyle='rgba(50,80,200,0.2)';ctx.fillRect(0,i,64,4);
+  });
+}
+function drawDots(ctx){
+  ctx.fillStyle='#f5f2ec';ctx.fillRect(0,0,64,64);
+  ctx.fillStyle='rgba(100,80,50,0.3)';
+  for(let y=8;y<64;y+=16) for(let x=8;x<64;x+=16){ ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fill(); }
+}
+
+// ══════════════════════════════════════════════════
+//  CONTEXT MENU
+// ══════════════════════════════════════════════════
+function showCtxMenu(e){
+  const obj=cv.getActiveObject()||cv.findTarget(e);
+  if(!obj) return;
+  if(obj&&!cv.getActiveObject()) cv.setActiveObject(obj);
+  const menu=document.getElementById('ctx-menu');
+  menu.style.display='block';
+  menu.style.left=e.clientX+'px';
+  menu.style.top=e.clientY+'px';
+  e.preventDefault(); e.stopPropagation();
+}
+function ctxDuplicate(){duplicateSelected();document.getElementById('ctx-menu').style.display='none';}
+function ctxClone2D(){openCloneModal();document.getElementById('ctx-menu').style.display='none';}
+function ctxGroup(){groupSelected();document.getElementById('ctx-menu').style.display='none';}
+function ctxUngroup(){ungroupSelected();document.getElementById('ctx-menu').style.display='none';}
+function ctxLock(){const obj=cv.getActiveObject();if(!obj)return;toggleLock(!obj.lockMovementX);document.getElementById('ctx-menu').style.display='none';}
+function ctxApplySeam(){applySeamSelected();document.getElementById('ctx-menu').style.display='none';}
 
 // ══════════════════════════════════════════════════
 //  PROPERTIES PANEL
 // ══════════════════════════════════════════════════
-function updatePropsPanel() {
-  const obj = cv.getActiveObject();
-  const noSel = document.getElementById('no-sel-msg');
-  const panel = document.getElementById('props-panel');
-
-  if (!obj) { noSel.style.display=''; panel.style.display='none'; return; }
-  noSel.style.display='none'; panel.style.display='';
-
-  document.getElementById('obj-type-badge').textContent = obj.type;
-  document.getElementById('p-x').value = Math.round(obj.left||0);
-  document.getElementById('p-y').value = Math.round(obj.top||0);
-
-  const w = obj.type==='ellipse' ? Math.round(obj.rx*2*(obj.scaleX||1)) : Math.round((obj.width||0)*(obj.scaleX||1));
-  const h = obj.type==='ellipse' ? Math.round(obj.ry*2*(obj.scaleY||1)) : Math.round((obj.height||0)*(obj.scaleY||1));
-  document.getElementById('p-w').value = w;
-  document.getElementById('p-h').value = h;
-
-  const rot = Math.round(obj.angle||0);
-  document.getElementById('p-rot').value = rot;
-  document.getElementById('p-rot-range').value = ((rot%360)+360)%360;
-
-  const fill = obj.fill&&obj.fill!=='transparent'?obj.fill:'#e8e6df';
-  document.getElementById('p-fill').value = fill;
-  document.getElementById('p-fill-txt').value = obj.fill||'transparent';
-  const stroke = obj.stroke||'#c9b46a';
-  document.getElementById('p-stroke').value = stroke;
-  document.getElementById('p-stroke-txt').value = stroke;
-  const sw = obj.strokeWidth||1.5;
-  document.getElementById('p-sw').value = sw;
-  document.getElementById('p-sw-range').value = sw;
-  const op = Math.round((obj.opacity||1)*100);
-  document.getElementById('p-opacity').value = op;
-  document.getElementById('p-op-val').textContent = op+'%';
-
-  // Pattern info
-  document.getElementById('info-type').innerHTML = `<b>Type:</b> ${obj.type}`;
-  document.getElementById('info-dims').innerHTML = `<b>Size:</b> ${w}×${h} ${unit}`;
-  document.getElementById('info-angle').innerHTML = `<b>Rotation:</b> ${rot}°`;
-
-  let perimeter = '—', vertices = '—', area = '—';
-  if (obj.type==='polygon' && obj.points) {
-    const pts = obj.points;
-    vertices = pts.length;
-    let peri = 0, ar = 0;
-    for (let i=0;i<pts.length;i++) {
-      const p1=pts[i], p2=pts[(i+1)%pts.length];
-      peri += Math.sqrt((p1.x-p2.x)**2+(p1.y-p2.y)**2);
-      ar += p1.x*p2.y - p2.x*p1.y;
-    }
-    perimeter = fmt(toUnit(peri))+' '+unit;
-    area = fmt(toUnit(Math.abs(ar/2)))+' '+unit+'²';
-  } else if (obj.type==='rect') {
-    perimeter = fmt(toUnit(2*(w+h)))+' '+unit;
-    area = fmt(toUnit(w*h))+' '+unit+'²';
-  } else if (obj.type==='ellipse') {
-    perimeter = fmt(toUnit(2*Math.PI*Math.sqrt((obj.rx**2+obj.ry**2)/2)))+' '+unit;
-    area = fmt(toUnit(Math.PI*obj.rx*obj.ry))+' '+unit+'²';
-  } else if (obj.type==='line') {
-    const dx=(obj.x2-obj.x1)*(obj.scaleX||1), dy=(obj.y2-obj.y1)*(obj.scaleY||1);
-    perimeter = fmt(toUnit(Math.sqrt(dx*dx+dy*dy)))+' '+unit;
-  }
-  document.getElementById('info-perimeter').innerHTML = `<b>Perimeter:</b> ${perimeter}`;
-  document.getElementById('info-vertices').innerHTML = `<b>Vertices:</b> ${vertices}`;
-  document.getElementById('info-area').innerHTML = `<b>Area:</b> ${area}`;
-
-  document.getElementById('obj-label').textContent = `${obj.type} · W:${w} H:${h}`;
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+tab));
 }
 
-function clearPropsPanel() {
-  document.getElementById('no-sel-msg').style.display='';
-  document.getElementById('props-panel').style.display='none';
-  document.getElementById('obj-label').textContent = 'No selection';
-  document.getElementById('obj-type-badge').textContent='';
-}
+function updateProps(){
+  const obj=cv.getActiveObject();
+  if(!obj){clearProps();return;}
+  document.getElementById('no-sel').style.display='none';
+  document.getElementById('props-wrap').style.display='';
+  document.getElementById('obj-badge').textContent=obj.type;
 
-function applyProp(prop, val) {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  obj.set(prop, val);
-  cv.renderAll();
-  // Update text fields
-  if (prop==='fill') { document.getElementById('p-fill-txt').value=val; try{document.getElementById('p-fill').value=val}catch(e){} }
-  if (prop==='stroke') { document.getElementById('p-stroke-txt').value=val; try{document.getElementById('p-stroke').value=val}catch(e){} }
-  saveHistory();
-}
-
-function applySize(prop, val) {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  if (obj.type==='ellipse') {
-    if (prop==='width') obj.set('rx', val/2);
-    else obj.set('ry', val/2);
+  // Position
+  document.getElementById('p-x').value=Math.round(obj.left||0);
+  document.getElementById('p-y').value=Math.round(obj.top||0);
+  // Size
+  const w=obj.type==='ellipse'?Math.round((obj.rx||0)*2*(obj.scaleX||1)):Math.round((obj.width||0)*(obj.scaleX||1));
+  const h=obj.type==='ellipse'?Math.round((obj.ry||0)*2*(obj.scaleY||1)):Math.round((obj.height||0)*(obj.scaleY||1));
+  document.getElementById('p-w').value=w;
+  document.getElementById('p-h').value=h;
+  // Rotation
+  const rot=Math.round(obj.angle||0);
+  document.getElementById('p-rot').value=rot;
+  document.getElementById('p-rot-r').value=((rot%360)+360)%360;
+  // Fill
+  const fill=typeof obj.fill==='string'?obj.fill:'pattern';
+  if(fill!=='pattern'){
+    try{document.getElementById('p-fill-c').value=fill;}catch(e){}
+    document.getElementById('p-fill-t').value=fill;
   } else {
-    const scale = prop==='width' ? (val/(obj.width||1)) : (val/(obj.height||1));
-    obj.set(prop==='width' ? 'scaleX' : 'scaleY', scale);
+    document.getElementById('p-fill-t').value='[texture]';
   }
-  cv.renderAll();
-  saveHistory();
+  // Stroke
+  const stk=obj.stroke||'#c8b366';
+  try{document.getElementById('p-stk-c').value=stk;}catch(e){}
+  document.getElementById('p-stk-t').value=stk;
+  const sw=obj.strokeWidth||1.5;
+  document.getElementById('p-sw').value=sw;
+  document.getElementById('p-sw-r').value=sw;
+  const op=Math.round((obj.opacity||1)*100);
+  document.getElementById('p-op').value=op;
+  document.getElementById('op-val').textContent=op+'%';
+  // Notes
+  document.getElementById('obj-notes').value=obj._notes||'';
+  // Status bar
+  document.getElementById('obj-lbl').textContent=`${obj.type} · W:${w} H:${h}`;
+  // Info tab
+  updateInfo(obj);
+}
+
+function updateInfo(obj){
+  const w=obj.type==='ellipse'?Math.round((obj.rx||0)*2*(obj.scaleX||1)):Math.round((obj.width||0)*(obj.scaleX||1));
+  const h=obj.type==='ellipse'?Math.round((obj.ry||0)*2*(obj.scaleY||1)):Math.round((obj.height||0)*(obj.scaleY||1));
+  document.getElementById('i-type').innerHTML=`<b>Type:</b> ${obj.type}`;
+  document.getElementById('i-dims').innerHTML=`<b>Size:</b> ${w} × ${h} ${unit}`;
+  document.getElementById('i-angle').innerHTML=`<b>Rotation:</b> ${Math.round(obj.angle||0)}°`;
+  let peri='—',area='—',verts='—',seamNote='—';
+  if(obj.type==='polygon'&&obj.points){
+    const pts=obj.points; verts=pts.length;
+    let p=0,ar=0;
+    for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];p+=Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);ar+=a.x*b.y-b.x*a.y;}
+    peri=fmt(toU(p))+' '+unit; area=fmt(toU(Math.abs(ar/2)))+' '+unit+'²';
+  } else if(obj.type==='rect'){
+    peri=fmt(toU(2*(w+h)))+' '+unit; area=fmt(toU(w*h))+' '+unit+'²';
+  } else if(obj.type==='ellipse'){
+    peri=fmt(toU(2*Math.PI*Math.sqrt(((obj.rx||0)**2+(obj.ry||0)**2)/2)))+' '+unit;
+    area=fmt(toU(Math.PI*(obj.rx||0)*(obj.ry||0)))+' '+unit+'²';
+  } else if(obj.type==='line'){
+    const dx=(obj.x2-obj.x1)*(obj.scaleX||1),dy=(obj.y2-obj.y1)*(obj.scaleY||1);
+    peri=fmt(toU(Math.sqrt(dx*dx+dy*dy)))+' '+unit;
+  }
+  if(seamMap.has(obj)) seamNote=document.getElementById('seam-amt').value+'px';
+  document.getElementById('i-peri').innerHTML=`<b>Perimeter:</b> ${peri}`;
+  document.getElementById('i-area').innerHTML=`<b>Area:</b> ${area}`;
+  document.getElementById('i-verts').innerHTML=`<b>Vertices:</b> ${verts}`;
+  document.getElementById('i-seam').innerHTML=`<b>Seam:</b> ${seamNote}`;
+}
+
+function clearProps(){
+  document.getElementById('no-sel').style.display='';
+  document.getElementById('props-wrap').style.display='none';
+  document.getElementById('obj-badge').textContent='';
+  document.getElementById('obj-lbl').textContent='No selection';
+}
+
+function applyProp(prop,val){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
+  objs.forEach(o=>o.set(prop,val));
+  cv.renderAll(); saveHistory();
+}
+function applyFill(v){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
+  objs.forEach(o=>o.set('fill',v));
+  try{document.getElementById('p-fill-c').value=v;}catch(e){}
+  document.getElementById('p-fill-t').value=v;
+  cv.renderAll(); saveHistory();
+}
+function applyStroke(v){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
+  objs.forEach(o=>o.set('stroke',v));
+  try{document.getElementById('p-stk-c').value=v;}catch(e){}
+  document.getElementById('p-stk-t').value=v;
+  cv.renderAll(); saveHistory();
+}
+function applyPos(){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  obj.set({left:+document.getElementById('p-x').value,top:+document.getElementById('p-y').value});
+  obj.setCoords(); cv.renderAll(); saveHistory();
+}
+function applySize(prop,val){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  const lockAR=document.getElementById('lock-ar').checked;
+  if(obj.type==='ellipse'){
+    if(prop==='width') obj.set('rx',val/2);
+    else obj.set('ry',val/2);
+    if(lockAR){if(prop==='width')obj.set('ry',val/2);else obj.set('rx',val/2);}
+  } else {
+    const curW=(obj.width||1)*(obj.scaleX||1), curH=(obj.height||1)*(obj.scaleY||1);
+    if(prop==='width'){
+      const s=val/(obj.width||1); obj.set('scaleX',s);
+      if(lockAR) obj.set('scaleY',s);
+    } else {
+      const s=val/(obj.height||1); obj.set('scaleY',s);
+      if(lockAR) obj.set('scaleX',s);
+    }
+  }
+  obj.setCoords(); cv.renderAll(); saveHistory();
+}
+function syncRot(){
+  const v=+document.getElementById('p-rot').value;
+  document.getElementById('p-rot-r').value=((v%360)+360)%360;
+}
+function flipObj(axis){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  if(axis==='X') obj.set('flipX',!obj.flipX); else obj.set('flipY',!obj.flipY);
+  cv.renderAll(); saveHistory();
+}
+function applyShadow(type){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  let shadow=null;
+  if(type==='soft') shadow=new fabric.Shadow({color:'rgba(0,0,0,0.25)',blur:15,offsetX:0,offsetY:4});
+  else if(type==='hard') shadow=new fabric.Shadow({color:'rgba(0,0,0,0.5)',blur:0,offsetX:4,offsetY:4});
+  else if(type==='glow') shadow=new fabric.Shadow({color:'rgba(200,179,102,0.5)',blur:20,offsetX:0,offsetY:0});
+  obj.set('shadow',shadow); cv.renderAll(); saveHistory();
+}
+function saveObjNote(v){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  obj._notes=v;
 }
 
 // ══════════════════════════════════════════════════
 //  OBJECT OPERATIONS
 // ══════════════════════════════════════════════════
-function deleteSelected() {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  if (obj.type==='activeSelection') {
-    obj.getObjects().forEach(o => cv.remove(o));
-  } else {
-    cv.remove(obj);
-  }
-  cv.discardActiveObject();
-  cv.renderAll();
-  saveHistory();
-  notify('Deleted', 'info');
+function deleteSelected(){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  const objs=obj.type==='activeSelection'?obj.getObjects():[obj];
+  objs.forEach(o=>{ if(seamMap.has(o)){cv.remove(seamMap.get(o));seamMap.delete(o);} cv.remove(o); });
+  cv.discardActiveObject(); cv.renderAll(); saveHistory(); notify('Deleted','info');
+}
+function duplicateSelected(){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  obj.clone(clone=>{ clone.set({left:obj.left+22,top:obj.top+22}); cv.add(clone); cv.setActiveObject(clone); cv.renderAll(); saveHistory(); notify('Duplicated','success'); });
+}
+function groupSelected(){
+  const sel=cv.getActiveObject();
+  if(!sel||sel.type!=='activeSelection'){notify('Select multiple objects to group','error');return;}
+  sel.toGroup(); cv.renderAll(); saveHistory(); notify('Grouped','success');
+}
+function ungroupSelected(){
+  const obj=cv.getActiveObject();
+  if(!obj||obj.type!=='group'){notify('Select a group to ungroup','error');return;}
+  obj.toActiveSelection(); cv.renderAll(); saveHistory(); notify('Ungrouped','success');
+}
+function toggleLock(lock){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  ['lockMovementX','lockMovementY','lockRotation','lockScalingX','lockScalingY'].forEach(p=>obj.set(p,lock));
+  obj.hasControls=!lock; obj.hasBorders=!lock; cv.renderAll(); notify(lock?'Locked':'Unlocked','info');
+}
+function layerOp(op){
+  const obj=cv.getActiveObject(); if(!obj) return;
+  if(op==='front')cv.bringToFront(obj);
+  else if(op==='forward')cv.bringForward(obj);
+  else if(op==='backward')cv.sendBackwards(obj);
+  else if(op==='back')cv.sendToBack(obj);
+  if(showGrid&&gridGroup) cv.sendToBack(gridGroup);
+  cv.renderAll(); saveHistory();
 }
 
-function duplicateSelected() {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  obj.clone(clone => {
-    clone.set({ left:obj.left+20, top:obj.top+20 });
-    cv.add(clone);
-    cv.setActiveObject(clone);
-    cv.renderAll();
-    saveHistory();
-    notify('Duplicated', 'success');
+// ══════════════════════════════════════════════════
+//  ALIGN
+// ══════════════════════════════════════════════════
+function alignObjects(dir){
+  const sel=cv.getActiveObject();
+  if(!sel){notify('Select objects to align','error');return;}
+  const objs=sel.type==='activeSelection'?sel.getObjects():[sel];
+  if(objs.length<2){notify('Select multiple objects to align','info');return;}
+  const bbs=objs.map(o=>o.getBoundingRect(true));
+  const minL=Math.min(...bbs.map(b=>b.left));
+  const maxR=Math.max(...bbs.map(b=>b.left+b.width));
+  const minT=Math.min(...bbs.map(b=>b.top));
+  const maxB=Math.max(...bbs.map(b=>b.top+b.height));
+  objs.forEach((o,i)=>{
+    const bb=bbs[i];
+    if(dir==='left') o.set({left:minL+(o.left-bb.left)});
+    else if(dir==='right') o.set({left:maxR-bb.width+(o.left-bb.left)});
+    else if(dir==='top') o.set({top:minT+(o.top-bb.top)});
+    else if(dir==='bottom') o.set({top:maxB-bb.height+(o.top-bb.top)});
+    else if(dir==='centerH') o.set({left:(minL+maxR)/2-bb.width/2+(o.left-bb.left)});
+    else if(dir==='centerV') o.set({top:(minT+maxB)/2-bb.height/2+(o.top-bb.top)});
+    o.setCoords();
   });
+  cv.renderAll(); saveHistory(); notify(`Aligned ${dir}`,'success');
 }
 
-function groupSelected() {
-  const sel = cv.getActiveObject();
-  if (!sel || sel.type!=='activeSelection') { notify('Select multiple objects first', 'error'); return; }
-  const grp = sel.toGroup();
-  cv.setActiveObject(grp);
-  cv.renderAll();
-  saveHistory();
-  notify('Grouped', 'success');
+// ══════════════════════════════════════════════════
+//  GRID & SNAP
+// ══════════════════════════════════════════════════
+function drawGrid(){
+  if(gridGroup){cv.remove(gridGroup);gridGroup=null;}
+  if(!showGrid) return;
+  const lines=[];
+  for(let x=0;x<=vpW*2;x+=gridSize){const maj=(x/gridSize)%5===0;lines.push(new fabric.Line([x,0,x,vpH*2],{stroke:maj?'#32362a':'#1e2219',strokeWidth:maj?0.6:0.3,selectable:false,evented:false,_grid:true}));}
+  for(let y=0;y<=vpH*2;y+=gridSize){const maj=(y/gridSize)%5===0;lines.push(new fabric.Line([0,y,vpW*2,y],{stroke:maj?'#32362a':'#1e2219',strokeWidth:maj?0.6:0.3,selectable:false,evented:false,_grid:true}));}
+  gridGroup=new fabric.Group(lines,{selectable:false,evented:false,_grid:true,left:-vpW/2,top:-vpH/2});
+  cv.add(gridGroup); cv.sendToBack(gridGroup); cv.renderAll();
+}
+function toggleGrid(){showGrid=!showGrid;drawGrid();document.getElementById('grid-btn').classList.toggle('active-btn',showGrid);updateSB();notify(`Grid ${showGrid?'on':'off'}`,'info');}
+function toggleSnap(){snapGrid=!snapGrid;document.getElementById('snap-btn').classList.toggle('active-btn',snapGrid);updateSB();notify(`Snap ${snapGrid?'on':'off'}`,'info');}
+function setGridSize(v){gridSize=Math.max(5,Math.min(200,v));if(showGrid)drawGrid();}
+function snap(p){if(!snapGrid)return p;return{x:Math.round(p.x/gridSize)*gridSize,y:Math.round(p.y/gridSize)*gridSize};}
+function updateSB(){document.getElementById('status-r').textContent=`Grid: ${showGrid?'ON':'OFF'}  |  Snap: ${snapGrid?'ON':'OFF'}`;}
+
+// ══════════════════════════════════════════════════
+//  RULERS
+// ══════════════════════════════════════════════════
+function initRulers(){
+  const rh=document.getElementById('rh'),rv=document.getElementById('rv');
+  rh.width=vpW-20;rh.height=20;
+  rv.width=20;rv.height=vpH-20;
+  if(showRulers)drawRuler();
+}
+function drawRuler(){
+  const rh=document.getElementById('rh'),ctxH=rh.getContext('2d');
+  const rv=document.getElementById('rv'),ctxV=rv.getContext('2d');
+  [ctxH,ctxV].forEach(ctx=>{ctx.fillStyle='#131510';ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);});
+  const step=Math.max(gridSize,10)*zoomLvl;
+  ctxH.fillStyle='#4e5146';ctxH.font='8px DM Sans';
+  for(let x=0;x<rh.width;x+=step){
+    const maj=Math.round(x/(step*5))===x/(step*5);
+    ctxH.fillRect(x,20-(maj?8:4),1,maj?8:4);
+    if(maj){ctxH.textAlign='center';ctxH.fillText(Math.round(x/zoomLvl),x,10);}
+  }
+  ctxV.fillStyle='#4e5146';ctxV.font='8px DM Sans';
+  for(let y=0;y<rv.height;y+=step){
+    const maj=Math.round(y/(step*5))===y/(step*5);
+    ctxV.fillRect(20-(maj?8:4),y,maj?8:4,1);
+    if(maj){ctxV.save();ctxV.translate(10,y);ctxV.rotate(-Math.PI/2);ctxV.textAlign='center';ctxV.fillText(Math.round(y/zoomLvl),0,0);ctxV.restore();}
+  }
+}
+function drawRulerCursor(x,y){
+  if(!showRulers)return; drawRuler();
+  const rh=document.getElementById('rh'),rv=document.getElementById('rv');
+  const ch=rh.getContext('2d'),cv2=rv.getContext('2d');
+  ch.fillStyle='#c8b366';ch.fillRect(x*zoomLvl,0,1,20);
+  cv2.fillStyle='#c8b366';cv2.fillRect(0,y*zoomLvl,20,1);
+}
+function toggleRulers(){
+  showRulers=!showRulers;
+  ['rh','rv','ruler-corner'].forEach(id=>document.getElementById(id).style.display=showRulers?'block':'none');
+  document.getElementById('ruler-btn').classList.toggle('active-btn',showRulers);
+  if(showRulers)drawRuler();
 }
 
-function ungroupSelected() {
-  const obj = cv.getActiveObject();
-  if (!obj || obj.type!=='group') { notify('Select a group first', 'error'); return; }
-  obj.toActiveSelection();
-  cv.renderAll();
-  saveHistory();
-  notify('Ungrouped', 'success');
+// ══════════════════════════════════════════════════
+//  ZOOM
+// ══════════════════════════════════════════════════
+function zoomIn(){zoomBy(1.2);}
+function zoomOut(){zoomBy(1/1.2);}
+function zoomBy(f){
+  zoomLvl=Math.min(Math.max(zoomLvl*f,0.04),12);
+  cv.setZoom(zoomLvl);
+  document.getElementById('zoom-d').textContent=Math.round(zoomLvl*100)+'%';
+  if(showRulers)drawRuler();
 }
-
-function toggleLock(lock) {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  const props = ['lockMovementX','lockMovementY','lockRotation','lockScalingX','lockScalingY'];
-  props.forEach(p => obj.set(p, lock));
-  if (lock) { obj.hasControls=false; obj.hasBorders=false; } else { obj.hasControls=true; obj.hasBorders=true; }
-  cv.renderAll();
-  notify(lock?'Locked':'Unlocked', 'info');
-}
-
-function layerOp(op) {
-  const obj = cv.getActiveObject();
-  if (!obj) return;
-  if (op==='front') cv.bringToFront(obj);
-  else if (op==='forward') cv.bringForward(obj);
-  else if (op==='backward') cv.sendBackwards(obj);
-  else if (op==='back') cv.sendToBack(obj);
-  if (showGrid && gridGroup) cv.sendToBack(gridGroup);
-  cv.renderAll();
-  saveHistory();
+function zoom100(){zoomLvl=1;cv.setZoom(1);cv.viewportTransform=[1,0,0,1,0,0];cv.renderAll();document.getElementById('zoom-d').textContent='100%';}
+function zoomFit(){
+  const s=Math.min(vpW/cv.getWidth(),vpH/cv.getHeight())*0.9;
+  zoomLvl=s;cv.setZoom(s);
+  document.getElementById('zoom-d').textContent=Math.round(s*100)+'%';
+  if(showRulers)drawRuler();
 }
 
 // ══════════════════════════════════════════════════
 //  UNIT SYSTEM
 // ══════════════════════════════════════════════════
-const UNIT_RATIOS = { px:1, mm:3.7795, cm:37.795, in:96 };
-function setUnit(u) { unit=u; unitRatio=UNIT_RATIOS[u]||1; updatePropsPanel(); }
-function toUnit(px) { return px/unitRatio; }
-function fmt(v) { return Number.isInteger(v)?v:parseFloat(v.toFixed(2)); }
+const UNITS={px:1,mm:3.7795,cm:37.795,in:96};
+function setUnit(u){unit=u;unitRatio=UNITS[u]||1;updateProps();}
+function toU(px){return px/unitRatio;}
+function fmt(v){return Number.isInteger(v)?v:parseFloat(v.toFixed(2));}
 
 // ══════════════════════════════════════════════════
-//  PROJECT MANAGEMENT
+//  PROJECT
 // ══════════════════════════════════════════════════
-function newProject() {
-  if (!confirm('New project? Unsaved work will be lost.')) return;
-  cv.clear(); cv.backgroundColor='#ffffff';
-  seamObjects=[];
-  if (showGrid) drawGrid();
-  cv.renderAll();
-  saveHistory();
-  notify('New project', 'success');
+function newProject(){
+  if(!confirm('Start a new project? Unsaved work will be lost.'))return;
+  cv.clear();cv.backgroundColor='#f5f3ee';seamMap.clear();
+  if(showGrid)drawGrid();cv.renderAll();saveHistory();notify('New project','success');
 }
-
-function saveProject() {
-  const data = { canvas: cv.toJSON(['id','_seamParent']), meta: { unit, gridSize, showGrid, snapGrid, created: new Date().toISOString() } };
-  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `pattern_${new Date().toLocaleDateString('en-GB').replace(/\//g,'-')}.json`;
-  a.click();
-  notify('Project saved', 'success');
+function saveProject(){
+  const data={canvas:cv.toJSON(['_notes','_texKey']),meta:{unit,gridSize,showGrid,snapGrid,v:2,created:new Date().toISOString()}};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+  a.download=`pattern_${Date.now()}.json`;a.click();notify('Project saved ✓','success');
 }
-
-function loadProject() {
-  const input = document.createElement('input');
-  input.type = 'file'; input.accept = '.json';
-  input.onchange = e => {
-    const file = e.target.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        blockHistory = true;
-        cv.loadFromJSON(data.canvas||data, () => {
+function loadProject(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        blockHistory=true;
+        cv.loadFromJSON(data.canvas||data,()=>{
           cv.renderAll();
-          if (data.meta) {
-            if (data.meta.unit) { unit=data.meta.unit; document.getElementById('unit-sel').value=unit; }
-            if (data.meta.gridSize) { gridSize=data.meta.gridSize; document.getElementById('grid-size-input').value=gridSize; }
+          if(data.meta){
+            if(data.meta.unit){unit=data.meta.unit;document.getElementById('unit-sel').value=unit;}
+            if(data.meta.gridSize){gridSize=data.meta.gridSize;document.getElementById('grid-px').value=gridSize;}
           }
-          if (showGrid) drawGrid();
-          blockHistory = false;
-          saveHistory();
-          notify('Project loaded', 'success');
+          if(showGrid)drawGrid();blockHistory=false;saveHistory();notify('Project loaded','success');
         });
-      } catch(err) { notify('Invalid file: '+err.message, 'error'); }
-    };
-    reader.readAsText(file);
-  };
-  input.click();
+      }catch(err){notify('Error: '+err.message,'error');}
+    };r.readAsText(f);
+  };inp.click();
 }
 
 // ══════════════════════════════════════════════════
 //  EXPORT
 // ══════════════════════════════════════════════════
-function exportSVG() {
-  const wasGrid = showGrid;
-  if (gridGroup) gridGroup.set('visible',false);
-  const svg = cv.toSVG();
-  if (gridGroup) gridGroup.set('visible',true);
-  const blob = new Blob([svg],{type:'image/svg+xml'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`pattern_${Date.now()}.svg`; a.click();
-  notify('SVG exported', 'success');
+function exportSVG(){
+  if(gridGroup)gridGroup.set('visible',false);
+  const svg=cv.toSVG();
+  if(gridGroup)gridGroup.set('visible',true);
+  dl(new Blob([svg],{type:'image/svg+xml'}),`pattern_${Date.now()}.svg`);
+  notify('SVG exported','success');
 }
-
-function exportPNG() {
-  const wasGrid = showGrid;
-  if (gridGroup) gridGroup.set('visible',false);
-  cv.renderAll();
-  const dataURL = cv.toDataURL({format:'png',multiplier:2});
-  if (gridGroup) gridGroup.set('visible',wasGrid);
-  cv.renderAll();
-  const a = document.createElement('a'); a.href=dataURL; a.download=`pattern_${Date.now()}.png`; a.click();
-  notify('PNG exported @2x', 'success');
+function exportPNG(){
+  if(gridGroup)gridGroup.set('visible',false);cv.renderAll();
+  const url=cv.toDataURL({format:'png',multiplier:2});
+  if(gridGroup)gridGroup.set('visible',true);cv.renderAll();
+  const a=document.createElement('a');a.href=url;a.download=`pattern_${Date.now()}.png`;a.click();
+  notify('PNG exported @2x','success');
 }
-
-function exportDXF() {
-  // Generate basic DXF
-  const objs = cv.getObjects().filter(o => !o._grid);
-  let dxf = `0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n`;
-  objs.forEach(obj => {
-    if (obj.type==='line') {
-      dxf += `0\nLINE\n8\n0\n10\n${obj.x1}\n20\n${-obj.y1}\n11\n${obj.x2}\n21\n${-obj.y2}\n`;
-    } else if (obj.type==='rect') {
-      const [x,y,w,h] = [obj.left,obj.top,obj.width,obj.height];
-      dxf += `0\nLWPOLYLINE\n8\n0\n90\n4\n70\n1\n10\n${x}\n20\n${-y}\n10\n${x+w}\n20\n${-y}\n10\n${x+w}\n20\n${-y-h}\n10\n${x}\n20\n${-y-h}\n`;
-    } else if (obj.type==='polygon' && obj.points) {
-      dxf += `0\nLWPOLYLINE\n8\n0\n90\n${obj.points.length}\n70\n1\n`;
-      obj.points.forEach(p => { dxf += `10\n${obj.left+p.x}\n20\n${-(obj.top+p.y)}\n`; });
-    }
+function exportDXF(){
+  const objs=cv.getObjects().filter(o=>!o._grid&&!o._seam);
+  let dxf=`0\nSECTION\n2\nHEADER\n9\n$ACADVER\n1\nAC1009\n0\nENDSEC\n0\nSECTION\n2\nENTITIES\n`;
+  objs.forEach(obj=>{
+    if(obj.type==='line') dxf+=`0\nLINE\n8\n0\n10\n${obj.x1}\n20\n${-obj.y1}\n11\n${obj.x2}\n21\n${-obj.y2}\n`;
+    else if(obj.type==='rect'){const[x,y,w,h]=[obj.left,obj.top,obj.width*(obj.scaleX||1),obj.height*(obj.scaleY||1)];dxf+=`0\nLWPOLYLINE\n8\n0\n90\n4\n70\n1\n10\n${x}\n20\n${-y}\n10\n${x+w}\n20\n${-y}\n10\n${x+w}\n20\n${-y-h}\n10\n${x}\n20\n${-y-h}\n`;}
+    else if(obj.type==='polygon'&&obj.points){dxf+=`0\nLWPOLYLINE\n8\n0\n90\n${obj.points.length}\n70\n1\n`;obj.points.forEach(p=>{dxf+=`10\n${obj.left+p.x}\n20\n${-(obj.top+p.y)}\n`;});}
+    else if(obj.type==='ellipse') dxf+=`0\nELLIPSE\n8\n0\n10\n${obj.left+(obj.rx||0)}\n20\n${-(obj.top+(obj.ry||0))}\n11\n${obj.rx||0}\n21\n0\n40\n${(obj.ry||1)/(obj.rx||1)}\n`;
   });
-  dxf += `0\nENDSEC\n0\nEOF\n`;
-  const blob = new Blob([dxf],{type:'application/dxf'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`pattern_${Date.now()}.dxf`; a.click();
-  notify('DXF exported', 'success');
+  dxf+=`0\nENDSEC\n0\nEOF\n`;
+  dl(new Blob([dxf],{type:'application/dxf'}),`pattern_${Date.now()}.dxf`);
+  notify('DXF exported','success');
 }
-
-// ══════════════════════════════════════════════════
-//  STATUS BAR
-// ══════════════════════════════════════════════════
-function updateStatusBar() {
-  document.getElementById('status-right').textContent = `Grid: ${showGrid?'ON':'OFF'}  |  Snap: ${snapGrid?'ON':'OFF'}`;
-}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();}
 
 // ══════════════════════════════════════════════════
 //  NOTIFICATIONS
 // ══════════════════════════════════════════════════
-function notify(msg, type='info') {
-  const icons = {success:'✓',error:'✕',info:'·'};
-  const n = document.createElement('div');
-  n.className = `notif notif-${type}`;
-  n.textContent = (icons[type]||'') + ' ' + msg;
+function notify(msg,type='info'){
+  const icons={success:'✓',error:'✕',info:'·'};
+  const n=document.createElement('div');
+  n.className=`notif notif-${type}`;n.textContent=`${icons[type]} ${msg}`;
   document.body.appendChild(n);
-  setTimeout(() => { n.style.opacity='0'; n.style.transition='opacity .3s'; setTimeout(()=>n.remove(),300); }, 2800);
+  setTimeout(()=>{n.style.opacity='0';n.style.transition='opacity .25s';setTimeout(()=>n.remove(),250);},2600);
 }
 </script>
 </body>
