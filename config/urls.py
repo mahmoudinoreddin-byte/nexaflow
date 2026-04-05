@@ -3,7 +3,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.dashboard.views import landing_page
-from tool_app import sketch_fabric
+from tool_app import sketch-fabric
 
 
 urlpatterns = [
